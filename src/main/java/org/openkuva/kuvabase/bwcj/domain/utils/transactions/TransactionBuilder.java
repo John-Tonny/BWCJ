@@ -62,7 +62,9 @@ public class TransactionBuilder {
         NetworkParameters network = networkParametersBuilder.fromTP(tp);
 
         Transaction transaction = new Transaction(network);
-        transaction.setVersion(tp.getVersion());
+        // john
+        transaction.setVersion(2);
+        // transaction.setVersion(tp.getVersion());
         transaction.setType(Transaction.Type.TRANSACTION_NORMAL);
 
         for (IOutput output : tp.getOutputs()) {
@@ -78,9 +80,10 @@ public class TransactionBuilder {
                     new TransactionInput(
                             network,
                             transaction,
-                            new ScriptBuilder()
+                            /*new ScriptBuilder()
                                     .build()
-                                    .getProgram(),
+                                    .getProgram(),*/
+                            Utils.HEX.decode(input.getScriptPubKey()),  // john
                             new TransactionOutPoint(
                                     network,
                                     new FreeStandingTransactionOutput(
@@ -94,10 +97,10 @@ public class TransactionBuilder {
                                                     new Script(Utils.HEX.decode(input.getScriptPubKey()))))),
                             Coin.valueOf(input.getSatoshis())));
         }
-
-        for (TransactionInput transactionInput : transaction.getInputs()) {
+        // john
+        /*for (TransactionInput transactionInput : transaction.getInputs()) {
             transactionInput.clearScriptBytes();
-        }
+        }*/
 
         Coin changeAmount =
                 transaction
@@ -120,6 +123,7 @@ public class TransactionBuilder {
     }
     public static Transaction sort(Transaction transaction, List<Integer> outputOrder) {
         Transaction result = new Transaction(transaction.getParams());
+        // john
         result.setVersion((int) transaction.getVersion());
         result.setType(transaction.getType());
 

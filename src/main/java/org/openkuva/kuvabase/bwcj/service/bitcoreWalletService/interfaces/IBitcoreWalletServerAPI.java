@@ -34,6 +34,7 @@
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces;
 
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.fee.IFeeLevel;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
@@ -54,6 +55,8 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallet
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallets.IJoinWalletResponse;
 
 import java.util.Map;
+
+import retrofit2.http.QueryMap;
 
 public interface IBitcoreWalletServerAPI {
 
@@ -126,4 +129,11 @@ public interface IBitcoreWalletServerAPI {
      * POST v1/login
      */
     String login(LoginRequest request);
+
+    // john
+    /**
+     * GET v1/txhistory/
+     */
+    ITransactionHistory[] getTxHistory(Map<String, String> options);
+
 }

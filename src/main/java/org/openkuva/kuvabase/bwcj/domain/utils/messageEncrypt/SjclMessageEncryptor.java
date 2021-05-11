@@ -46,33 +46,54 @@ import java.io.Reader;
 
 public class SjclMessageEncryptor implements IMessageEncryptor {
     private final static String LIB_PATH = "sjcl.js";
+    private final static String LIB_PATH1 = "bwc.js";
 
     @Override
     public String encrypt(String msg, String encryptKey) {
-        Global global = new Global();
-        Context context = createAndInitializeContext(global);
-        Scriptable scope = context.initStandardObjects(global);
-        InputStream stream = getClass()
-                .getClassLoader()
-                .getResourceAsStream(LIB_PATH);
-        BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+        // Context context = createAndInitializeContext(global);
+        // Scriptable scope = context.initStandardObjects(global);
+        Context context = Context.enter();
         try {
-            compileAndExec(in, "classpath:" + LIB_PATH.toString(), context, scope);
-            in.close();
+            context.setOptimizationLevel(-1);
+            context.setLanguageVersion(Context.VERSION_1_5);
+            Scriptable scope = context.initStandardObjects();
+            InputStream stream = getClass()
+                    .getClassLoader()
+                    .getResourceAsStream(LIB_PATH);
+            BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+                compileAndExec(in, "classpath:" + LIB_PATH.toString(), context, scope);
+                in.close();
+
+            final String script = "var result = sjcl.encrypt(sjcl.codec.base64.toBits(\"" +
+                    encryptKey + "\"),'" +
+                    msg + "'," +
+                    "{ks: 128, iter: 1})";
+
+            exec(script, "start", context, scope);
+            Object result = scope.get("result", scope);
+            String json = Context.toString(result);
+
+            /*context.setLanguageVersion(Context.VERSION_ES6);
+            Scriptable scope1 = context.initStandardObjects();
+            InputStream stream1 = getClass()
+                    .getClassLoader()
+                    .getResourceAsStream(LIB_PATH1);
+            BufferedReader in1 = new BufferedReader(new InputStreamReader(stream1));
+            compileAndExec(in1, "classpath:" + LIB_PATH1.toString(), context, scope1);
+            in1.close();
+
+            final String script1 = "var result = index.default.Key.create()";
+
+            exec(script1, "start", context, scope1);
+            Object result1 = scope1.get("result", scope1);
+            String json1 = Context.toString(result);*/
+
+            return json;
         } catch (IOException e) {
             e.printStackTrace();
+            Context.exit();
+            return "";
         }
-
-        final String script = "var result = sjcl.encrypt(sjcl.codec.base64.toBits(\"" +
-                encryptKey + "\"),'" +
-                msg + "'," +
-                "{ks: 128, iter: 1})";
-
-        exec(script, "start", context, scope);
-        Object result = scope.get("result", scope);
-        String json = Context.toString(result);
-
-        return json;
     }
 
 

@@ -22,6 +22,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'org.dashj:dashj-core:0.15'
+    // implementation project(':dashj-core-0.15')
+    // implementation project(':bitcoinj-core-0.15.5')
+
 
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'

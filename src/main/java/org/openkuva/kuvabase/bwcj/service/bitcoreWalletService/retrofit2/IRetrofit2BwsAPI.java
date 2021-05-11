@@ -34,6 +34,7 @@
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2;
 
 import org.openkuva.kuvabase.bwcj.data.entity.gson.fee.GsonFeeLevel;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonWallet;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
@@ -131,4 +132,10 @@ public interface IRetrofit2BwsAPI {
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
     @POST("v1/login/")
     Call<String> login(@Body LoginRequest request);
+
+    // john
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v1/txhistory/")
+    Call<GsonTransactionHistory[]> getTxHistory(@QueryMap Map<String, String> options);
+
 }

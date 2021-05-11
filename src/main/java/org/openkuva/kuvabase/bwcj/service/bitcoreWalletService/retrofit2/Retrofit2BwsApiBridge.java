@@ -34,6 +34,7 @@
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2;
 
 import org.openkuva.kuvabase.bwcj.data.entity.gson.fee.GsonFeeLevel;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonWallet;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
@@ -70,6 +71,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.QueryMap;
 
 public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     private final IRetrofit2BwsAPI serverAPI;
@@ -350,4 +352,25 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
             throw new RuntimeException(e);
         }
     }
+
+    // john
+    @Override
+    public GsonTransactionHistory[] getTxHistory(@QueryMap Map<String, String> options) {
+        try {
+            Response<GsonTransactionHistory[]> response = serverAPI
+                    .getTxHistory(options)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }
