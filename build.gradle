@@ -7,6 +7,11 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
+}
+apply plugin: 'com.github.johnrengelman.shadow'
+
 apply plugin: 'java-library'
 apply plugin: 'com.novoda.bintray-release'
 
@@ -21,8 +26,9 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'org.dashj:dashj-core:0.15'
-    // implementation project(':dashj-core-0.15')
+    /*
+    // implementation 'org.dashj:dashj-core:0.15'
+    implementation project(':dashj-core-0.15')
     // implementation project(':bitcoinj-core-0.15.5')
 
 
@@ -31,6 +37,15 @@ dependencies {
 
     implementation group: 'org.mozilla', name: 'rhino', version: '1.7.10'
     implementation 'com.google.guava:guava:18.0'
+     */
+
+    api project(':dashj-core-0.15')
+
+    api 'com.squareup.retrofit2:retrofit:2.4.0'
+    api 'com.squareup.retrofit2:converter-gson:2.4.0'
+
+    api group: 'org.mozilla', name: 'rhino', version: '1.7.10'
+    api 'com.google.guava:guava:18.0'
 
     testImplementation 'org.mockito:mockito-core:1.10.19'
     testImplementation 'junit:junit:4.12'
@@ -51,3 +66,29 @@ publish {
     bintrayKey = ''
     dryRun = false
 }
+
+shadowJar {
+    classifier = ""
+
+    dependencies {
+        exclude(dependency('com.squareup.okhttp3:logging-interceptor:3.9.1'))
+        exclude(dependency('com.squareup.retrofit2:retrofit:2.4.0'))
+        exclude(dependency('com.squareup.retrofit2:converter-gson:2.4.0'))
+        exclude(dependency('org.mozilla.rhino:1.7.10'))
+    }
+}
+/*
+uploadShadow {
+    repositories {
+        mavenDeployer {
+            //上传资源到Maven私服
+            repository(url: "http://maven.xuexiyuan.cn:8081/repository/maven-releases/") {
+                authentication(userName:"admin", password:"passwd")
+            }
+            pom.version ="$project.version"
+            pom.artifactId ="$project.name"
+            pom.groupId ="$project.group"
+        }
+    }
+}
+ */

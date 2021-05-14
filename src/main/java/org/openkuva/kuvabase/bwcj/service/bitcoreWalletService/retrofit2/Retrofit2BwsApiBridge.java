@@ -34,9 +34,17 @@
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2;
 
 import org.openkuva.kuvabase.bwcj.data.entity.gson.fee.GsonFeeLevel;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternode;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeBroadcast;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeCollateral;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeRemove;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeStatus;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodePing;
+
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonWallet;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeRemove;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
@@ -56,6 +64,7 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallet
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallets.ICreateWalletResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallets.IJoinWalletRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallets.IJoinWalletResponse;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.masternode.MasternodeBroadcastRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.addresses.GsonAddressesResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.notification.GsonNotificationResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.publish.GsonPublishRequest;
@@ -366,11 +375,113 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
             } else {
                 throw new RequestFailedException(response);
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public GsonMasternodeStatus getMasternodeStatus(@QueryMap Map<String, String> options) {
+        try {
+            Response<GsonMasternodeStatus> response = serverAPI
+                    .getMasternodeStatus(options)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public GsonMasternodeCollateral[] getMasternodeCollateral(@QueryMap Map<String, String> options) {
+        try {
+            Response<GsonMasternodeCollateral[]> response = serverAPI
+                    .getMasternodeCollateral(options)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
+
+    @Override
+    public GsonMasternodePing getMasternodePing(@QueryMap Map<String, String> options) {
+        try {
+            Response<GsonMasternodePing> response = serverAPI
+                    .getMasternodePing(options)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public GsonMasternodeBroadcast broadcastMasternode(MasternodeBroadcastRequest masternodeBroadcastRequest) {
+        try {
+            Response<GsonMasternodeBroadcast> response = serverAPI
+                    .broadcastMasternode(masternodeBroadcastRequest)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public GsonMasternode[] getMasternodes(@QueryMap Map<String, String> options) {
+        try {
+            Response<GsonMasternode[]> response = serverAPI
+                    .getMasternodes(options)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public GsonMasternodeRemove removeMasternodes(@QueryMap Map<String, String> options) {
+        try {
+            Response<GsonMasternodeRemove> response = serverAPI
+                    .removeMasternodes(options)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

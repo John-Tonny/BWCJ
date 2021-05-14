@@ -34,12 +34,19 @@
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2;
 
 import org.openkuva.kuvabase.bwcj.data.entity.gson.fee.GsonFeeLevel;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternode;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeBroadcast;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeCollateral;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodePing;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeRemove;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeStatus;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonWallet;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.broadcast.BroadcastRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.login.LoginRequest;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.masternode.MasternodeBroadcastRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.addresses.GsonAddressesResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.notification.GsonNotificationResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.publish.GsonPublishRequest;
@@ -137,5 +144,29 @@ public interface IRetrofit2BwsAPI {
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
     @GET("v1/txhistory/")
     Call<GsonTransactionHistory[]> getTxHistory(@QueryMap Map<String, String> options);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v1/masternode/status/")
+    Call<GsonMasternodeStatus> getMasternodeStatus(@QueryMap Map<String, String> options);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v1/masternode/collateral/")
+    Call<GsonMasternodeCollateral[]> getMasternodeCollateral(@QueryMap Map<String, String> options);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v1/masternode/ping/")
+    Call<GsonMasternodePing> getMasternodePing(@QueryMap Map<String, String> options);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @POST("v1/masternode/broadcast/")
+    Call<GsonMasternodeBroadcast> broadcastMasternode(@Body MasternodeBroadcastRequest masternodeBroadcastRequest);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v1/masternode/")
+    Call<GsonMasternode[]> getMasternodes(@QueryMap Map<String, String> options);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @DELETE("v1/masternode/")
+    Call<GsonMasternodeRemove> removeMasternodes(@QueryMap Map<String, String> options);
 
 }

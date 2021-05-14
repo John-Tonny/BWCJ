@@ -34,6 +34,12 @@
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces;
 
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.fee.IFeeLevel;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternode;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeBroadcast;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeCollateral;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodePing;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeRemove;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeStatus;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
@@ -53,6 +59,7 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallet
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallets.ICreateWalletResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallets.IJoinWalletRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallets.IJoinWalletResponse;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.masternode.MasternodeBroadcastRequest;
 
 import java.util.Map;
 
@@ -135,5 +142,37 @@ public interface IBitcoreWalletServerAPI {
      * GET v1/txhistory/
      */
     ITransactionHistory[] getTxHistory(Map<String, String> options);
+
+    /**
+     * GET v1/txhistory/
+     */
+    IMasternodeStatus getMasternodeStatus(Map<String, String> options);
+
+    /**
+     * GET /v1/masternode/collateral/
+     */
+    IMasternodeCollateral[] getMasternodeCollateral(Map<String, String> options);
+
+    /**
+     * GET v1/masternode/ping/
+     */
+    IMasternodePing getMasternodePing(Map<String, String> options);
+
+    /**
+     * GET v1/masternode/broadcast/
+     */
+    IMasternodeBroadcast broadcastMasternode(MasternodeBroadcastRequest masternodeBroadcastRequest);
+
+    /**
+     * GET v1/masternode/
+     */
+    IMasternode[] getMasternodes(Map<String, String> options);
+
+    /**
+     * GET v1/masternode/
+     */
+    IMasternodeRemove removeMasternodes(Map<String, String> options);
+
+
 
 }
