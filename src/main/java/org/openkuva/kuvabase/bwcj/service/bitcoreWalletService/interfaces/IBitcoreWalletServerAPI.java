@@ -41,7 +41,11 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeP
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeRemove;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeStatus;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionHistory;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionInitiateRequest;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionParticipateRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRedeemRequest;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRefundRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
@@ -173,6 +177,29 @@ public interface IBitcoreWalletServerAPI {
      */
     IMasternodeRemove removeMasternodes(Map<String, String> options);
 
+    /**
+     * POST v3/atomicswaptxproposals/
+     */
+    ITransactionProposal postInitiateTxProposals(ITransactionInitiateRequest transactionRequest) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
 
+    /**
+     * POST v3/atomicswaptxproposals/
+     */
+    ITransactionProposal postParticipateTxProposals(ITransactionParticipateRequest transactionRequest) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
+
+    /**
+     * POST v3/redeemtxproposals/
+     */
+    ITransactionProposal postRedeemTxProposals(ITransactionRedeemRequest transactionRequest) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
+
+    /**
+     * POST v3/redeemtxproposals/
+     */
+    ITransactionProposal postRefundTxProposals(ITransactionRefundRequest transactionRequest) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
+
+    /**
+     * GET v2/txproposals/
+     */
+    ITransactionProposal[] getPendingAtomicswapTransactionProposals();
 
 }

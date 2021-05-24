@@ -63,7 +63,7 @@ public class PublishTxpUseCase implements IPublishTxpUseCase {
                         new PublishRequest(
                                 copayersCryptUtils.signMessage(
                                         Utils.HEX.encode(
-                                                transactionBuilder.buildTx(toPublish).unsafeBitcoinSerialize()),
+                                                transactionBuilder.buildTx(toPublish).unsafeBitcoinSerialize1()),
                                         copayersCryptUtils.requestDerivation(
                                                 credentials.getSeed())
                                                 .getPrivateKeyAsHex())));

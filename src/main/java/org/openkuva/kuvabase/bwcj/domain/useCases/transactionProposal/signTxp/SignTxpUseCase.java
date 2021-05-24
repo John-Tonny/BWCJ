@@ -98,13 +98,17 @@ public class SignTxpUseCase implements ISignTxpUseCase {
                             credentials.getNetworkParameters()));
         }
 
+        String secret = null;
+        if (txToSign.getAtomicswap()!=null){
+            secret = txToSign.getAtomicswap().getSecret();
+        }
         return
                 bwsApi.postTxProposalsTxIdSignatures(
                         txToSign.getId(),
                         new SignatureRequest(
                                 mapSignatures(
                                         sort(
-                                                flat(signaturesLists)))));
+                                                flat(signaturesLists))), secret));
     }
 
     private static List<IndexedTransactionSignature> sort(List<IndexedTransactionSignature> toSort) {
@@ -134,26 +138,38 @@ public class SignTxpUseCase implements ISignTxpUseCase {
     private static List<IndexedTransactionSignature> getSignatures(Transaction transaction, DeterministicKey priv, NetworkParameters network) {
         List<IndexedTransactionSignature> result = new ArrayList<>();
         for (int i = 0; i < transaction.getInputs().size(); i++) {
-            TransactionOutput connectedOutput = transaction
-                    .getInput(i)
-                    .getOutpoint()
-                    .getConnectedOutput();
-
-            if (Arrays.equals(
-                    connectedOutput
-                            .getAddressFromP2PKHScript(network)
-                            .getHash160(),
-                    priv.getPubKeyHash())) {
-
+            // john
+            if ( transaction.getAtomicswap()!=null && transaction.getAtomicswap().isRedeem()!=null) {
                 result.add(
                         new IndexedTransactionSignature(
                                 transaction.calculateSignature(
                                         i,
                                         priv,
-                                        connectedOutput.getScriptBytes(),
+                                        transaction.getInput(i).getScriptBytes(),
                                         Transaction.SigHash.ALL,
                                         false),
                                 i));
+            }else{
+                TransactionOutput connectedOutput = transaction
+                        .getInput(i)
+                        .getOutpoint()
+                        .getConnectedOutput();
+                if(Arrays.equals(
+                        connectedOutput
+                                .getAddressFromP2PKHScript(network)
+                                .getHash160(),
+                        priv.getPubKeyHash())) {
+
+                    result.add(
+                            new IndexedTransactionSignature(
+                                    transaction.calculateSignature(
+                                            i,
+                                            priv,
+                                            connectedOutput.getScriptBytes(),
+                                            Transaction.SigHash.ALL,
+                                            false),
+                                    i));
+                }
             }
         }
         return result;

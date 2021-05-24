@@ -39,13 +39,18 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.signat
 
 public class SignatureRequest implements ISignatureRequest {
     private final List<String> signatures;
+    private String atomicswapSecret;
 
-    public SignatureRequest(List<String> signatures) {
+    public SignatureRequest(List<String> signatures, String atomicswapSecret) {
         this.signatures = signatures;
+        this.atomicswapSecret = atomicswapSecret;
     }
 
     @Override
     public List<String> getSignatures() {
         return signatures;
     }
+
+    @Override
+    public String getAtomicswapSecret() { return atomicswapSecret; }
 }

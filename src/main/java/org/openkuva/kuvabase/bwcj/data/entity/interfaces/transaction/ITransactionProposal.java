@@ -107,4 +107,10 @@ public interface ITransactionProposal {
     String getCreatorName();
 
     String getRaw();
+
+    IAtomicswapData getAtomicswap();
+    String getAtomicswapAddr();
+    String getAtomicswapSecretHash();
+
+
 }

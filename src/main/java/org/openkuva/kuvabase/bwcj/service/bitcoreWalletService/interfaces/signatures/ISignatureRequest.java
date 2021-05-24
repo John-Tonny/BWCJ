@@ -37,4 +37,5 @@ import java.util.List;
 
 public interface ISignatureRequest {
     List<String> getSignatures();
+    String getAtomicswapSecret();
 }

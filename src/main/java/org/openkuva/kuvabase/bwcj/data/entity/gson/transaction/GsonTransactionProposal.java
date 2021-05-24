@@ -38,6 +38,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAction;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
@@ -155,6 +156,16 @@ public class GsonTransactionProposal implements ITransactionProposal {
     @Expose
     public String raw;
 
+    @SerializedName("atomicswap")
+    @Expose
+    public GsonAtomicswapData atomicswap;
+    @SerializedName("atomicswapAddr")
+    @Expose
+    public String atomicswapAddr;
+    @SerializedName("atomicswapSecretHash")
+    @Expose
+    public String atomicswapSecretHash;
+
     public GsonTransactionProposal() {
     }
 
@@ -198,6 +209,11 @@ public class GsonTransactionProposal implements ITransactionProposal {
         proposalSignaturePubKey = origin.getProposalSignaturePubKey();
         proposalSignaturePubKeySig = origin.getProposalSignaturePubKeySig();
         raw = origin.getRaw();
+
+        atomicswap = origin.getAtomicswap() == null
+                ? null : new GsonAtomicswapData(origin.getAtomicswap());
+        atomicswapAddr = origin.getAtomicswapAddr();
+        atomicswapSecretHash = origin.getAtomicswapSecretHash();
     }
 
     private static GsonAction[] mapActions(IAction[] origin) {
@@ -414,4 +430,20 @@ public class GsonTransactionProposal implements ITransactionProposal {
     public String getRaw() {
         return raw;
     }
+
+    @Override
+    public GsonAtomicswapData getAtomicswap() {
+        return atomicswap;
+    }
+
+    @Override
+    public String getAtomicswapAddr() {
+        return atomicswapAddr;
+    }
+
+    @Override
+    public String getAtomicswapSecretHash() {
+        return atomicswapSecretHash;
+    }
+
 }

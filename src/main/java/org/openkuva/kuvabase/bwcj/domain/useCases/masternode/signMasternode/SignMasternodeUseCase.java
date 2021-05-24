@@ -36,6 +36,7 @@ package org.openkuva.kuvabase.bwcj.domain.useCases.masternode.signMasternode;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.UnsafeByteArrayOutputStream;
+import org.openkuva.kuvabase.bwcj.domain.utils.MathUtils;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 
 import java.io.IOException;
@@ -44,8 +45,6 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.bitcoinj.core.Utils;
 
 public class SignMasternodeUseCase implements ISignMasternodeUseCase {
     private long CLIENT_VERSION = 1000000;
@@ -152,23 +151,15 @@ public class SignMasternodeUseCase implements ISignMasternodeUseCase {
         }
     }
 
-    public static byte[] reverseArray(byte[] arr){
-        for(int i=0;i<arr.length/2;i++){
-            //两个数组元素互换
-            byte temp = arr[i];
-            arr[i] = arr[arr.length-i-1];
-            arr[arr.length-i-1] = temp;
-        }
-        return arr;
-    }
+
 
     public static void serialize_input(String txid, int vout, OutputStream outputStream) throws IOException {
-        outputStream.write(reverseArray(Utils.HEX.decode(txid)));
+        outputStream.write(Utils.reverseBytes(Utils.HEX.decode(txid)));
         Utils.uint32ToByteStreamLE(vout, outputStream);
     }
 
     public static void hash_decode(String pingHash, OutputStream outputStream) throws  IOException {
-        outputStream.write(reverseArray(Utils.HEX.decode(pingHash)));
+        outputStream.write(Utils.reverseBytes(Utils.HEX.decode(pingHash)));
     }
 
     public static void get_address(String address, int port, OutputStream outputStream) throws IOException {

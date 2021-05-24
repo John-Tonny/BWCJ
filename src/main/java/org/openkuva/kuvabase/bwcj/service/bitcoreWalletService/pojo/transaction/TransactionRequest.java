@@ -36,6 +36,8 @@ package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
+
 
 public class TransactionRequest implements ITransactionRequest {
     private IOutput[] outputs;
@@ -46,8 +48,9 @@ public class TransactionRequest implements ITransactionRequest {
     private String operation;
     private ICustomData customData;
     private Object payProUrl;
+    private boolean excludeMasternode;
 
-    public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, ICustomData customData, Object payProUrl) {
+    public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, ICustomData customData, Object payProUrl, boolean excludeMasternode) {
         this.outputs = outputs;
         this.feeLevel = feeLevel;
         this.message = message;
@@ -56,6 +59,7 @@ public class TransactionRequest implements ITransactionRequest {
         this.operation = operation;
         this.customData = customData;
         this.payProUrl = payProUrl;
+        this.excludeMasternode = excludeMasternode;
     }
 
     @Override
@@ -97,4 +101,10 @@ public class TransactionRequest implements ITransactionRequest {
     public Object getPayProUrl() {
         return payProUrl;
     }
+
+    @Override
+    public boolean isExcludeMasternode() {
+        return excludeMasternode;
+    }
+
 }

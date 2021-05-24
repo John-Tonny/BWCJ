@@ -49,4 +49,6 @@ public interface ITransactionRequest {
     ICustomData getCustomData();
 
     Object getPayProUrl();
+
+    boolean isExcludeMasternode();
 }

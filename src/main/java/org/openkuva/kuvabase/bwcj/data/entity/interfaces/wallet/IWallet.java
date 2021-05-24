@@ -42,5 +42,7 @@ public interface IWallet {
 
     ITransactionProposal[] getPendingTxps();
 
+    ITransactionProposal[] getPendingAtomicSwapTxps();
+
     IBalance getBalance();
 }

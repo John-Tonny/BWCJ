@@ -36,9 +36,13 @@ package org.openkuva.kuvabase.bwcj.domain.utils;
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public final class DeriveUtils {
     private DeriveUtils() {
@@ -71,4 +75,5 @@ public final class DeriveUtils {
         }
         return result;
     }
+
 }

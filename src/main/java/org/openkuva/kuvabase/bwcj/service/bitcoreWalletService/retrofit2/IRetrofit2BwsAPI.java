@@ -51,6 +51,10 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.ad
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.notification.GsonNotificationResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.publish.GsonPublishRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.signatures.GsonSignatureRequest;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.transaction.GsonTransactionInitiateRequest;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.transaction.GsonTransactionParticipateRequest;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.transaction.GsonTransactionRedeemRequest;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.transaction.GsonTransactionRefundRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.transaction.GsonTransactionRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.wallets.GsonCreateWalletRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.wallets.GsonCreateWalletResponse;
@@ -168,5 +172,29 @@ public interface IRetrofit2BwsAPI {
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
     @DELETE("v1/masternode/")
     Call<GsonMasternodeRemove> removeMasternodes(@QueryMap Map<String, String> options);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @POST("v3/atomicswaptxproposals/")
+    Call<GsonTransactionProposal> postInitiateTxProposals(
+            @Body GsonTransactionInitiateRequest transactionRequest);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @POST("v3/atomicswaptxproposals/")
+    Call<GsonTransactionProposal> postParticipateTxProposals(
+            @Body GsonTransactionParticipateRequest transactionRequest);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @POST("v3/redeemtxproposals/")
+    Call<GsonTransactionProposal> postRedeemTxProposals(
+            @Body GsonTransactionRedeemRequest transactionRequest);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @POST("v3/redeemtxproposals/")
+    Call<GsonTransactionProposal> postRefundTxProposals(
+            @Body GsonTransactionRefundRequest transactionRequest);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v2/atomicswaptxproposals/")
+    Call<GsonTransactionProposal[]> getPendingAtomicswapTransactionProposals();
 
 }

@@ -62,6 +62,7 @@ public class TransactionBuilder {
         NetworkParameters network = networkParametersBuilder.fromTP(tp);
 
         Transaction transaction = new Transaction(network);
+
         // john
         transaction.setVersion(2);
         // transaction.setVersion(tp.getVersion());
@@ -119,6 +120,26 @@ public class TransactionBuilder {
             transaction.addOutput(changeAmount, changeScript);
         }
 
+        if(tp.getAtomicswap() != null) {
+            transaction.addAtomicswap(tp.getAtomicswapSecretHash(),
+                    tp.getAtomicswap().isInitiate(),
+                    tp.getAtomicswap().getContract(),
+                    tp.getAtomicswap().getSecret(),
+                    tp.getAtomicswap().isRedeem(),
+                    tp.getAtomicswap().isAtomicSwap(),
+                    tp.getAtomicswap().getLockTime());
+
+            if (tp.getAtomicswap().isAtomicSwap()!=null && tp.getAtomicswap().isAtomicSwap().booleanValue() && tp.getAtomicswap().isRedeem()!=null) {
+                transaction.getInput(0).setScriptSig(new Script(Utils.HEX.decode(tp.getAtomicswap().getContract())));
+                if (!tp.getAtomicswap().isRedeem().booleanValue()) {
+                    transaction.getInput(0).setSequenceNumber(TransactionInput.NO_SEQUENCE - 1);
+                }
+                if(tp.getAtomicswap().getLockTime()!=null) {
+                    transaction.setLockTime(tp.getAtomicswap().getLockTime().longValue());
+                }
+            }
+        }
+
         return sort(transaction, tp.getOutputOrder());
     }
     public static Transaction sort(Transaction transaction, List<Integer> outputOrder) {
@@ -136,7 +157,17 @@ public class TransactionBuilder {
                 result.addOutput(transaction.getOutput(integer));
             }
         }
-
+        // john
+        result.setLockTime(transaction.getLockTime());
+        if(transaction.getAtomicswap() != null) {
+            result.addAtomicswap(transaction.getAtomicswap().getSecretHash(),
+                    transaction.getAtomicswap().isInitiate(),
+                    transaction.getAtomicswap().getContract(),
+                    transaction.getAtomicswap().getSecret(),
+                    transaction.getAtomicswap().isRedeem(),
+                    transaction.getAtomicswap().isAtomicSwap(),
+                    transaction.getAtomicswap().getLockTime());
+        }
         return result;
     }
 

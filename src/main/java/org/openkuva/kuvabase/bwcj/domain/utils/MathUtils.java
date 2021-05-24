@@ -66,5 +66,4 @@ public final class MathUtils {
         value = value * factor;
         return (long) value / (double) factor;
     }
-
 }

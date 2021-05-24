@@ -42,18 +42,21 @@ public interface IAtomicSendToUseCase {
             String address,
             long satoshis,
             String msg,
-            ICustomData send);
+            ICustomData customData,
+            boolean excludeMasternode);
 
     ITransactionProposal execute(
             String address,
             long dash,
             String msg,
             String operation,
-            ICustomData customData);
+            ICustomData customData,
+            boolean excludeMasternode);
 
     ITransactionProposal execute(
             IOutput[] outputs,
             String msg,
             String operation,
-            ICustomData customData);
+            ICustomData customData,
+            boolean excludeMasternode);
 }

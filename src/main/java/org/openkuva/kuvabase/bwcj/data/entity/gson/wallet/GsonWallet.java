@@ -49,6 +49,9 @@ public class GsonWallet implements IWallet {
     @SerializedName("pendingTxps")
     private GsonTransactionProposal[] pendingTxps;
 
+    @SerializedName("pendingAtomicSwapTxps")
+    private GsonTransactionProposal[] pendingAtomicSwapTxps;
+
     @SerializedName("balance")
     private GsonBalance balance;
 
@@ -59,6 +62,7 @@ public class GsonWallet implements IWallet {
         this.walletCore = new GsonWalletCore(origin.getWalletCore());
         this.preferences = new GsonPreferences(origin.getPreferences());
         this.pendingTxps = mapPendingTxps(origin.getPendingTxps());
+        this.pendingAtomicSwapTxps = mapPendingTxps(origin.getPendingAtomicSwapTxps());
         this.balance = new GsonBalance(origin.getBalance());
     }
 
@@ -87,6 +91,11 @@ public class GsonWallet implements IWallet {
     @Override
     public GsonTransactionProposal[] getPendingTxps() {
         return pendingTxps;
+    }
+
+    @Override
+    public GsonTransactionProposal[] getPendingAtomicSwapTxps() {
+        return pendingAtomicSwapTxps;
     }
 
     @Override

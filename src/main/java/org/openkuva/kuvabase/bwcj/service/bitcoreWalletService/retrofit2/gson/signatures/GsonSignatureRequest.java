@@ -46,14 +46,23 @@ public class GsonSignatureRequest implements ISignatureRequest {
     @Expose
     @SerializedName("signatures")
     private final List<String> signatures;
+    @Expose
+    @SerializedName("atomicswapSecret")
+    private String atomicswapSecret;
 
     public GsonSignatureRequest(ISignatureRequest origin) {
         signatures = origin.getSignatures();
+        atomicswapSecret = origin.getAtomicswapSecret();
     }
 
     @Override
     public List<String> getSignatures() {
         return signatures;
+    }
+
+    @Override
+    public String getAtomicswapSecret() {
+        return atomicswapSecret;
     }
 
 }

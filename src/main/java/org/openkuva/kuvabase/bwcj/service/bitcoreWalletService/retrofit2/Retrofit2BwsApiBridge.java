@@ -45,7 +45,11 @@ import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHi
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonWallet;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeRemove;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionInitiateRequest;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionParticipateRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRedeemRequest;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRefundRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
@@ -69,6 +73,10 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.ad
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.notification.GsonNotificationResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.publish.GsonPublishRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.signatures.GsonSignatureRequest;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.transaction.GsonTransactionInitiateRequest;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.transaction.GsonTransactionParticipateRequest;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.transaction.GsonTransactionRedeemRequest;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.transaction.GsonTransactionRefundRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.transaction.GsonTransactionRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.wallets.GsonCreateWalletRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.wallets.GsonCreateWalletResponse;
@@ -483,5 +491,126 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
         }
     }
 
+    @Override
+    public ITransactionProposal postInitiateTxProposals(ITransactionInitiateRequest transactionRequest) {
+        try {
+            Response<GsonTransactionProposal> response = serverAPI
+                    .postInitiateTxProposals(new GsonTransactionInitiateRequest(transactionRequest))
+                    .execute();
 
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                String errorBody = response.errorBody().string();
+                if (errorBody.contains("INSUFFICIENT_FUNDS")) {
+                    throw new InsufficientFundsException("INSUFFICIENT_FUNDS");
+                } else if (errorBody.contains("INVALID_ADDRESS")) {
+                    throw new InvalidWalletAddressException("INVALID_ADDRESS");
+                } else if (errorBody.contains("Invalid amount")) {
+                    throw new InvalidAmountException("Invalid amount");
+                }
+                throw new RequestFailedException(response);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ITransactionProposal postParticipateTxProposals(ITransactionParticipateRequest transactionRequest) {
+        try {
+            Response<GsonTransactionProposal> response = serverAPI
+                    .postParticipateTxProposals(new GsonTransactionParticipateRequest(transactionRequest))
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                String errorBody = response.errorBody().string();
+                if (errorBody.contains("INSUFFICIENT_FUNDS")) {
+                    throw new InsufficientFundsException("INSUFFICIENT_FUNDS");
+                } else if (errorBody.contains("INVALID_ADDRESS")) {
+                    throw new InvalidWalletAddressException("INVALID_ADDRESS");
+                } else if (errorBody.contains("Invalid amount")) {
+                    throw new InvalidAmountException("Invalid amount");
+                }
+                throw new RequestFailedException(response);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ITransactionProposal postRedeemTxProposals(ITransactionRedeemRequest transactionRequest) {
+        try {
+            Response<GsonTransactionProposal> response = serverAPI
+                    .postRedeemTxProposals(new GsonTransactionRedeemRequest(transactionRequest))
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                String errorBody = response.errorBody().string();
+                if (errorBody.contains("INSUFFICIENT_FUNDS")) {
+                    throw new InsufficientFundsException("INSUFFICIENT_FUNDS");
+                } else if (errorBody.contains("INVALID_ADDRESS")) {
+                    throw new InvalidWalletAddressException("INVALID_ADDRESS");
+                } else if (errorBody.contains("Invalid amount")) {
+                    throw new InvalidAmountException("Invalid amount");
+                }
+                throw new RequestFailedException(response);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ITransactionProposal postRefundTxProposals(ITransactionRefundRequest transactionRequest) {
+        try {
+            Response<GsonTransactionProposal> response = serverAPI
+                    .postRefundTxProposals(new GsonTransactionRefundRequest(transactionRequest))
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                String errorBody = response.errorBody().string();
+                if (errorBody.contains("INSUFFICIENT_FUNDS")) {
+                    throw new InsufficientFundsException("INSUFFICIENT_FUNDS");
+                } else if (errorBody.contains("INVALID_ADDRESS")) {
+                    throw new InvalidWalletAddressException("INVALID_ADDRESS");
+                } else if (errorBody.contains("Invalid amount")) {
+                    throw new InvalidAmountException("Invalid amount");
+                }
+                throw new RequestFailedException(response);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ITransactionProposal[] getPendingAtomicswapTransactionProposals() {
+        try {
+            Response<GsonTransactionProposal[]> response = serverAPI
+                    .getPendingAtomicswapTransactionProposals()
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }

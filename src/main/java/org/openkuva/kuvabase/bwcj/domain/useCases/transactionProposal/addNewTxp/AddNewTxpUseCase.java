@@ -33,6 +33,7 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewTxp;
 
+import org.bitcoinj.core.NetworkParameters;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
@@ -51,12 +52,12 @@ public class AddNewTxpUseCase implements IAddNewTxpUseCase {
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, ICustomData customData) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
-        return execute(address, satoshis, msg, dryRun, "send", customData);
+    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, ICustomData customData, boolean excludeMasternode) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+        return execute(address, satoshis, msg, dryRun, "send", customData, excludeMasternode);
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, String operation, ICustomData customData) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, String operation, ICustomData customData, boolean excludeMasternode) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
         return execute(
                 new IOutput[]{
                         new Output(
@@ -66,11 +67,12 @@ public class AddNewTxpUseCase implements IAddNewTxpUseCase {
                 msg,
                 dryRun,
                 operation,
-                customData);
+                customData,
+                excludeMasternode);
     }
 
     @Override
-    public ITransactionProposal execute(IOutput[] outputs, String msg, boolean dryRun, String operation, ICustomData customData) {
+    public ITransactionProposal execute(IOutput[] outputs, String msg, boolean dryRun, String operation, ICustomData customData, boolean excludeMasternode) {
         return
                 bwsApi.postTxProposals(
                         new TransactionRequest(
@@ -81,6 +83,7 @@ public class AddNewTxpUseCase implements IAddNewTxpUseCase {
                                 dryRun,
                                 operation,
                                 customData,
-                                null));
+                                null,
+                                excludeMasternode));
     }
 }

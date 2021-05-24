@@ -115,7 +115,6 @@ public class GsonTransactionHistory implements ITransactionHistory {
         message = origin.getMessage();
         hasUnconfirmedInputs = origin.getHasUnconfirmedInputs();
 
-
     }
 
     private static GsonAction[] mapActions(IAction[] origin) {
