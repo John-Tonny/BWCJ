@@ -33,6 +33,7 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.getTxHistory;
 
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionHistory;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 
@@ -40,9 +41,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GetTxHistoryUseCase implements IGetTxHistoryUseCase {
+    private final ICredentials credentials;
     private final IBitcoreWalletServerAPI bwsApi;
 
-    public GetTxHistoryUseCase(IBitcoreWalletServerAPI bwsApi) {
+    public GetTxHistoryUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
         this.bwsApi = bwsApi;
     }
 
@@ -67,6 +70,6 @@ public class GetTxHistoryUseCase implements IGetTxHistoryUseCase {
             options.put("includeExtendedInfo", "1");
         }
         return
-                bwsApi.getTxHistory(options);
+                bwsApi.getTxHistory(options, credentials);
     }
 }

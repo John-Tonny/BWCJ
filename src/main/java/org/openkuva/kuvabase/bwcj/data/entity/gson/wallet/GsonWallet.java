@@ -35,6 +35,7 @@ package org.openkuva.kuvabase.bwcj.data.entity.gson.wallet;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
@@ -102,4 +103,5 @@ public class GsonWallet implements IWallet {
     public GsonBalance getBalance() {
         return balance;
     }
+
 }

@@ -43,6 +43,7 @@ import org.openkuva.kuvabase.bwcj.domain.utils.atomicswap.AuditContract;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 
 import java.security.SecureRandom;
+import java.util.Date;
 
 public class AtomicswapRedeemData implements IAtomicswapRedeemData {
     private String secret;
@@ -61,13 +62,20 @@ public class AtomicswapRedeemData implements IAtomicswapRedeemData {
             throw new InvalidParamsException("no secret");
         }
 
-        if(!Utils.isHexString(secret) && secret.length() != 64 ) {
+        if(!(Utils.isHexString(secret) && secret.length() == 64 )) {
             throw new InvalidParamsException("secret is invalid");
         }
         String hash = Utils.HEX.encode(Sha256Hash.hash(Utils.HEX.decode(secret)));
         if(hash.compareTo(auditContract.getSecretHash())!=0){
             throw new InvalidParamsException("secret is unmatch");
         }
+
+        long lockTime = auditContract.getLockTime();
+        long curTime = new Date().getTime()/1000;
+        if(lockTime>curTime) {
+            throw new InvalidParamsException("The lock time has not expired");
+        }
+
         this.redeem = true;
         this.secret = secret;
         this.contract = contract;

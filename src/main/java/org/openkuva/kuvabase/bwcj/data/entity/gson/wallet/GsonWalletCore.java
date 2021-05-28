@@ -33,6 +33,7 @@
 
 package org.openkuva.kuvabase.bwcj.data.entity.gson.wallet;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.copayer.ICopayer;
@@ -41,6 +42,7 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWalletCore;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.copayer.GsonAddressManager;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.copayer.GsonCopayer;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.copayer.GsonPublicKeyRing;
+import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
 
 public class GsonWalletCore implements IWalletCore {
     @SerializedName("addressType")
@@ -77,6 +79,8 @@ public class GsonWalletCore implements IWalletCore {
     private String publickKey;
     @SerializedName("publicKeyRing")
     private GsonPublicKeyRing[] publicKeyRings;
+
+    private String sharedEncryptingKey;
 
     public GsonWalletCore() {
     }
@@ -169,7 +173,20 @@ public class GsonWalletCore implements IWalletCore {
 
     @Override
     public String getName() {
-        return name;
+        if(this.sharedEncryptingKey == null) return name;
+        try {
+            Gson gson = new Gson();
+            GsonEncryptMessage walletName  = gson.fromJson(name, GsonEncryptMessage.class);
+            if(walletName.getCt()!=null && walletName.getIv()!=null) {
+                return new SjclMessageEncryptor()
+                        .decrypt(
+                                name,
+                                sharedEncryptingKey);
+            }
+            return name;
+        }catch (Exception e){
+            return name;
+        }
     }
 
     @Override
@@ -210,5 +227,9 @@ public class GsonWalletCore implements IWalletCore {
     @Override
     public GsonAddressManager getAddressManager() {
         return addressManager;
+    }
+
+    public void setSharedEncryptingKey(String sharedEncryptingKey) {
+        this.sharedEncryptingKey = sharedEncryptingKey;
     }
 }

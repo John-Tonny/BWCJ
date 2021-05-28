@@ -44,7 +44,7 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 public class TransactionParticipateRequest extends TransactionRequest implements ITransactionParticipateRequest {
     private IAtomicswapParticipateData atomicswap;
 
-    public TransactionParticipateRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, ICustomData customData, Object payProUrl, boolean excludeMasternode, IAtomicswapParticipateData atomicswap) {
+    public TransactionParticipateRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, IAtomicswapParticipateData atomicswap) {
         super(outputs, feeLevel, message, excludeUnconfirmedUtxos, dryRun, operation, customData, payProUrl, excludeMasternode);
         this.atomicswap  = atomicswap;
     }

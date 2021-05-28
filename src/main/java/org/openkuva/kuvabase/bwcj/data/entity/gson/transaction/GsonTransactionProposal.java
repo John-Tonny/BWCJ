@@ -34,14 +34,16 @@
 
 package org.openkuva.kuvabase.bwcj.data.entity.gson.transaction;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAction;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonEncryptMessage;
 
 import java.util.List;
 
@@ -127,7 +129,8 @@ public class GsonTransactionProposal implements ITransactionProposal {
     public String addressType;
     @SerializedName("customData")
     @Expose
-    public GsonCustomData customData;
+    // public GsonCustomData customData;
+    public String customData;
     @SerializedName("proposalSignature")
     @Expose
     public String proposalSignature;
@@ -166,6 +169,8 @@ public class GsonTransactionProposal implements ITransactionProposal {
     @Expose
     public String atomicswapSecretHash;
 
+    private String sharedEncryptingKey;
+
     public GsonTransactionProposal() {
     }
 
@@ -198,9 +203,11 @@ public class GsonTransactionProposal implements ITransactionProposal {
         feePerKb = origin.getFeePerKb();
         excludeUnconfirmedUtxos = origin.isExcludeUnconfirmedUtxos();
         addressType = origin.getAddressType();
-        customData =
+        /*customData =
                 origin.getCustomData() == null
                         ? null : new GsonCustomData(origin.getCustomData());
+         */
+        customData = origin.getCustomData();
         proposalSignature = origin.getProposalSignature();
         isInstantSend = origin.isInstantSend();
         derivationStrategy = origin.getDerivationStrategy();
@@ -299,7 +306,21 @@ public class GsonTransactionProposal implements ITransactionProposal {
 
     @Override
     public Object getMessage() {
-        return message;
+        if(this.sharedEncryptingKey == null) return message;
+        try {
+            Gson gson = new Gson();
+            GsonEncryptMessage enMsg  = gson.fromJson(message.toString(), GsonEncryptMessage.class);
+            if(enMsg.getCt()!=null && enMsg.getIv()!=null) {
+                String msg1 = new SjclMessageEncryptor()
+                        .decrypt(
+                                message.toString(),
+                                sharedEncryptingKey);
+                return msg1;
+            }
+            return message;
+        }catch (Exception e){
+            return message;
+        }
     }
 
     @Override
@@ -393,7 +414,11 @@ public class GsonTransactionProposal implements ITransactionProposal {
     }
 
     @Override
-    public GsonCustomData getCustomData() {
+    /*public GsonCustomData getCustomData() {
+        return customData;
+    }
+     */
+    public String getCustomData() {
         return customData;
     }
 
@@ -444,6 +469,10 @@ public class GsonTransactionProposal implements ITransactionProposal {
     @Override
     public String getAtomicswapSecretHash() {
         return atomicswapSecretHash;
+    }
+
+    public void setSharedEncryptingKey(String sharedEncryptingKey) {
+        this.sharedEncryptingKey = sharedEncryptingKey;
     }
 
 }

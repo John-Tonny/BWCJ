@@ -53,10 +53,10 @@ public class JoinWalletInCreationUseCase implements IJoinWalletInCreationUseCase
     private final IBitcoreWalletServerAPI bwsApi;
     private final CopayersCryptUtils copayersCryptUtils;
 
-    public JoinWalletInCreationUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi, CopayersCryptUtils copayersCryptUtils) {
+    public JoinWalletInCreationUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
         this.credentials = credentials;
-        this.bwsApi = bwsApi;
         this.copayersCryptUtils = copayersCryptUtils;
+        this.bwsApi = bwsApi;
     }
 
     @Override
@@ -95,6 +95,9 @@ public class JoinWalletInCreationUseCase implements IJoinWalletInCreationUseCase
                                                 new CustomData(
                                                         walletPrivKey.getPrivateKeyAsHex())),
                                 personalEncryptingKey);
+
+        credentials.setPersonalEncryptingKey(personalEncryptingKey);
+        credentials.setSharedEncryptingKey(copayersCryptUtils.sharedEncryptingKey(walletPrivKey.getPrivateKeyAsHex()));
 
         String encCopayerName =
                 new SjclMessageEncryptor()

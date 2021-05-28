@@ -33,19 +33,22 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.getAllPendingAtomicswapTxProposals;
 
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.getAllPendingAtomicswapTxProposals.IGetAllPendingAtomicswapTxpsUseCase;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 
 public class GetAllPendingAtomicswapTxpsUseCase implements IGetAllPendingAtomicswapTxpsUseCase {
+    private final ICredentials credentials;
     private final IBitcoreWalletServerAPI bwsApi;
 
-    public GetAllPendingAtomicswapTxpsUseCase(IBitcoreWalletServerAPI bwsApi) {
+    public GetAllPendingAtomicswapTxpsUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
         this.bwsApi = bwsApi;
     }
 
     @Override
     public ITransactionProposal[] execute() {
-        return bwsApi.getPendingAtomicswapTransactionProposals();
+        return bwsApi.getPendingAtomicswapTransactionProposals(credentials);
     }
 }

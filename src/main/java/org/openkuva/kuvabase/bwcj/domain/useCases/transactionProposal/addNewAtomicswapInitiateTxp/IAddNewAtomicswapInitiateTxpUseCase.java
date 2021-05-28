@@ -42,25 +42,22 @@ public interface IAddNewAtomicswapInitiateTxpUseCase {
     ITransactionProposal execute(
             String address,
             long satoshis,
-            String msg,
             boolean dryRun,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode);
 
     ITransactionProposal execute(
             String address,
             long satoshis,
-            String msg,
             boolean dryRun,
             String operation,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode);
 
     ITransactionProposal execute(
             IOutput[] outputs,
-            String msg,
             boolean dryRun,
             String operation,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode);
 }

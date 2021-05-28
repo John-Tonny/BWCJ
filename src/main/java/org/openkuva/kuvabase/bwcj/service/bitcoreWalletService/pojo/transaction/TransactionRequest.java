@@ -46,11 +46,12 @@ public class TransactionRequest implements ITransactionRequest {
     private boolean excludeUnconfirmedUtxos;
     private boolean dryRun;
     private String operation;
-    private ICustomData customData;
+    // private ICustomData customData;
+    private String customData;
     private Object payProUrl;
     private boolean excludeMasternode;
 
-    public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, ICustomData customData, Object payProUrl, boolean excludeMasternode) {
+    public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode) {
         this.outputs = outputs;
         this.feeLevel = feeLevel;
         this.message = message;
@@ -93,7 +94,11 @@ public class TransactionRequest implements ITransactionRequest {
     }
 
     @Override
-    public ICustomData getCustomData() {
+    /* public ICustomData getCustomData() {
+        return customData;
+    }
+     */
+    public String getCustomData() {
         return customData;
     }
 

@@ -48,11 +48,11 @@ public class PublishTxpUseCase implements IPublishTxpUseCase {
     private final TransactionBuilder transactionBuilder;
     private final CopayersCryptUtils copayersCryptUtils;
 
-    public PublishTxpUseCase(IBitcoreWalletServerAPI bwsApi, ICredentials credentials, TransactionBuilder transactionBuilder, CopayersCryptUtils copayersCryptUtils) {
+    public PublishTxpUseCase(IBitcoreWalletServerAPI bwsApi, ICredentials credentials, CopayersCryptUtils copayersCryptUtils, TransactionBuilder transactionBuilder) {
         this.bwsApi = bwsApi;
         this.credentials = credentials;
-        this.transactionBuilder = transactionBuilder;
         this.copayersCryptUtils = copayersCryptUtils;
+        this.transactionBuilder = transactionBuilder;
     }
 
     @Override
@@ -66,6 +66,7 @@ public class PublishTxpUseCase implements IPublishTxpUseCase {
                                                 transactionBuilder.buildTx(toPublish).unsafeBitcoinSerialize1()),
                                         copayersCryptUtils.requestDerivation(
                                                 credentials.getSeed())
-                                                .getPrivateKeyAsHex())));
+                                                .getPrivateKeyAsHex())),
+                        credentials);
     }
 }

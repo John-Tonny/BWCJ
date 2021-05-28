@@ -43,6 +43,7 @@ import org.openkuva.kuvabase.bwcj.domain.utils.atomicswap.AuditContract;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 
 import java.security.SecureRandom;
+import java.util.Date;
 
 public class AtomicswapRefundData implements IAtomicswapRefundData {
     private String contract;
@@ -55,6 +56,13 @@ public class AtomicswapRefundData implements IAtomicswapRefundData {
         if(!this.atomicSwap){
             throw new InvalidParamsException("contract is invalid");
         }
+
+        long lockTime = auditContract.getLockTime();
+        long curTime = new Date().getTime()/1000;
+        if(lockTime>curTime) {
+            throw new InvalidParamsException("The lock time has not expired");
+        }
+
         this.redeem = false;
         this.contract = contract;
     }

@@ -34,13 +34,16 @@
 
 package org.openkuva.kuvabase.bwcj.data.entity.gson.transaction;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonEncryptMessage;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAction;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionHistory;
+import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
 
 import java.util.List;
 
@@ -94,6 +97,11 @@ public class GsonTransactionHistory implements ITransactionHistory {
     @SerializedName("hasUnconfirmedInputs")
     @Expose
     public boolean hasUnconfirmedInputs;
+    @SerializedName("customData")
+    @Expose
+    public String  customData;
+
+    private String sharedEncryptingKey;
 
     public GsonTransactionHistory() {
     }
@@ -114,6 +122,7 @@ public class GsonTransactionHistory implements ITransactionHistory {
         encryptedMessage = origin.getEncryptedMessage();
         message = origin.getMessage();
         hasUnconfirmedInputs = origin.getHasUnconfirmedInputs();
+        customData = origin.getCustomData();
 
     }
 
@@ -233,4 +242,25 @@ public class GsonTransactionHistory implements ITransactionHistory {
         return hasUnconfirmedInputs;
     }
 
+    @Override
+    public String getCustomData() {
+        if(this.sharedEncryptingKey == null) return customData;
+        try {
+            Gson gson = new Gson();
+            GsonEncryptMessage enMsg  = gson.fromJson(customData, GsonEncryptMessage.class);
+            if(enMsg.getCt()!=null && enMsg.getIv()!=null) {
+                return new SjclMessageEncryptor()
+                        .decrypt(
+                                customData,
+                                sharedEncryptingKey);
+            }
+            return customData;
+        }catch (Exception e){
+            return customData;
+        }
+    }
+
+    public void setSharedEncryptingKey(String sharedEncryptingKey) {
+        this.sharedEncryptingKey = sharedEncryptingKey;
+    }
 }

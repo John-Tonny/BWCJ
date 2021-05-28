@@ -37,6 +37,7 @@ import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.CopayerNotFoundException;
 
@@ -48,9 +49,11 @@ public class RecoveryWalletFromMnemonicUseCase implements IRecoveryWalletFromMne
 
     private final ICredentials credentials;
     private final IBitcoreWalletServerAPI bwsApi;
+    private final CopayersCryptUtils copayersCryptUtils;
 
-    public RecoveryWalletFromMnemonicUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+    public RecoveryWalletFromMnemonicUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
         this.credentials = credentials;
+        this.copayersCryptUtils = copayersCryptUtils;
         this.bwsApi = bwsApi;
     }
 
@@ -58,8 +61,13 @@ public class RecoveryWalletFromMnemonicUseCase implements IRecoveryWalletFromMne
     public IWallet execute(List<String> mnemonic, String passphrase, ECKey walletPrivateKey) throws CopayerNotFoundException {
         credentials.setSeed(MnemonicCode.toSeed(mnemonic, passphrase));
         credentials.setWalletPrivateKey(walletPrivateKey);
-
-        return bwsApi.getWallets(getUrlOptions());
+        String personalEncryptingKey =
+                copayersCryptUtils.personalEncryptingKey(
+                        copayersCryptUtils.entropySource(
+                                copayersCryptUtils.requestDerivation(
+                                        credentials.getSeed())));
+        credentials.setPersonalEncryptingKey(personalEncryptingKey);
+        return bwsApi.getWallets(getUrlOptions(), credentials, copayersCryptUtils);
     }
 
     private static Map<String, String> getUrlOptions() {

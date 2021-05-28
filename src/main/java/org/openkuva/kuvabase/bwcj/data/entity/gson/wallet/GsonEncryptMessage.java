@@ -31,42 +31,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
+package org.openkuva.kuvabase.bwcj.data.entity.gson.wallet;
 
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
-public interface ITransactionHistory {
-    String getId();
+public class GsonEncryptMessage {
+    @SerializedName("iv")
+    private String iv;
+    @SerializedName("ct")
+    private String  ct;
+    @SerializedName("v")
+    private String v;
+    @SerializedName("iter")
+    private String iter;
+    @SerializedName("ks")
+    private String ks;
+    @SerializedName("ts")
+    private String ts;
+    @SerializedName("mode")
+    private String mode;
+    @SerializedName("cipher")
+    private String cipher;
 
-    String getTxid();
 
-    long getConfirmations();
+    public GsonEncryptMessage() {
+    }
 
-    long getBlockheight();
+    public String getIv() {
+        return iv;
+    }
 
-    int getFees();
+    public String getCt() {
+        return ct;
+    }
 
-    long getTime();
-
-    int getSize();
-
-    long getAmount();
-
-    String getAction();
-
-    String getAddressTo();
-
-    IOutput[] getOutputs();
-
-    boolean getDust();
-
-    String getEncryptedMessage();
-
-    Object getMessage();
-
-    String getCreatorName();
-
-    boolean getHasUnconfirmedInputs();
-
-    String getCustomData();
 }
+

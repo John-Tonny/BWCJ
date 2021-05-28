@@ -34,6 +34,7 @@
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewAtomicswapRedeemTxp;
 
 import org.bitcoinj.core.NetworkParameters;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapRedeemData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
@@ -49,21 +50,21 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRequest;
 
 public class AddNewAtomicswapRedeemTxpUseCase implements IAddNewAtomicswapRedeemTxpUseCase {
+    private final ICredentials credentials;
     private final IBitcoreWalletServerAPI bwsApi;
-    private final NetworkParameters parameters;
 
-    public AddNewAtomicswapRedeemTxpUseCase(IBitcoreWalletServerAPI bwsApi, NetworkParameters parameters) {
+    public AddNewAtomicswapRedeemTxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
         this.bwsApi = bwsApi;
-        this.parameters = parameters;
     }
 
     @Override
-    public ITransactionProposal execute(String address,  String msg, boolean dryRun, ICustomData customData, boolean excludeMasternode, String contract, String secret) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+    public ITransactionProposal execute(String address,  String msg, boolean dryRun, String customData, boolean excludeMasternode, String contract, String secret) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
         return execute(address, msg, dryRun, "send", customData, excludeMasternode, contract, secret);
     }
 
     @Override
-    public ITransactionProposal execute(String address, String msg, boolean dryRun, String operation, ICustomData customData, boolean excludeMasternode, String contract, String secret) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+    public ITransactionProposal execute(String address, String msg, boolean dryRun, String operation, String customData, boolean excludeMasternode, String contract, String secret) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
         return execute(
                 new IOutput[]{
                         new Output(
@@ -80,7 +81,7 @@ public class AddNewAtomicswapRedeemTxpUseCase implements IAddNewAtomicswapRedeem
     }
 
     @Override
-    public ITransactionProposal execute(IOutput[] outputs, String msg, boolean dryRun, String operation, ICustomData customData, boolean excludeMasternode, String contract, String secret) {
+    public ITransactionProposal execute(IOutput[] outputs, String msg, boolean dryRun, String operation, String customData, boolean excludeMasternode, String contract, String secret) {
         return
                 bwsApi.postRedeemTxProposals(
                         new TransactionRedeemRequest(
@@ -93,6 +94,7 @@ public class AddNewAtomicswapRedeemTxpUseCase implements IAddNewAtomicswapRedeem
                                 customData,
                                 null,
                                 excludeMasternode,
-                                new AtomicswapRedeemData(contract, secret ,this.parameters)));
+                                new AtomicswapRedeemData(contract, secret ,credentials.getNetworkParameters())),
+                        credentials);
     }
 }

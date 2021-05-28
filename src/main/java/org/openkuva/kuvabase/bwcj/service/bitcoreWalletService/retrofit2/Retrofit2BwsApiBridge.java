@@ -33,6 +33,7 @@
 
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2;
 
+import org.bitcoinj.core.NetworkParameters;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.fee.GsonFeeLevel;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternode;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeBroadcast;
@@ -44,6 +45,8 @@ import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodePing
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonWallet;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.copayer.ICopayer;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeRemove;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionInitiateRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionParticipateRequest;
@@ -52,6 +55,8 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRefundRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
+import org.openkuva.kuvabase.bwcj.domain.utils.atomicswap.AuditContract;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.IAddressesResponse;
@@ -60,6 +65,7 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.except
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.CopayerRegisteredException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InsufficientFundsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidAmountException;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidWalletAddressException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.login.LoginRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.publish.IPublishRequest;
@@ -176,13 +182,21 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public IWallet getWallets(Map<String, String> options) {
+    public IWallet getWallets(Map<String, String> options, ICredentials credentials, CopayersCryptUtils copayersCryptUtils) {
         try {
             Response<GsonWallet> response = serverAPI
                     .getWallets(options)
                     .execute();
 
             if (response.isSuccessful()) {
+                ICopayer[] copayers = response.body().getWalletCore().getCopayers();
+                if(copayers.length>0){
+                    copayers[0].setPersonalEncryptingKey(credentials.getPersonalEncryptingKey(), copayersCryptUtils);
+                    if(credentials.getSharedEncryptingKey()!=null) {
+                        credentials.setSharedEncryptingKey(copayers[0].getSharedEncryptingKey());
+                        response.body().getWalletCore().setSharedEncryptingKey(copayers[0].getSharedEncryptingKey());
+                    }
+                }
                 return response.body();
             } else if (response.code() == 401) {
                 String errorBody = response.errorBody().string();
@@ -200,13 +214,14 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public ITransactionProposal postTxProposals(ITransactionRequest transactionRequest) {
+    public ITransactionProposal postTxProposals(ITransactionRequest transactionRequest, ICredentials credentials) {
         try {
             Response<GsonTransactionProposal> response = serverAPI
                     .postTxProposals(new GsonTransactionRequest(transactionRequest))
                     .execute();
 
             if (response.isSuccessful()) {
+                response.body().setSharedEncryptingKey(credentials.getSharedEncryptingKey());
                 return response.body();
             } else {
                 String errorBody = response.errorBody().string();
@@ -245,13 +260,14 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public GsonTransactionProposal postTxProposalsTxIdPublish(String txId, IPublishRequest publishRequest) {
+    public GsonTransactionProposal postTxProposalsTxIdPublish(String txId, IPublishRequest publishRequest, ICredentials credentials) {
         try {
             Response<GsonTransactionProposal> response = serverAPI
                     .postTxProposalsTxIdPublish(txId, new GsonPublishRequest(publishRequest))
                     .execute();
 
             if (response.isSuccessful()) {
+                response.body().setSharedEncryptingKey(credentials.getSharedEncryptingKey());
                 return response.body();
             } else {
                 throw new RequestFailedException(response);
@@ -263,13 +279,14 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public GsonTransactionProposal postTxProposalsTxIdSignatures(String txId, ISignatureRequest signatureRequest) {
+    public GsonTransactionProposal postTxProposalsTxIdSignatures(String txId, ISignatureRequest signatureRequest, ICredentials credentials) {
         try {
             Response<GsonTransactionProposal> response = serverAPI
                     .postTxProposalsTxIdSignatures(txId, new GsonSignatureRequest(signatureRequest))
                     .execute();
 
             if (response.isSuccessful()) {
+                response.body().setSharedEncryptingKey(credentials.getSharedEncryptingKey());
                 return response.body();
             } else {
                 throw new RequestFailedException(response);
@@ -281,13 +298,14 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public GsonTransactionProposal postTxProposalsTxIdBroadcast(String txId, BroadcastRequest broadcastRequest) {
+    public GsonTransactionProposal postTxProposalsTxIdBroadcast(String txId, BroadcastRequest broadcastRequest, ICredentials credentials) {
         try {
             Response<GsonTransactionProposal> response = serverAPI
                     .postTxProposalsTxIdBroadcast(txId, broadcastRequest)
                     .execute();
 
             if (response.isSuccessful()) {
+                response.body().setSharedEncryptingKey(credentials.getSharedEncryptingKey());
                 return response.body();
             } else {
                 throw new RequestFailedException(response);
@@ -317,13 +335,17 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public ITransactionProposal[] getPendingTransactionProposals() {
+    public ITransactionProposal[] getPendingTransactionProposals(ICredentials credentials) {
         try {
             Response<GsonTransactionProposal[]> response = serverAPI
                     .getPendingTransactionProposals()
                     .execute();
 
             if (response.isSuccessful()) {
+                GsonTransactionProposal[] gsonTransactionProposals = response.body();
+                for(int i=0;i<gsonTransactionProposals.length;i++) {
+                    gsonTransactionProposals[i].setSharedEncryptingKey(credentials.getSharedEncryptingKey());
+                }
                 return response.body();
             } else {
                 throw new RequestFailedException(response);
@@ -372,13 +394,17 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
 
     // john
     @Override
-    public GsonTransactionHistory[] getTxHistory(@QueryMap Map<String, String> options) {
+    public GsonTransactionHistory[] getTxHistory(@QueryMap Map<String, String> options, ICredentials credentials) {
         try {
             Response<GsonTransactionHistory[]> response = serverAPI
                     .getTxHistory(options)
                     .execute();
 
             if (response.isSuccessful()) {
+                GsonTransactionHistory[] gsonTransactionHistories = response.body();
+                for(int i=0;i<gsonTransactionHistories.length;i++) {
+                    gsonTransactionHistories[i].setSharedEncryptingKey(credentials.getSharedEncryptingKey());
+                }
                 return response.body();
             } else {
                 throw new RequestFailedException(response);
@@ -492,13 +518,14 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public ITransactionProposal postInitiateTxProposals(ITransactionInitiateRequest transactionRequest) {
+    public ITransactionProposal postInitiateTxProposals(ITransactionInitiateRequest transactionRequest, ICredentials credentials) {
         try {
             Response<GsonTransactionProposal> response = serverAPI
                     .postInitiateTxProposals(new GsonTransactionInitiateRequest(transactionRequest))
                     .execute();
 
             if (response.isSuccessful()) {
+                response.body().setSharedEncryptingKey(credentials.getSharedEncryptingKey());
                 return response.body();
             } else {
                 String errorBody = response.errorBody().string();
@@ -508,6 +535,10 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                     throw new InvalidWalletAddressException("INVALID_ADDRESS");
                 } else if (errorBody.contains("Invalid amount")) {
                     throw new InvalidAmountException("Invalid amount");
+                } else if (errorBody.contains("An error occurred in atomicswap contract creation")) {
+                    throw new InvalidParamsException("Failed contract creation");
+                } else if (errorBody.contains("The redemption address must be for another wallet")) {
+                    throw new InvalidParamsException("Invalid redemption address");
                 }
                 throw new RequestFailedException(response);
             }
@@ -518,13 +549,14 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public ITransactionProposal postParticipateTxProposals(ITransactionParticipateRequest transactionRequest) {
+    public ITransactionProposal postParticipateTxProposals(ITransactionParticipateRequest transactionRequest, ICredentials credentials) {
         try {
             Response<GsonTransactionProposal> response = serverAPI
                     .postParticipateTxProposals(new GsonTransactionParticipateRequest(transactionRequest))
                     .execute();
 
             if (response.isSuccessful()) {
+                response.body().setSharedEncryptingKey(credentials.getSharedEncryptingKey());
                 return response.body();
             } else {
                 String errorBody = response.errorBody().string();
@@ -534,6 +566,10 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                     throw new InvalidWalletAddressException("INVALID_ADDRESS");
                 } else if (errorBody.contains("Invalid amount")) {
                     throw new InvalidAmountException("Invalid amount");
+                } else if (errorBody.contains("An error occurred in atomicswap contract creation")) {
+                    throw new InvalidParamsException("Failed contract creation");
+                } else if (errorBody.contains("The redemption address must be for another wallet")) {
+                    throw new InvalidParamsException("Invalid redemption address");
                 }
                 throw new RequestFailedException(response);
             }
@@ -544,13 +580,14 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public ITransactionProposal postRedeemTxProposals(ITransactionRedeemRequest transactionRequest) {
+    public ITransactionProposal postRedeemTxProposals(ITransactionRedeemRequest transactionRequest, ICredentials credentials) {
         try {
             Response<GsonTransactionProposal> response = serverAPI
                     .postRedeemTxProposals(new GsonTransactionRedeemRequest(transactionRequest))
                     .execute();
 
             if (response.isSuccessful()) {
+                response.body().setSharedEncryptingKey(credentials.getSharedEncryptingKey());
                 return response.body();
             } else {
                 String errorBody = response.errorBody().string();
@@ -560,6 +597,12 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                     throw new InvalidWalletAddressException("INVALID_ADDRESS");
                 } else if (errorBody.contains("Invalid amount")) {
                     throw new InvalidAmountException("Invalid amount");
+                } else if (errorBody.contains("contract is invalid")) {
+                    throw new InvalidParamsException("Invalid contract");
+                } else if (errorBody.contains("signAddr is invalid")) {
+                    throw new InvalidParamsException("Invalid signAddr");
+                } else if (errorBody.contains("contract has been spent")) {
+                    throw new InvalidWalletAddressException("contract has been spent");
                 }
                 throw new RequestFailedException(response);
             }
@@ -570,13 +613,14 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public ITransactionProposal postRefundTxProposals(ITransactionRefundRequest transactionRequest) {
+    public ITransactionProposal postRefundTxProposals(ITransactionRefundRequest transactionRequest, ICredentials credentials) {
         try {
             Response<GsonTransactionProposal> response = serverAPI
                     .postRefundTxProposals(new GsonTransactionRefundRequest(transactionRequest))
                     .execute();
 
             if (response.isSuccessful()) {
+                response.body().setSharedEncryptingKey(credentials.getSharedEncryptingKey());
                 return response.body();
             } else {
                 String errorBody = response.errorBody().string();
@@ -586,6 +630,12 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                     throw new InvalidWalletAddressException("INVALID_ADDRESS");
                 } else if (errorBody.contains("Invalid amount")) {
                     throw new InvalidAmountException("Invalid amount");
+                } else if (errorBody.contains("contract is invalid")) {
+                    throw new InvalidParamsException("Invalid contract");
+                } else if (errorBody.contains("signAddr is invalid")) {
+                    throw new InvalidParamsException("Invalid signAddr");
+                } else if (errorBody.contains("contract has been spent")) {
+                    throw new InvalidWalletAddressException("contract has been spent");
                 }
                 throw new RequestFailedException(response);
             }
@@ -596,13 +646,17 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public ITransactionProposal[] getPendingAtomicswapTransactionProposals() {
+    public ITransactionProposal[] getPendingAtomicswapTransactionProposals(ICredentials credentials) {
         try {
             Response<GsonTransactionProposal[]> response = serverAPI
                     .getPendingAtomicswapTransactionProposals()
                     .execute();
 
             if (response.isSuccessful()) {
+                GsonTransactionProposal[] gsonTransactionProposals = response.body();
+                for(int i=0;i<gsonTransactionProposals.length;i++) {
+                    gsonTransactionProposals[i].setSharedEncryptingKey(credentials.getSharedEncryptingKey());
+                }
                 return response.body();
             } else {
                 throw new RequestFailedException(response);

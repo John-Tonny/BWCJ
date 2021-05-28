@@ -33,19 +33,22 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.deletePendingTxp;
 
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 
 public class DeletePendingTxpUseCase implements IDeletePendingTxpUseCase {
+    private final ICredentials credentials;
     private final IBitcoreWalletServerAPI bwsApi;
 
-    public DeletePendingTxpUseCase(IBitcoreWalletServerAPI bwsApi) {
+    public DeletePendingTxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
         this.bwsApi = bwsApi;
     }
 
     @Override
     public void execute(String txId) {
-        ITransactionProposal[] proposals = bwsApi.getPendingTransactionProposals();
+        ITransactionProposal[] proposals = bwsApi.getPendingTransactionProposals(credentials);
         for (ITransactionProposal proposal : proposals) {
             if (proposal.getId().equals(txId)
                     && proposal.getStatus().equals("pending")) {

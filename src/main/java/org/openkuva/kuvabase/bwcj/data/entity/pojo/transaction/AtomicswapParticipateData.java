@@ -44,7 +44,7 @@ public class AtomicswapParticipateData implements IAtomicswapParticipateData {
     private boolean initiate;
 
     public AtomicswapParticipateData(String secretHash) {
-        if (Utils.isHexString(secretHash) && secretHash.length() != 64) {
+        if (!(Utils.isHexString(secretHash) && secretHash.length() == 64)) {
             throw new InvalidParamsException("secretHash is invalid");
         }
         this.secretHash = secretHash;

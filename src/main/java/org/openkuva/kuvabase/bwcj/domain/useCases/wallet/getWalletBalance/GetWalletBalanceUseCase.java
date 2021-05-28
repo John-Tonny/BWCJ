@@ -33,8 +33,10 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.wallet.getWalletBalance;
 
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
 import org.openkuva.kuvabase.bwcj.data.repository.interfaces.wallet.IWalletRepository;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.CopayerNotFoundException;
 
@@ -43,20 +45,30 @@ import java.util.Map;
 
 public class GetWalletBalanceUseCase implements IGetWalletBalanceUseCase {
 
+    private final ICredentials credentials;
     private final IBitcoreWalletServerAPI bwsApi;
     private final IWalletRepository repository;
+    private CopayersCryptUtils copayersCryptUtils;
 
-    public GetWalletBalanceUseCase(IBitcoreWalletServerAPI bwsApi, IWalletRepository repository) {
+    public GetWalletBalanceUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi, IWalletRepository repository) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = copayersCryptUtils;
         this.bwsApi = bwsApi;
         this.repository = repository;
     }
 
     @Override
     public IWallet execute() throws CopayerNotFoundException {
+        String personalEncryptingKey =
+                copayersCryptUtils.personalEncryptingKey(
+                        copayersCryptUtils.entropySource(
+                                copayersCryptUtils.requestDerivation(
+                                        credentials.getSeed())));
+        credentials.setPersonalEncryptingKey(personalEncryptingKey);
         return
                 repository.save(
                         bwsApi.getWallets(
-                                getUrlOptions()));
+                                getUrlOptions(), credentials, copayersCryptUtils));
     }
 
     private Map<String, String> getUrlOptions() {

@@ -43,7 +43,7 @@ public interface IAddNewTxpUseCase {
             long satoshis,
             String msg,
             boolean dryRun,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode);
 
     ITransactionProposal execute(
@@ -52,7 +52,7 @@ public interface IAddNewTxpUseCase {
             String msg,
             boolean dryRun,
             String operation,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode);
 
     ITransactionProposal execute(
@@ -60,6 +60,6 @@ public interface IAddNewTxpUseCase {
             String msg,
             boolean dryRun,
             String operation,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode);
 }

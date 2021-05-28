@@ -46,7 +46,8 @@ public interface ITransactionRequest {
 
     String getOperation();
 
-    ICustomData getCustomData();
+    //ICustomData getCustomData();
+    String getCustomData();
 
     Object getPayProUrl();
 

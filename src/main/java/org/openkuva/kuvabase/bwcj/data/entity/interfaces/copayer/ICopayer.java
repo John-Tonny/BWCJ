@@ -33,6 +33,8 @@
 
 package org.openkuva.kuvabase.bwcj.data.entity.interfaces.copayer;
 
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
+
 public interface ICopayer {
     String getCoin();
 
@@ -53,4 +55,9 @@ public interface ICopayer {
     String getSignature();
 
     String getCustomData();
+
+    void setPersonalEncryptingKey(String personalEncryptingKey, CopayersCryptUtils copayersCryptUtils);
+
+    String getPersonalEncryptingKey();
+    String getSharedEncryptingKey();
 }

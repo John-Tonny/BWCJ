@@ -34,6 +34,7 @@
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewAtomicswapInitiateTxp;
 
 import org.bitcoinj.core.NetworkParameters;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
@@ -42,34 +43,40 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.AtomicswapData;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.AtomicswapInitiateData;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.Output;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
+import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InsufficientFundsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidAmountException;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidWalletAddressException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionInitiateRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRequest;
 
 public class AddNewAtomicswapInitiateTxpUseCase implements IAddNewAtomicswapInitiateTxpUseCase {
     private final IBitcoreWalletServerAPI bwsApi;
+    private final ICredentials credentials;
+    private final CopayersCryptUtils copayersCryptUtils;
 
-    public AddNewAtomicswapInitiateTxpUseCase(IBitcoreWalletServerAPI bwsApi) {
+    public AddNewAtomicswapInitiateTxpUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = copayersCryptUtils;
         this.bwsApi = bwsApi;
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, ICustomData customData, boolean excludeMasternode) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
-        return execute(address, satoshis, msg, dryRun, "send", customData, excludeMasternode);
+    public ITransactionProposal execute(String address, long satoshis,  boolean dryRun, String customData, boolean excludeMasternode) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+        return execute(address, satoshis, dryRun, "send", customData, excludeMasternode);
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, String operation, ICustomData customData, boolean excludeMasternode) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+    public ITransactionProposal execute(String address, long satoshis,  boolean dryRun, String operation, String customData, boolean excludeMasternode) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
         return execute(
                 new IOutput[]{
                         new Output(
                                 address,
                                 satoshis,
                                 null)},
-                msg,
                 dryRun,
                 operation,
                 customData,
@@ -77,21 +84,30 @@ public class AddNewAtomicswapInitiateTxpUseCase implements IAddNewAtomicswapInit
     }
 
     @Override
-    public ITransactionProposal execute(IOutput[] outputs, String msg, boolean dryRun, String operation, ICustomData customData, boolean excludeMasternode) {
+    public ITransactionProposal execute(IOutput[] outputs,  boolean dryRun, String operation, String customData, boolean excludeMasternode) {
         AtomicswapData atomicswapData = new AtomicswapData();
-        msg = atomicswapData.getSecret();
+        String msg = atomicswapData.getSecret();
+        String sharedEncryptingKey = credentials.getSharedEncryptingKey();
+        if(sharedEncryptingKey==null) {
+            throw new InvalidParamsException("Invalid sharedEncryptingKey");
+        }
+        String enMsg = new SjclMessageEncryptor()
+                .encrypt(
+                        msg,
+                        sharedEncryptingKey);
         return
                 bwsApi.postInitiateTxProposals(
                         new TransactionInitiateRequest(
                                 outputs,
                                 "normal",
-                                msg,
+                                enMsg,
                                 false,
                                 dryRun,
                                 operation,
                                 customData,
                                 null,
                                 excludeMasternode,
-                                new AtomicswapInitiateData(atomicswapData.getSecretHash())));
+                                new AtomicswapInitiateData(atomicswapData.getSecretHash())),
+                        credentials);
     }
 }

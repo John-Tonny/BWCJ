@@ -49,4 +49,12 @@ public interface ICredentials {
     NetworkParameters getNetworkParameters();
 
     void setNetworkParameters(NetworkParameters network);
+
+    void setSharedEncryptingKey(String sharedEncryptingKey);
+    void setPersonalEncryptingKey(String personalEncryptingKey);
+
+    String getSharedEncryptingKey();
+    String getPersonalEncryptingKey();
+
+
 }

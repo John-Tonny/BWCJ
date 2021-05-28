@@ -33,10 +33,16 @@
 
 package org.openkuva.kuvabase.bwcj.data.entity.gson.copayer;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonEncryptMessage;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.copayer.ICopayer;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.copayer.IRequestPubKey;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
+import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
+
+import org.openkuva.kuvabase.bwcj.domain.useCases.wallet.joinWalletInCreation.CustomData;
 
 public class GsonCopayer implements ICopayer {
     @SerializedName("coin")
@@ -59,6 +65,11 @@ public class GsonCopayer implements ICopayer {
     private String signature;
     @SerializedName("customData")
     private String customData;
+
+    private String sharedEncryptingKey;
+    private String personalEncryptingKey;
+    private CopayersCryptUtils copayersCryptUtils;
+    private String decryptCustomData;
 
     public GsonCopayer() {
     }
@@ -101,7 +112,21 @@ public class GsonCopayer implements ICopayer {
 
     @Override
     public String getName() {
-        return name;
+        getKey();
+        if(this.sharedEncryptingKey == null) return name;
+        try {
+            Gson gson = new Gson();
+            GsonEncryptMessage walletName  = gson.fromJson(name, GsonEncryptMessage.class);
+            if(walletName.getCt()!=null && walletName.getIv()!=null) {
+                return new SjclMessageEncryptor()
+                        .decrypt(
+                                name,
+                                sharedEncryptingKey);
+            }
+            return name;
+        }catch (Exception e){
+            return name;
+        }
     }
 
     @Override
@@ -131,6 +156,50 @@ public class GsonCopayer implements ICopayer {
 
     @Override
     public String getCustomData() {
+        return getKey();
+    }
+
+    @Override
+    public void setPersonalEncryptingKey(String personalEncryptingKey, CopayersCryptUtils copayersCryptUtils) {
+        this.personalEncryptingKey = personalEncryptingKey;
+        this.copayersCryptUtils = copayersCryptUtils;
+        getKey();
+    }
+
+    private String getKey() {
+        if(this.personalEncryptingKey == null) return customData;
+        if(this.personalEncryptingKey!=null && this.sharedEncryptingKey!=null) {
+            return this.decryptCustomData;
+        }
+        try {
+            Gson gson = new Gson();
+            GsonEncryptMessage enMsg  = gson.fromJson(customData, GsonEncryptMessage.class);
+            String customData1;
+            if(enMsg.getCt()!=null && enMsg.getIv()!=null) {
+                customData1 = new SjclMessageEncryptor()
+                        .decrypt(
+                                customData,
+                                personalEncryptingKey);
+
+                CustomData customData2  = gson.fromJson(customData1, CustomData.class);
+                String walletPrivKey = customData2.getWalletPrivKey();
+                if(walletPrivKey!=null){
+                    this.sharedEncryptingKey = this.copayersCryptUtils.sharedEncryptingKey(walletPrivKey);
+                    return walletPrivKey;
+                }
+                return customData1;
+            }
+        }catch (Exception e){
+        }
         return customData;
     }
+
+    public String getSharedEncryptingKey() {
+        return this.sharedEncryptingKey;
+    }
+
+    public String getPersonalEncryptingKey() {
+        return this.personalEncryptingKey;
+    }
+
 }

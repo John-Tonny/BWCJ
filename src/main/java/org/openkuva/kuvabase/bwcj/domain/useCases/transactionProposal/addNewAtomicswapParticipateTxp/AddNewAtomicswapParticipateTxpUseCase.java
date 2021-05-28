@@ -34,6 +34,7 @@
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewAtomicswapParticipateTxp;
 
 import org.bitcoinj.core.NetworkParameters;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapParticipateData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
@@ -42,6 +43,9 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.AtomicswapData;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.AtomicswapParticipateData;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.Output;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
+import org.openkuva.kuvabase.bwcj.domain.utils.ICoinTypeRetriever;
+import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InsufficientFundsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidAmountException;
@@ -49,27 +53,32 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.except
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionParticipateRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRequest;
 
+import javax.swing.Icon;
+
 public class AddNewAtomicswapParticipateTxpUseCase implements IAddNewAtomicswapParticipateTxpUseCase {
     private final IBitcoreWalletServerAPI bwsApi;
+    private final ICredentials credentials;
+    private final CopayersCryptUtils copayersCryptUtils;
 
-    public AddNewAtomicswapParticipateTxpUseCase(IBitcoreWalletServerAPI bwsApi) {
+    public AddNewAtomicswapParticipateTxpUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = copayersCryptUtils;
         this.bwsApi = bwsApi;
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, ICustomData customData, boolean excludeMasternode, String secretHash) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
-        return execute(address, satoshis, msg, dryRun, "send", customData, excludeMasternode, secretHash);
+    public ITransactionProposal execute(String address, long satoshis,  boolean dryRun, String customData, boolean excludeMasternode, String secretHash) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+        return execute(address, satoshis, dryRun, "send", customData, excludeMasternode, secretHash);
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, String operation, ICustomData customData, boolean excludeMasternode, String secretHash) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+    public ITransactionProposal execute(String address, long satoshis, boolean dryRun, String operation, String customData, boolean excludeMasternode, String secretHash) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
         return execute(
                 new IOutput[]{
                         new Output(
                                 address,
                                 satoshis,
                                 null)},
-                msg,
                 dryRun,
                 operation,
                 customData,
@@ -78,19 +87,20 @@ public class AddNewAtomicswapParticipateTxpUseCase implements IAddNewAtomicswapP
     }
 
     @Override
-    public ITransactionProposal execute(IOutput[] outputs, String msg, boolean dryRun, String operation, ICustomData customData, boolean excludeMasternode, String secretHash) {
+    public ITransactionProposal execute(IOutput[] outputs,  boolean dryRun, String operation, String customData, boolean excludeMasternode, String secretHash) {
         return
                 bwsApi.postParticipateTxProposals(
                         new TransactionParticipateRequest(
                                 outputs,
                                 "normal",
-                                msg,
+                                null,
                                 false,
                                 dryRun,
                                 operation,
                                 customData,
                                 null,
                                 excludeMasternode,
-                                new AtomicswapParticipateData(secretHash)));
+                                new AtomicswapParticipateData(secretHash)),
+                        credentials);
     }
 }

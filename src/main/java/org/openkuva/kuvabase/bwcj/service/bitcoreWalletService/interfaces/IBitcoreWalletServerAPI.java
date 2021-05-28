@@ -33,6 +33,8 @@
 
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces;
 
+import org.bitcoinj.core.NetworkParameters;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.fee.IFeeLevel;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternode;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeBroadcast;
@@ -48,6 +50,7 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRefundRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.IAddressesResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.broadcast.BroadcastRequest;
@@ -94,12 +97,12 @@ public interface IBitcoreWalletServerAPI {
     /**
      * GET v2/wallets/
      */
-    IWallet getWallets(Map<String, String> options) throws CopayerNotFoundException;
+    IWallet getWallets(Map<String, String> options, ICredentials credentials, CopayersCryptUtils copayersCryptUtils) throws CopayerNotFoundException;
 
     /**
      * POST v2/txproposals/
      */
-    ITransactionProposal postTxProposals(ITransactionRequest transactionRequest) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
+    ITransactionProposal postTxProposals(ITransactionRequest transactionRequest, ICredentials credentials) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
 
     /**
      * GET v1/feelevels
@@ -109,17 +112,17 @@ public interface IBitcoreWalletServerAPI {
     /**
      * POST v1/txproposals/{tx_id}/publish
      */
-    ITransactionProposal postTxProposalsTxIdPublish(String txId, IPublishRequest publishRequest);
+    ITransactionProposal postTxProposalsTxIdPublish(String txId, IPublishRequest publishRequest, ICredentials credentials);
 
     /**
      * POST v1/txproposals/{tx_id}/signatures
      */
-    ITransactionProposal postTxProposalsTxIdSignatures(String txId, ISignatureRequest signatureRequest);
+    ITransactionProposal postTxProposalsTxIdSignatures(String txId, ISignatureRequest signatureRequest, ICredentials credentials);
 
     /**
      * POST v1/txproposals/{tx_id}/broadcast
      */
-    ITransactionProposal postTxProposalsTxIdBroadcast(String txId, BroadcastRequest broadcastRequest);
+    ITransactionProposal postTxProposalsTxIdBroadcast(String txId, BroadcastRequest broadcastRequest, ICredentials credentials);
 
     /**
      * DELETE v1/txproposals/:id/
@@ -129,7 +132,7 @@ public interface IBitcoreWalletServerAPI {
     /**
      * GET v1/txproposals/
      */
-    ITransactionProposal[] getPendingTransactionProposals();
+    ITransactionProposal[] getPendingTransactionProposals(ICredentials credentials);
 
     /**
      * GET v1/notifications/
@@ -145,7 +148,7 @@ public interface IBitcoreWalletServerAPI {
     /**
      * GET v1/txhistory/
      */
-    ITransactionHistory[] getTxHistory(Map<String, String> options);
+    ITransactionHistory[] getTxHistory(Map<String, String> options, ICredentials credentials);
 
     /**
      * GET v1/txhistory/
@@ -180,26 +183,26 @@ public interface IBitcoreWalletServerAPI {
     /**
      * POST v3/atomicswaptxproposals/
      */
-    ITransactionProposal postInitiateTxProposals(ITransactionInitiateRequest transactionRequest) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
+    ITransactionProposal postInitiateTxProposals(ITransactionInitiateRequest transactionRequest, ICredentials credentials) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
 
     /**
      * POST v3/atomicswaptxproposals/
      */
-    ITransactionProposal postParticipateTxProposals(ITransactionParticipateRequest transactionRequest) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
+    ITransactionProposal postParticipateTxProposals(ITransactionParticipateRequest transactionRequest, ICredentials credentials) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
 
     /**
      * POST v3/redeemtxproposals/
      */
-    ITransactionProposal postRedeemTxProposals(ITransactionRedeemRequest transactionRequest) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
+    ITransactionProposal postRedeemTxProposals(ITransactionRedeemRequest transactionRequest, ICredentials credentials) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
 
     /**
      * POST v3/redeemtxproposals/
      */
-    ITransactionProposal postRefundTxProposals(ITransactionRefundRequest transactionRequest) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
+    ITransactionProposal postRefundTxProposals(ITransactionRefundRequest transactionRequest, ICredentials credentials) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException;
 
     /**
      * GET v2/txproposals/
      */
-    ITransactionProposal[] getPendingAtomicswapTransactionProposals();
+    ITransactionProposal[] getPendingAtomicswapTransactionProposals(ICredentials credentials);
 
 }

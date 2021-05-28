@@ -73,20 +73,35 @@ public class SjclMessageEncryptor implements IMessageEncryptor {
             Object result = scope.get("result", scope);
             String json = Context.toString(result);
 
-            /*context.setLanguageVersion(Context.VERSION_ES6);
-            Scriptable scope1 = context.initStandardObjects();
-            InputStream stream1 = getClass()
+            return json;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Context.exit();
+            return "";
+        }
+    }
+
+    @Override
+    public String decrypt(String msg, String encryptKey) {
+        Context context = Context.enter();
+        try {
+            context.setOptimizationLevel(-1);
+            context.setLanguageVersion(Context.VERSION_1_5);
+            Scriptable scope = context.initStandardObjects();
+            InputStream stream = getClass()
                     .getClassLoader()
-                    .getResourceAsStream(LIB_PATH1);
-            BufferedReader in1 = new BufferedReader(new InputStreamReader(stream1));
-            compileAndExec(in1, "classpath:" + LIB_PATH1.toString(), context, scope1);
-            in1.close();
+                    .getResourceAsStream(LIB_PATH);
+            BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+            compileAndExec(in, "classpath:" + LIB_PATH.toString(), context, scope);
+            in.close();
 
-            final String script1 = "var result = index.default.Key.create()";
+            final String script = "var result = sjcl.decrypt(sjcl.codec.base64.toBits(\"" +
+                    encryptKey + "\"),'" +
+                    msg + "'" + ")";
 
-            exec(script1, "start", context, scope1);
-            Object result1 = scope1.get("result", scope1);
-            String json1 = Context.toString(result);*/
+            exec(script, "start", context, scope);
+            Object result = scope.get("result", scope);
+            String json = Context.toString(result);
 
             return json;
         } catch (IOException e) {

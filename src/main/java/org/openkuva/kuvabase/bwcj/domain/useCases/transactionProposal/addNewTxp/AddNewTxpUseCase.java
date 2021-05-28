@@ -34,30 +34,40 @@
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewTxp;
 
 import org.bitcoinj.core.NetworkParameters;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.Output;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
+import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
+import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InsufficientFundsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidAmountException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidWalletAddressException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRequest;
 
+import static org.openkuva.kuvabase.bwcj.domain.useCases.wallet.DefaultConstants.DEFAULT_WALLET_NAME;
+
 public class AddNewTxpUseCase implements IAddNewTxpUseCase {
     private final IBitcoreWalletServerAPI bwsApi;
+    private final ICredentials credentials;
+    private final CopayersCryptUtils copayersCryptUtils;
 
-    public AddNewTxpUseCase(IBitcoreWalletServerAPI bwsApi) {
+    public AddNewTxpUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = copayersCryptUtils;
         this.bwsApi = bwsApi;
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, ICustomData customData, boolean excludeMasternode) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, String customData, boolean excludeMasternode) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
         return execute(address, satoshis, msg, dryRun, "send", customData, excludeMasternode);
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, String operation, ICustomData customData, boolean excludeMasternode) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+    public ITransactionProposal execute(String address, long satoshis, String msg, boolean dryRun, String operation, String customData, boolean excludeMasternode) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
         return execute(
                 new IOutput[]{
                         new Output(
@@ -72,18 +82,25 @@ public class AddNewTxpUseCase implements IAddNewTxpUseCase {
     }
 
     @Override
-    public ITransactionProposal execute(IOutput[] outputs, String msg, boolean dryRun, String operation, ICustomData customData, boolean excludeMasternode) {
+    public ITransactionProposal execute(IOutput[] outputs, String msg, boolean dryRun, String operation, String customData, boolean excludeMasternode) {
+        String enMsg = new SjclMessageEncryptor()
+                .encrypt(
+                        msg,
+                        copayersCryptUtils.sharedEncryptingKey(
+                                credentials.getWalletPrivateKey()
+                                        .getPrivateKeyAsHex()));
         return
                 bwsApi.postTxProposals(
                         new TransactionRequest(
                                 outputs,
                                 "normal",
-                                msg,
+                                enMsg,
                                 false,
                                 dryRun,
                                 operation,
                                 customData,
                                 null,
-                                excludeMasternode));
+                                excludeMasternode),
+                        credentials);
     }
 }

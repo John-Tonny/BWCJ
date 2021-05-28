@@ -64,7 +64,8 @@ public class GsonTransactionRequest implements ITransactionRequest {
     private String operation;
     @SerializedName("customData")
     @Expose
-    private GsonCustomData customData;
+    // private GsonCustomData customData;
+    private String customData;
     @SerializedName("payProUrl")
     @Expose
     private Object payProUrl;
@@ -79,7 +80,8 @@ public class GsonTransactionRequest implements ITransactionRequest {
         this.excludeUnconfirmedUtxos = origin.isExcludeUnconfirmedUtxos();
         this.dryRun = origin.isDryRun();
         this.operation = origin.getOperation();
-        this.customData = new GsonCustomData(origin.getCustomData());
+        // this.customData = new GsonCustomData(origin.getCustomData());
+        this.customData = origin.getCustomData();
         this.payProUrl = origin.getPayProUrl();
         this.excludeMasternode = origin.isExcludeMasternode();
     }
@@ -124,7 +126,11 @@ public class GsonTransactionRequest implements ITransactionRequest {
     }
 
     @Override
-    public GsonCustomData getCustomData() {
+    /* public GsonCustomData getCustomData() {
+        return customData;
+    }
+     */
+    public String getCustomData() {
         return customData;
     }
 

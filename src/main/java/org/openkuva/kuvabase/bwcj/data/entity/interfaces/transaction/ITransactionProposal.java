@@ -92,7 +92,8 @@ public interface ITransactionProposal {
 
     String getAddressType();
 
-    ICustomData getCustomData();
+    // ICustomData getCustomData();
+    String getCustomData();
 
     String getProposalSignature();
 

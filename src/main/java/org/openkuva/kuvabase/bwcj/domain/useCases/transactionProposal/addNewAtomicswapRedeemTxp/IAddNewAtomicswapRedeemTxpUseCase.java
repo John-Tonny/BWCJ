@@ -43,7 +43,7 @@ public interface IAddNewAtomicswapRedeemTxpUseCase {
             String address,
             String msg,
             boolean dryRun,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode,
             String contract, String secret);
 
@@ -52,7 +52,7 @@ public interface IAddNewAtomicswapRedeemTxpUseCase {
             String msg,
             boolean dryRun,
             String operation,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode,
             String contract, String secret);
 
@@ -61,7 +61,7 @@ public interface IAddNewAtomicswapRedeemTxpUseCase {
             String msg,
             boolean dryRun,
             String operation,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode,
             String contract, String secret);
 

@@ -35,4 +35,5 @@ package org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt;
 
 public interface IMessageEncryptor {
     String encrypt(String msg, String encryptKey);
+    String decrypt(String msg, String encryptKey);
 }

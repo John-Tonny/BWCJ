@@ -43,7 +43,7 @@ public interface IAddNewAtomicswapRefundTxpUseCase {
             String address,
             String msg,
             boolean dryRun,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode,
             String contract);
 
@@ -52,7 +52,7 @@ public interface IAddNewAtomicswapRefundTxpUseCase {
             String msg,
             boolean dryRun,
             String operation,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode,
             String contract);
 
@@ -61,7 +61,7 @@ public interface IAddNewAtomicswapRefundTxpUseCase {
             String msg,
             boolean dryRun,
             String operation,
-            ICustomData customData,
+            String customData,
             boolean excludeMasternode,
             String contract);
 }

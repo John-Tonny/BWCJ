@@ -63,11 +63,11 @@ public class SignTxpUseCase implements ISignTxpUseCase {
     private final TransactionBuilder transactionBuilder;
     private final CopayersCryptUtils copayersCryptUtils;
 
-    public SignTxpUseCase(IBitcoreWalletServerAPI bwsApi, ICredentials credentials, TransactionBuilder transactionBuilder, CopayersCryptUtils copayersCryptUtils) {
+    public SignTxpUseCase(IBitcoreWalletServerAPI bwsApi, ICredentials credentials, CopayersCryptUtils copayersCryptUtils, TransactionBuilder transactionBuilder) {
         this.bwsApi = bwsApi;
         this.credentials = credentials;
-        this.transactionBuilder = transactionBuilder;
         this.copayersCryptUtils = copayersCryptUtils;
+        this.transactionBuilder = transactionBuilder;
     }
 
     @Override
@@ -108,7 +108,8 @@ public class SignTxpUseCase implements ISignTxpUseCase {
                         new SignatureRequest(
                                 mapSignatures(
                                         sort(
-                                                flat(signaturesLists))), secret));
+                                                flat(signaturesLists))), secret),
+                        credentials);
     }
 
     private static List<IndexedTransactionSignature> sort(List<IndexedTransactionSignature> toSort) {

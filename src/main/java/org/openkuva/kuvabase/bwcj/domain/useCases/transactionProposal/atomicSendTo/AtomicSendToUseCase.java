@@ -65,12 +65,12 @@ public class AtomicSendToUseCase implements IAtomicSendToUseCase {
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, ICustomData customData, boolean excludeMasternode) {
+    public ITransactionProposal execute(String address, long satoshis, String msg, String customData, boolean excludeMasternode) {
         return execute(address, satoshis, msg, "send", customData, excludeMasternode);
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, String operation, ICustomData customData, boolean excludeMasternode) {
+    public ITransactionProposal execute(String address, long satoshis, String msg, String operation, String customData, boolean excludeMasternode) {
         return execute(
                 new IOutput[]{
                         new Output(
@@ -84,7 +84,7 @@ public class AtomicSendToUseCase implements IAtomicSendToUseCase {
     }
 
     @Override
-    public ITransactionProposal execute(IOutput[] outputs, String msg, String operation, ICustomData customData, boolean excludeMasternode) {
+    public ITransactionProposal execute(IOutput[] outputs, String msg, String operation, String customData, boolean excludeMasternode) {
         String txId = null;
         try {
             ITransactionProposal txToPublish =

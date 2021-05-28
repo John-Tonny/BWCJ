@@ -44,7 +44,7 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 public class TransactionRefundRequest extends TransactionRequest implements ITransactionRefundRequest {
     private IAtomicswapRefundData atomicswap;
 
-    public TransactionRefundRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, ICustomData customData, Object payProUrl, boolean excludeMasternode, IAtomicswapRefundData atomicswap) {
+    public TransactionRefundRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, IAtomicswapRefundData atomicswap) {
         super(outputs, feeLevel, message, excludeUnconfirmedUtxos, dryRun, operation, customData, payProUrl, excludeMasternode);
         this.atomicswap  = atomicswap;
     }

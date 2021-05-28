@@ -33,14 +33,17 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.broadcastTxp;
 
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.broadcast.BroadcastRequest;
 
 public class BroadcastTxpUseCase implements IBroadcastTxpUseCase {
+    private final ICredentials credentials;
     private final IBitcoreWalletServerAPI bwsApi;
 
-    public BroadcastTxpUseCase(IBitcoreWalletServerAPI bwsApi) {
+    public BroadcastTxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
         this.bwsApi = bwsApi;
     }
 
@@ -49,6 +52,7 @@ public class BroadcastTxpUseCase implements IBroadcastTxpUseCase {
         return
                 bwsApi.postTxProposalsTxIdBroadcast(
                         txpId,
-                        new BroadcastRequest());
+                        new BroadcastRequest(),
+                credentials);
     }
 }

@@ -35,11 +35,14 @@ package org.openkuva.kuvabase.bwcj.domain.useCases.wallet.joinWalletInCreation;
 
 import com.google.gson.annotations.SerializedName;
 
-class CustomData {
+public class CustomData {
     @SerializedName("walletPrivKey")
     private final String walletPrivKey;
 
     public CustomData(String walletPrivKey) {
         this.walletPrivKey = walletPrivKey;
+    }
+    public String getWalletPrivKey() {
+        return this.walletPrivKey;
     }
 }
