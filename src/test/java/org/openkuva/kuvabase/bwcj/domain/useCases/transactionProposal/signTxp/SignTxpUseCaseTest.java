@@ -78,7 +78,7 @@ public class SignTxpUseCaseTest {
         Mockito.when(credentials.getSeed()).thenReturn(MnemonicCode.toSeed(split("faith space neutral exhaust worth amused average skull differ track best obey"), ""));
         Mockito.when(credentials.getNetworkParameters()).thenReturn(TestNet3Params.get());
 
-        signTxpUseCase = new SignTxpUseCase(bwsApi, credentials, new TransactionBuilder(new CommonNetworkParametersBuilder()), new CopayersCryptUtils(new DashCoinTypeRetriever()));
+        signTxpUseCase = new SignTxpUseCase(bwsApi, credentials, new CopayersCryptUtils(new DashCoinTypeRetriever()), new TransactionBuilder(new CommonNetworkParametersBuilder()));
     }
 
     @Test
@@ -92,7 +92,8 @@ public class SignTxpUseCaseTest {
         Mockito.verify(bwsApi)
                 .postTxProposalsTxIdSignatures(
                         eq("fe7fd95b-85b9-4cf0-bbe2-a26e933ac614"),
-                        captor.capture());
+                        captor.capture(),
+                        credentials);
 
         Assert.assertArrayEquals(
                 signatures,

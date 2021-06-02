@@ -1,3 +1,2 @@
-include ':dashj-core-0.15'
 rootProject.name = 'bwcj'
 
