@@ -113,6 +113,14 @@ public final class Credentials implements ICredentials {
     }
 
     @Override
+    public void setWalletPrivateKey(String walletPrivateKey) {
+        if (!Utils.isHexString(walletPrivateKey) && walletPrivateKey.length()!=64){
+            throw new NotFoundException("Invalid walletPrivateKey");
+        }
+        this.walletPrivateKey = Utils.HEX.decode(walletPrivateKey);
+    }
+
+    @Override
     public void setSeed(byte[] seedWords) {
         this.seedWords = seedWords;
         this.personalPrivateKey = copayersCryptUtils.personalEncryptingKey(

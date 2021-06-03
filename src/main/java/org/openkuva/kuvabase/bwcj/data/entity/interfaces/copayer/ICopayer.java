@@ -60,4 +60,5 @@ public interface ICopayer {
 
     String getPersonalEncryptingKey();
     String getSharedEncryptingKey();
+    String getDecryptCustomData();
 }

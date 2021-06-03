@@ -42,6 +42,7 @@ public interface ICredentials {
     ECKey getWalletPrivateKey();
 
     void setWalletPrivateKey(ECKey walletPrivateKey);
+    void setWalletPrivateKey(String walletPrivateKey);
 
     void setSeed(byte[] seed);
 

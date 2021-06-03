@@ -80,8 +80,6 @@ public class GsonWalletCore implements IWalletCore {
     @SerializedName("publicKeyRing")
     private GsonPublicKeyRing[] publicKeyRings;
 
-    private String sharedEncryptingKey;
-
     public GsonWalletCore() {
     }
 
@@ -173,7 +171,9 @@ public class GsonWalletCore implements IWalletCore {
 
     @Override
     public String getName() {
-        if(this.sharedEncryptingKey == null) return name;
+        if(this.getCopayers() == null && this.getCopayers().length==0) return name;
+        String sharedEncryptingKey = this.getCopayers()[0].getSharedEncryptingKey();
+        if( sharedEncryptingKey == null) return name;
         try {
             Gson gson = new Gson();
             GsonEncryptMessage walletName  = gson.fromJson(name, GsonEncryptMessage.class);
@@ -229,7 +229,4 @@ public class GsonWalletCore implements IWalletCore {
         return addressManager;
     }
 
-    public void setSharedEncryptingKey(String sharedEncryptingKey) {
-        this.sharedEncryptingKey = sharedEncryptingKey;
-    }
 }

@@ -79,7 +79,7 @@ public class GetWalletBalanceUseCase implements IGetWalletBalanceUseCase {
 
         Map<String, String> urlOptions = new HashMap<>();
 
-        urlOptions.put("includeExtendedInfo", "0");
+        urlOptions.put("includeExtendedInfo", "1");
         urlOptions.put("twoStep", "1");
         urlOptions.put("r", String.valueOf(random));
 

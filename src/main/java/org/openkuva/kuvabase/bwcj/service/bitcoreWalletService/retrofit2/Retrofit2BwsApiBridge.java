@@ -194,7 +194,7 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                     copayers[0].setPersonalEncryptingKey(credentials.getPersonalEncryptingKey(), copayersCryptUtils);
                     if(credentials.getSharedEncryptingKey()!=null) {
                         credentials.setSharedEncryptingKey(copayers[0].getSharedEncryptingKey());
-                        response.body().getWalletCore().setSharedEncryptingKey(copayers[0].getSharedEncryptingKey());
+                        credentials.setWalletPrivateKey(copayers[0].getDecryptCustomData());
                     }
                 }
                 return response.body();

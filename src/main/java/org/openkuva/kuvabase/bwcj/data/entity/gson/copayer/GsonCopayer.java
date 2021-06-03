@@ -79,8 +79,9 @@ public class GsonCopayer implements ICopayer {
         this.createdOn = origin.getCreatedOn();
         this.id = origin.getId();
         this.name = origin.getName();
-        this.requestPubKeys = mapRequestPubKeys(origin.getRequestPubKeys());
         this.version = origin.getVersion();
+        this.customData = origin.getCustomData();
+        this.requestPubKeys = mapRequestPubKeys(origin.getRequestPubKeys());
     }
 
     private static GsonRequestPubKey[] mapRequestPubKeys(IRequestPubKey[] origin) {
@@ -163,7 +164,10 @@ public class GsonCopayer implements ICopayer {
     public void setPersonalEncryptingKey(String personalEncryptingKey, CopayersCryptUtils copayersCryptUtils) {
         this.personalEncryptingKey = personalEncryptingKey;
         this.copayersCryptUtils = copayersCryptUtils;
-        getKey();
+        try {
+            getKey();
+        }catch (Exception e){
+        }
     }
 
     private String getKey() {
@@ -185,21 +189,28 @@ public class GsonCopayer implements ICopayer {
                 String walletPrivKey = customData2.getWalletPrivKey();
                 if(walletPrivKey!=null){
                     this.sharedEncryptingKey = this.copayersCryptUtils.sharedEncryptingKey(walletPrivKey);
+                    this.decryptCustomData = walletPrivKey;
                     return walletPrivKey;
                 }
                 return customData1;
             }
         }catch (Exception e){
+            return null;
         }
         return customData;
     }
 
+    @Override
     public String getSharedEncryptingKey() {
         return this.sharedEncryptingKey;
     }
 
+    @Override
     public String getPersonalEncryptingKey() {
         return this.personalEncryptingKey;
     }
+
+    @Override
+    public String getDecryptCustomData() { return this.decryptCustomData; }
 
 }
