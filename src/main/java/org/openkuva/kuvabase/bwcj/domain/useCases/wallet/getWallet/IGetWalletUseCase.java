@@ -31,32 +31,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials;
+package org.openkuva.kuvabase.bwcj.domain.useCases.wallet.getWallet;
 
 import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.NetworkParameters;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.CopayerNotFoundException;
+
 import java.util.List;
 
-public interface ICredentials {
-
-    ECKey getWalletPrivateKey();
-
-    void setWalletPrivateKey(ECKey walletPrivateKey);
-
-    void setSeed(byte[] seed);
-
-    byte[] getSeed();
-
-    NetworkParameters getNetworkParameters();
-
-    void setNetworkParameters(NetworkParameters network);
-
-    void setSharedEncryptingKey(String sharedEncryptingKey);
-    void setPersonalEncryptingKey(String personalEncryptingKey);
-
-    String getSharedEncryptingKey();
-    String getPersonalEncryptingKey();
-
-    List<String> getMnemonic();
-
+public interface IGetWalletUseCase {
+    IWallet execute() throws CopayerNotFoundException;
 }

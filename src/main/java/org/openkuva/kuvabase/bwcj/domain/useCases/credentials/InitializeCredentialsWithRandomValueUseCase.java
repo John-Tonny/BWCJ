@@ -37,6 +37,7 @@ import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 
 import java.security.SecureRandom;
 import java.util.Collections;
@@ -45,9 +46,11 @@ import java.util.List;
 public class InitializeCredentialsWithRandomValueUseCase implements IInitializeCredentialsUseCase {
 
     private final ICredentials credentials;
+    private final  CopayersCryptUtils copayersCryptUtils;
 
-    public InitializeCredentialsWithRandomValueUseCase(ICredentials credentials) {
+    public InitializeCredentialsWithRandomValueUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils) {
         this.credentials = credentials;
+        this.copayersCryptUtils = copayersCryptUtils;
     }
 
     @Override
@@ -61,6 +64,10 @@ public class InitializeCredentialsWithRandomValueUseCase implements IInitializeC
 
         credentials.setSeed(deterministicSeed.getSeedBytes());
         credentials.setWalletPrivateKey(new ECKey());
+        credentials.setPersonalEncryptingKey( copayersCryptUtils.personalEncryptingKey(
+                copayersCryptUtils.entropySource(
+                        copayersCryptUtils.requestDerivation(
+                                credentials.getSeed()))));
 
         return Collections.unmodifiableList(deterministicSeed.getMnemonicCode());
     }
@@ -76,5 +83,10 @@ public class InitializeCredentialsWithRandomValueUseCase implements IInitializeC
 
         credentials.setSeed(deterministicSeed.getSeedBytes());
         credentials.setWalletPrivateKey(new ECKey());
+        credentials.setPersonalEncryptingKey( copayersCryptUtils.personalEncryptingKey(
+                copayersCryptUtils.entropySource(
+                        copayersCryptUtils.requestDerivation(
+                                credentials.getSeed()))));
+
     }
 }

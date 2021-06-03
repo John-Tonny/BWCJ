@@ -48,7 +48,7 @@ import java.util.Map;
 public class RecoveryWalletFromMnemonicUseCase implements IRecoveryWalletFromMnemonicUseCase {
 
     private final ICredentials credentials;
-    private final IBitcoreWalletServerAPI bwsApi;
+    private IBitcoreWalletServerAPI bwsApi;
     private final CopayersCryptUtils copayersCryptUtils;
 
     public RecoveryWalletFromMnemonicUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
@@ -58,9 +58,8 @@ public class RecoveryWalletFromMnemonicUseCase implements IRecoveryWalletFromMne
     }
 
     @Override
-    public IWallet execute(List<String> mnemonic, String passphrase, ECKey walletPrivateKey) throws CopayerNotFoundException {
+    public IWallet execute(List<String> mnemonic, String passphrase) throws CopayerNotFoundException {
         credentials.setSeed(MnemonicCode.toSeed(mnemonic, passphrase));
-        credentials.setWalletPrivateKey(walletPrivateKey);
         String personalEncryptingKey =
                 copayersCryptUtils.personalEncryptingKey(
                         copayersCryptUtils.entropySource(

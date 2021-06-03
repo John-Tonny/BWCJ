@@ -35,8 +35,15 @@ package org.openkuva.kuvabase.bwcj.domain.utils;
 
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Utils;
+import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.wallet.DeterministicSeed;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.repository.exception.NotFoundException;
+
+import java.security.SecureRandom;
+import java.util.Collections;
+import java.util.List;
 
 import static org.bitcoinj.core.NetworkParameters.fromID;
 
@@ -47,12 +54,50 @@ public final class Credentials implements ICredentials {
     private String networkId;
     private String sharedPrivateKey;
     private String personalPrivateKey;
+    private DeterministicSeed deterministicSeed;
+    private final CopayersCryptUtils copayersCryptUtils;
 
-    public Credentials() {
+    public Credentials(CopayersCryptUtils copayersCryptUtils) {
+        this.copayersCryptUtils = copayersCryptUtils;
+    }
+
+    public Credentials(String passphrase, CopayersCryptUtils copayersCryptUtils) {
+        this.copayersCryptUtils = copayersCryptUtils;
+        this.deterministicSeed =
+                new DeterministicSeed(
+                        new SecureRandom(),
+                        DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS,
+                        passphrase,
+                        Utils.currentTimeSeconds());
+
+        this.seedWords = this.deterministicSeed.getSeedBytes();
+        this.walletPrivateKey = new ECKey().getPrivKeyBytes();
+        this.personalPrivateKey = copayersCryptUtils.personalEncryptingKey(
+                copayersCryptUtils.entropySource(
+                        copayersCryptUtils.requestDerivation(
+                                this.seedWords)));
+    }
+
+    public Credentials(List<String> mnemonic, String passphrase, CopayersCryptUtils copayersCryptUtils) {
+        this.copayersCryptUtils = copayersCryptUtils;
+        this.deterministicSeed =
+                new DeterministicSeed(
+                        mnemonic,
+                        null,
+                        passphrase,
+                        Utils.currentTimeSeconds());
+
+        this.setSeed(this.deterministicSeed.getSeedBytes());
+        this.setWalletPrivateKey(new ECKey());
     }
 
     private byte[] getWalletPrivateKeyBytes() {
         return walletPrivateKey;
+    }
+
+    @Override
+    public List<String> getMnemonic(){
+        return Collections.unmodifiableList(this.deterministicSeed.getMnemonicCode());
     }
 
     @Override
@@ -70,6 +115,11 @@ public final class Credentials implements ICredentials {
     @Override
     public void setSeed(byte[] seedWords) {
         this.seedWords = seedWords;
+        this.personalPrivateKey = copayersCryptUtils.personalEncryptingKey(
+                copayersCryptUtils.entropySource(
+                        copayersCryptUtils.requestDerivation(
+                                this.seedWords)));
+
     }
 
     @Override
@@ -112,4 +162,5 @@ public final class Credentials implements ICredentials {
     public String getPersonalEncryptingKey() {
         return this.personalPrivateKey;
     }
+
 }

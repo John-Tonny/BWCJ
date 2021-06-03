@@ -31,32 +31,48 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials;
+package org.openkuva.kuvabase.bwcj.domain.useCases.wallet.getWallet;
 
 import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.crypto.MnemonicCode;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.CopayerNotFoundException;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public interface ICredentials {
+public class GetWalletUseCase implements IGetWalletUseCase {
 
-    ECKey getWalletPrivateKey();
+    private final ICredentials credentials;
+    private IBitcoreWalletServerAPI bwsApi;
+    private final CopayersCryptUtils copayersCryptUtils;
 
-    void setWalletPrivateKey(ECKey walletPrivateKey);
+    public GetWalletUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = copayersCryptUtils;
+        this.bwsApi = bwsApi;
+    }
 
-    void setSeed(byte[] seed);
+    @Override
+    public IWallet execute() throws CopayerNotFoundException {
+        return bwsApi.getWallets(getUrlOptions(), credentials, copayersCryptUtils);
+    }
 
-    byte[] getSeed();
+    private static Map<String, String> getUrlOptions() {
+        int maxNumber = 99999;
+        int minNumber = 10000;
+        maxNumber -= minNumber;
+        int random = (int) (Math.random() * ++maxNumber) + minNumber;
 
-    NetworkParameters getNetworkParameters();
+        Map<String, String> urlOptions = new HashMap<>();
 
-    void setNetworkParameters(NetworkParameters network);
+        urlOptions.put("includeExtendedInfo", "1");
+        urlOptions.put("r", String.valueOf(random));
 
-    void setSharedEncryptingKey(String sharedEncryptingKey);
-    void setPersonalEncryptingKey(String personalEncryptingKey);
-
-    String getSharedEncryptingKey();
-    String getPersonalEncryptingKey();
-
-    List<String> getMnemonic();
-
+        return urlOptions;
+    }
 }
