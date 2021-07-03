@@ -53,7 +53,6 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.except
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionParticipateRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRequest;
 
-import javax.swing.Icon;
 
 public class AddNewAtomicswapParticipateTxpUseCase implements IAddNewAtomicswapParticipateTxpUseCase {
     private final IBitcoreWalletServerAPI bwsApi;

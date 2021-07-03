@@ -33,13 +33,18 @@
 
 package org.openkuva.kuvabase.bwcj.domain.utils;
 
+import com.google.common.base.Splitter;
+
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.wallet.DeterministicSeed;
+import org.omg.SendingContext.RunTime;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.repository.exception.NotFoundException;
+import org.openkuva.kuvabase.bwcj.domain.useCases.wallet.postWalletAddress.CreateNewMainAddressesFromWalletUseCase;
 
 import java.security.SecureRandom;
 import java.util.Collections;
@@ -59,6 +64,21 @@ public final class Credentials implements ICredentials {
 
     public Credentials(CopayersCryptUtils copayersCryptUtils) {
         this.copayersCryptUtils = copayersCryptUtils;
+        this.deterministicSeed =
+                new DeterministicSeed(
+                        new SecureRandom(),
+                        DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS,
+                        "",
+                        Utils.currentTimeSeconds());
+
+        this.seedWords = this.deterministicSeed.getSeedBytes();
+        this.walletPrivateKey = new ECKey().getPrivKeyBytes();
+        this.personalPrivateKey = copayersCryptUtils.personalEncryptingKey(
+                copayersCryptUtils.entropySource(
+                        copayersCryptUtils.requestDerivation(
+                                this.seedWords)));
+
+        this.networkParameters = MainNetParams.get();
     }
 
     public Credentials(String passphrase, CopayersCryptUtils copayersCryptUtils) {
@@ -76,6 +96,8 @@ public final class Credentials implements ICredentials {
                 copayersCryptUtils.entropySource(
                         copayersCryptUtils.requestDerivation(
                                 this.seedWords)));
+
+        this.networkParameters = MainNetParams.get();
     }
 
     public Credentials(List<String> mnemonic, String passphrase, CopayersCryptUtils copayersCryptUtils) {
@@ -89,6 +111,7 @@ public final class Credentials implements ICredentials {
 
         this.setSeed(this.deterministicSeed.getSeedBytes());
         this.setWalletPrivateKey(new ECKey());
+        this.networkParameters = MainNetParams.get();
     }
 
     private byte[] getWalletPrivateKeyBytes() {

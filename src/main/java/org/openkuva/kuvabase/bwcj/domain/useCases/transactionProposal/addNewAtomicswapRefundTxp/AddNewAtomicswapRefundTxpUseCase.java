@@ -50,7 +50,6 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.except
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRefundRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRequest;
 
-import javax.swing.Icon;
 
 public class AddNewAtomicswapRefundTxpUseCase implements IAddNewAtomicswapRefundTxpUseCase {
     private final ICredentials credentials;

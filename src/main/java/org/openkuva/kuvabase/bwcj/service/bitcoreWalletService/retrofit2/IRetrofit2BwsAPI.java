@@ -95,7 +95,7 @@ public interface IRetrofit2BwsAPI {
             @Body GsonJoinWalletRequest createCopayerRequest);
 
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
-    @GET("v2/wallets/")
+    @GET("v3/wallets/")
     Call<GsonWallet> getWallets(
             @QueryMap Map<String, String> options);
 
