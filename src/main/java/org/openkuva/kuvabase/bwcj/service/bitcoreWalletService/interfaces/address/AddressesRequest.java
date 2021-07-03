@@ -33,5 +33,12 @@
 
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address;
 
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
+
 public class AddressesRequest {
+    private Boolean ignoreMaxGap;
+
+    public AddressesRequest(Boolean ignoreMaxGap) {
+        this.ignoreMaxGap = ignoreMaxGap;
+    }
 }
