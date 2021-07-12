@@ -485,17 +485,28 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     @Override
     public GsonMasternode[] getMasternodes(@QueryMap Map<String, String> options) {
         try {
-            Response<GsonMasternode[]> response = serverAPI
-                    .getMasternodes(options)
-                    .execute();
+            if (options.isEmpty()){
+                Response<GsonMasternode[]> response = serverAPI
+                        .getMasternodes(options)
+                        .execute();
 
-            if (response.isSuccessful()) {
-                return response.body();
-            } else {
-                throw new RequestFailedException(response);
+                if (response.isSuccessful()) {
+                    return response.body();
+                } else {
+                    throw new RequestFailedException(response);
+                }
+            }else {
+                Response<GsonMasternode> response = serverAPI
+                        .getMasternodesBy(options)
+                        .execute();
+                if (response.isSuccessful()) {
+                    return new GsonMasternode[]{(GsonMasternode)response.body()};
+                } else {
+                    throw new RequestFailedException(response);
+                }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return new GsonMasternode[0];
         }
     }
 

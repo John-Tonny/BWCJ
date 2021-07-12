@@ -61,6 +61,9 @@ public class GetMasternodeStatusUseCase implements IGetMasternodeStatusUseCase {
             throw new IllegalStateException("coin must be vcl");
         }
         options.put("coin", coin);
+        if (txid == null && address == null && payee == null) {
+            throw new IllegalStateException("A parameter(txid/address/payee) that is not null is required");
+        }
         if (txid != null) {
             options.put("txid", txid);
         }

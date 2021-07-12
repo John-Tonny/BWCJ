@@ -54,13 +54,6 @@ public class GetMasternodesUseCase implements IGetMasternodesUseCase {
     @Override
     public IMasternode[] execute(String coin, String txid , String address, String payee) {
         Map<String, String> options = new HashMap<String, String>();
-        if (coin == null) {
-            throw new IllegalStateException("no coin");
-        }
-        if (!coin.equalsIgnoreCase("vcl")) {
-            throw new IllegalStateException("coin must be vcl");
-        }
-        options.put("coin", coin);
         if (txid != null) {
             options.put("txid", txid);
         }

@@ -170,6 +170,10 @@ public interface IRetrofit2BwsAPI {
     Call<GsonMasternode[]> getMasternodes(@QueryMap Map<String, String> options);
 
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v1/masternode/")
+    Call<GsonMasternode> getMasternodesBy(@QueryMap Map<String, String> options);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
     @DELETE("v1/masternode/")
     Call<GsonMasternodeRemove> removeMasternodes(@QueryMap Map<String, String> options);
 
