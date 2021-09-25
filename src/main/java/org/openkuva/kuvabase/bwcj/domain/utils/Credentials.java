@@ -33,24 +33,22 @@
 
 package org.openkuva.kuvabase.bwcj.domain.utils;
 
-import com.google.common.base.Splitter;
-
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Utils;
-import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.wallet.DeterministicSeed;
-import org.omg.SendingContext.RunTime;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.AddressInfo;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.repository.exception.NotFoundException;
-import org.openkuva.kuvabase.bwcj.domain.useCases.wallet.postWalletAddress.CreateNewMainAddressesFromWalletUseCase;
 
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
 
 import static org.bitcoinj.core.NetworkParameters.fromID;
+import static org.openkuva.kuvabase.bwcj.domain.utils.DeriveUtils.deriveChildByPath;
 
 public final class Credentials implements ICredentials {
     private byte[] walletPrivateKey;
@@ -193,5 +191,22 @@ public final class Credentials implements ICredentials {
     public String getPersonalEncryptingKey() {
         return this.personalPrivateKey;
     }
+
+    public AddressInfo getPrivateByPath(String path) {
+        if(this.copayersCryptUtils != null) {
+            DeterministicKey xpriv =
+                    this.copayersCryptUtils.derivedXPrivKey(
+                            this.getSeed(),
+                            this.getNetworkParameters());
+
+            DeterministicKey result = deriveChildByPath(xpriv, path);
+
+            return new AddressInfo(result.toAddress(this.getNetworkParameters()).toBase58(), result.getPrivateKeyAsHex(), path);
+        }else{
+            return null;
+        }
+    }
+
+
 
 }

@@ -103,6 +103,12 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
         this.serverAPI = serverAPI;
     }
 
+    private String INSUFFICIENT_FUNDS = "Insufficient funds";
+    private String INSUFFICIENT_FUNDS_FOR_FEE = "Insufficient funds for fee";
+    private String INVALID_ADDRESS ="Invalid address";
+    private String INVALID_CHANGE_ADDRESS = "Invalid change address";
+    private String LOCKED_FUNDS = "Funds are locked by pending transaction proposals";
+
     @Override
     public ICreateWalletResponse postWallets(ICreateWalletRequest createWalletRequest) {
         try {
@@ -225,10 +231,16 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                 return response.body();
             } else {
                 String errorBody = response.errorBody().string();
-                if (errorBody.contains("INSUFFICIENT_FUNDS")) {
-                    throw new InsufficientFundsException("INSUFFICIENT_FUNDS");
-                } else if (errorBody.contains("INVALID_ADDRESS")) {
-                    throw new InvalidWalletAddressException("INVALID_ADDRESS");
+                if (errorBody.contains(INSUFFICIENT_FUNDS)) {
+                    throw new InsufficientFundsException(INSUFFICIENT_FUNDS);
+                } else if (errorBody.contains(INVALID_ADDRESS)) {
+                    throw new InvalidWalletAddressException(INVALID_ADDRESS);
+                } else if (errorBody.contains(INSUFFICIENT_FUNDS_FOR_FEE)) {
+                    throw new InvalidWalletAddressException(INSUFFICIENT_FUNDS_FOR_FEE);
+                } else if (errorBody.contains(INVALID_CHANGE_ADDRESS)) {
+                    throw new InvalidWalletAddressException(INVALID_CHANGE_ADDRESS);
+                } else if (errorBody.contains(LOCKED_FUNDS)) {
+                    throw new InvalidWalletAddressException(LOCKED_FUNDS);
                 } else if (errorBody.contains("Invalid amount")) {
                     throw new InvalidAmountException("Invalid amount");
                 }
@@ -540,10 +552,16 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                 return response.body();
             } else {
                 String errorBody = response.errorBody().string();
-                if (errorBody.contains("INSUFFICIENT_FUNDS")) {
-                    throw new InsufficientFundsException("INSUFFICIENT_FUNDS");
-                } else if (errorBody.contains("INVALID_ADDRESS")) {
-                    throw new InvalidWalletAddressException("INVALID_ADDRESS");
+                if (errorBody.contains(INSUFFICIENT_FUNDS)) {
+                    throw new InsufficientFundsException(INSUFFICIENT_FUNDS);
+                } else if (errorBody.contains(INVALID_ADDRESS)) {
+                    throw new InvalidWalletAddressException(INVALID_ADDRESS);
+                } else if (errorBody.contains(INSUFFICIENT_FUNDS_FOR_FEE)) {
+                    throw new InvalidWalletAddressException(INSUFFICIENT_FUNDS_FOR_FEE);
+                } else if (errorBody.contains(INVALID_CHANGE_ADDRESS)) {
+                    throw new InvalidWalletAddressException(INVALID_CHANGE_ADDRESS);
+                } else if (errorBody.contains(LOCKED_FUNDS)) {
+                    throw new InvalidWalletAddressException(LOCKED_FUNDS);
                 } else if (errorBody.contains("Invalid amount")) {
                     throw new InvalidAmountException("Invalid amount");
                 } else if (errorBody.contains("An error occurred in atomicswap contract creation")) {
@@ -571,10 +589,16 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                 return response.body();
             } else {
                 String errorBody = response.errorBody().string();
-                if (errorBody.contains("INSUFFICIENT_FUNDS")) {
-                    throw new InsufficientFundsException("INSUFFICIENT_FUNDS");
-                } else if (errorBody.contains("INVALID_ADDRESS")) {
-                    throw new InvalidWalletAddressException("INVALID_ADDRESS");
+                if (errorBody.contains(INSUFFICIENT_FUNDS)) {
+                    throw new InsufficientFundsException(INSUFFICIENT_FUNDS);
+                } else if (errorBody.contains(INVALID_ADDRESS)) {
+                    throw new InvalidWalletAddressException(INVALID_ADDRESS);
+                } else if (errorBody.contains(INSUFFICIENT_FUNDS_FOR_FEE)) {
+                    throw new InvalidWalletAddressException(INSUFFICIENT_FUNDS_FOR_FEE);
+                } else if (errorBody.contains(INVALID_CHANGE_ADDRESS)) {
+                    throw new InvalidWalletAddressException(INVALID_CHANGE_ADDRESS);
+                } else if (errorBody.contains(LOCKED_FUNDS)) {
+                    throw new InvalidWalletAddressException(LOCKED_FUNDS);
                 } else if (errorBody.contains("Invalid amount")) {
                     throw new InvalidAmountException("Invalid amount");
                 } else if (errorBody.contains("An error occurred in atomicswap contract creation")) {
@@ -602,10 +626,16 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                 return response.body();
             } else {
                 String errorBody = response.errorBody().string();
-                if (errorBody.contains("INSUFFICIENT_FUNDS")) {
-                    throw new InsufficientFundsException("INSUFFICIENT_FUNDS");
-                } else if (errorBody.contains("INVALID_ADDRESS")) {
-                    throw new InvalidWalletAddressException("INVALID_ADDRESS");
+                if (errorBody.contains(INSUFFICIENT_FUNDS)) {
+                    throw new InsufficientFundsException(INSUFFICIENT_FUNDS);
+                } else if (errorBody.contains(INVALID_ADDRESS)) {
+                    throw new InvalidWalletAddressException(INVALID_ADDRESS);
+                } else if (errorBody.contains(INSUFFICIENT_FUNDS_FOR_FEE)) {
+                    throw new InvalidWalletAddressException(INSUFFICIENT_FUNDS_FOR_FEE);
+                } else if (errorBody.contains(INVALID_CHANGE_ADDRESS)) {
+                    throw new InvalidWalletAddressException(INVALID_CHANGE_ADDRESS);
+                } else if (errorBody.contains(LOCKED_FUNDS)) {
+                    throw new InvalidWalletAddressException(LOCKED_FUNDS);
                 } else if (errorBody.contains("Invalid amount")) {
                     throw new InvalidAmountException("Invalid amount");
                 } else if (errorBody.contains("contract is invalid")) {
@@ -635,10 +665,16 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                 return response.body();
             } else {
                 String errorBody = response.errorBody().string();
-                if (errorBody.contains("INSUFFICIENT_FUNDS")) {
-                    throw new InsufficientFundsException("INSUFFICIENT_FUNDS");
-                } else if (errorBody.contains("INVALID_ADDRESS")) {
-                    throw new InvalidWalletAddressException("INVALID_ADDRESS");
+                if (errorBody.contains(INSUFFICIENT_FUNDS)) {
+                    throw new InsufficientFundsException(INSUFFICIENT_FUNDS);
+                } else if (errorBody.contains(INVALID_ADDRESS)) {
+                    throw new InvalidWalletAddressException(INVALID_ADDRESS);
+                } else if (errorBody.contains(INSUFFICIENT_FUNDS_FOR_FEE)) {
+                    throw new InvalidWalletAddressException(INSUFFICIENT_FUNDS_FOR_FEE);
+                } else if (errorBody.contains(INVALID_CHANGE_ADDRESS)) {
+                    throw new InvalidWalletAddressException(INVALID_CHANGE_ADDRESS);
+                } else if (errorBody.contains(LOCKED_FUNDS)) {
+                    throw new InvalidWalletAddressException(LOCKED_FUNDS);
                 } else if (errorBody.contains("Invalid amount")) {
                     throw new InvalidAmountException("Invalid amount");
                 } else if (errorBody.contains("contract is invalid")) {

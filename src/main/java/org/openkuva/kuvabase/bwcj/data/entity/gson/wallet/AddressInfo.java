@@ -31,24 +31,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet;
+package org.openkuva.kuvabase.bwcj.data.entity.gson.wallet;
 
-public interface IBalance {
-    long getAvailableAmount();
+public class AddressInfo {
 
-    long getAvailableConfirmedAmount();
+    private String address;
+    private String privateKey;
+    private String path;
 
-    IByAddress[] getByAddress();
+    public AddressInfo(String address, String privateKey, String path){
+        this.address = address;
+        this.privateKey = privateKey;
+        this.path = path;
+    }
 
-    long getLockedAmount();
+    public AddressInfo(AddressInfo origin) {
+        this.address = origin.getAddress();
+        this.privateKey = origin.getPrivateKey();
+        this.path = origin.getPath();
+    }
 
-    long getLockedConfirmedAmount();
+    public String getAddress() {
+        return address;
+    }
 
-    long getTotalAmount();
+    public String getPath() {
+        return path;
+    }
 
-    long getTotalConfirmedAmount();
+    public String getPrivateKey() {
+        return privateKey;
+    }
 
-    long getAvailableAmountExcludeMasternode();
-
-    long getAvailableConfirmedAmountExcludeMasternode();
 }
+

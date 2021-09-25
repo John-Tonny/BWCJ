@@ -54,7 +54,10 @@ public class GsonBalance implements IBalance {
     private long totalAmount;
     @SerializedName("totalConfirmedAmount")
     private long totalConfirmedAmount;
-
+    @SerializedName("availableAmountExcludeMasternode")
+    private long availableAmountExcludeMasternode;
+    @SerializedName("availableConfirmedAmountExcludeMasternode")
+    private long availableConfirmedAmountExcludeMasternode;
 
     public GsonBalance() {
     }
@@ -67,6 +70,8 @@ public class GsonBalance implements IBalance {
         this.lockedConfirmedAmount = origin.getLockedConfirmedAmount();
         this.totalAmount = origin.getTotalAmount();
         this.totalConfirmedAmount = origin.getTotalConfirmedAmount();
+        this.availableAmountExcludeMasternode = origin.getAvailableAmountExcludeMasternode();
+        this.availableConfirmedAmountExcludeMasternode = origin.getAvailableConfirmedAmountExcludeMasternode();
     }
 
     private static GsonByAddress[] mapByAddress(IByAddress[] origin) {
@@ -115,5 +120,16 @@ public class GsonBalance implements IBalance {
     public long getTotalConfirmedAmount() {
         return totalConfirmedAmount;
     }
+
+    @Override
+    public long getAvailableAmountExcludeMasternode() {
+        return availableAmountExcludeMasternode;
+    }
+
+    @Override
+    public long getAvailableConfirmedAmountExcludeMasternode() {
+        return availableConfirmedAmountExcludeMasternode;
+    }
+
 }
 

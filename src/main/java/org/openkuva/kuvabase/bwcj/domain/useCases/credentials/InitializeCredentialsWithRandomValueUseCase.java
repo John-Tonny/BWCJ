@@ -35,13 +35,17 @@ package org.openkuva.kuvabase.bwcj.domain.useCases.credentials;
 
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.Utils;
+import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
+import org.openkuva.kuvabase.bwcj.domain.utils.VircleCoinTypeRetriever;
 
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
+
+import static org.openkuva.kuvabase.bwcj.domain.utils.DeriveUtils.deriveChildByPath;
 
 public class InitializeCredentialsWithRandomValueUseCase implements IInitializeCredentialsUseCase {
 
