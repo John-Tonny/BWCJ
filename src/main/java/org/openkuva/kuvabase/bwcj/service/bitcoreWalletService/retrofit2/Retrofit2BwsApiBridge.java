@@ -146,10 +146,10 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
     }
 
     @Override
-    public IAddressesResponse[] getAddresses() {
+    public IAddressesResponse[] getAddresses(@QueryMap Map<String, String> options) {
         try {
             Response<GsonAddressesResponse[]> response = serverAPI
-                    .getAddresses()
+                    .getAddresses(options)
                     .execute();
 
             if (response.isSuccessful()) {

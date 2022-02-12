@@ -41,9 +41,9 @@ import com.google.gson.annotations.SerializedName;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeBroadcast;
 
 public class GsonMasternodeBroadcast implements IMasternodeBroadcast {
-    @SerializedName("result")
+    @SerializedName("response")
     @Expose
-    public Object result;
+    public Object response;
 
     private Boolean bSuccessful;
     private String errorMessage;
@@ -52,12 +52,12 @@ public class GsonMasternodeBroadcast implements IMasternodeBroadcast {
     }
 
     public GsonMasternodeBroadcast(IMasternodeBroadcast origin) {
-        result = origin.getResult();
+        response = origin.getResponse();
     }
 
     @Override
-    public Object getResult() {
-        return result;
+    public Object getResponse() {
+        return response;
     }
 
     public class GsonMasternodeBroadcastResult {
@@ -80,7 +80,7 @@ public class GsonMasternodeBroadcast implements IMasternodeBroadcast {
     @Override
     public boolean isSuccessful() {
         if (this.bSuccessful != null) return bSuccessful.booleanValue();
-        if (this.result == null){
+        if (this.response == null){
             return false;
         }
         this.getStatus();
@@ -90,7 +90,7 @@ public class GsonMasternodeBroadcast implements IMasternodeBroadcast {
     @Override
     public String getErrorMessage() {
         if (this.bSuccessful != null) return this.errorMessage;
-        if (this.result == null){
+        if (this.response == null){
             return null;
         }
         this.getStatus();
@@ -99,7 +99,7 @@ public class GsonMasternodeBroadcast implements IMasternodeBroadcast {
 
     private void getStatus() {
         Gson gson=new Gson();
-        String str = gson.toJson(this.getResult());
+        String str = gson.toJson(this.getResponse());
         GsonMasternodeBroadcastResult gsonMasternodeBroadcastResult = gson.fromJson(str, GsonMasternodeBroadcastResult.class);
         this.errorMessage = gsonMasternodeBroadcastResult.getErrorMessage();
         if( this.errorMessage!=null){

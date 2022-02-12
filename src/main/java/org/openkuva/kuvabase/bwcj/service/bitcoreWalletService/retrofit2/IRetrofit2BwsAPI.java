@@ -86,7 +86,7 @@ public interface IRetrofit2BwsAPI {
 
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
     @GET("v1/addresses/")
-    Call<GsonAddressesResponse[]> getAddresses();
+    Call<GsonAddressesResponse[]> getAddresses(@QueryMap Map<String, String> options);
 
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
     @POST("v2/wallets/{wallet_id}/copayers")

@@ -37,4 +37,5 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.addres
 
 public interface IGetWalletAddressesUseCase {
     IAddressesResponse execute();
+    IAddressesResponse execute(String address);
 }

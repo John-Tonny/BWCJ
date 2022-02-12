@@ -35,7 +35,7 @@ package org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode;
 
 
 public interface IMasternodeBroadcast {
-    Object getResult();
+    Object getResponse();
     boolean isSuccessful();
     String getErrorMessage();
 }

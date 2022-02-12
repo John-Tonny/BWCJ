@@ -87,7 +87,7 @@ public interface IBitcoreWalletServerAPI {
     /**
      * GET v1/addresses/
      */
-    IAddressesResponse[] getAddresses();
+    IAddressesResponse[] getAddresses(@QueryMap Map<String, String> options);
 
     /**
      * POST v2/wallets/{wallet_id}/copayers

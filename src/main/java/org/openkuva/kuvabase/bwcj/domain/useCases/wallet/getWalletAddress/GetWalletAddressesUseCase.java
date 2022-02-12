@@ -36,6 +36,9 @@ package org.openkuva.kuvabase.bwcj.domain.useCases.wallet.getWalletAddress;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.IAddressesResponse;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GetWalletAddressesUseCase implements IGetWalletAddressesUseCase {
     private final IBitcoreWalletServerAPI bwsApi;
 
@@ -45,16 +48,24 @@ public class GetWalletAddressesUseCase implements IGetWalletAddressesUseCase {
 
     @Override
     public IAddressesResponse execute() {
-        final IAddressesResponse[] addresses = bwsApi.getAddresses();
-        for (IAddressesResponse address : addresses) {
-            if (address.hasActivity()) {
-                return address;
+        return this.execute(null);
+    }
+
+    @Override
+    public IAddressesResponse execute(String address) {
+        Map<String, String> options = new HashMap<String, String>();
+        if (address != null) {
+            options.put("address", address);
+        }
+        final IAddressesResponse[] addresses = bwsApi.getAddresses(options);
+        for (IAddressesResponse address1 : addresses) {
+            if (address1.hasActivity()) {
+                return address1;
             }
         }
         if (addresses.length > 0) {
             return addresses[0];
         }
-
         throw new IllegalStateException("no address");
     }
 }
