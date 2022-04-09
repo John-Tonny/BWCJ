@@ -37,5 +37,6 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.addres
 
 public interface ICreateNewMainAddressesFromWalletUseCase {
     IAddressesResponse create();
-    IAddressesResponse create(Boolean ignoreMaxGap);
+    IAddressesResponse create(Boolean isChange);
+    IAddressesResponse create(Boolean ignoreMaxGap, Boolean isChange);
 }

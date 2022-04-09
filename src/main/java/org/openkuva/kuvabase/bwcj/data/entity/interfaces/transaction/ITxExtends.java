@@ -31,39 +31,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode;
+package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
 
-public interface IMasternode {
+public interface ITxExtends {
+    int getVersion();
 
-    long getCreatedOn();
-    long getUpdatedOn();
-    String getWalletId();
-    String getCoin();
-    String getNetwork();
+    String getOutScripts();
+
     String getMasternodePrivKey();
-    long getReward();
 
-    String getProTxHash();
-    String getAddress();
-    String getPayee();
-    String getStatus();
-
-    long getCollateralBlock();
-    long getLastpaidTime();
-    long getLastpaidBlock();
-
-    String getOwnerAddr();
-    String getVoteAddr();
-    String getPayAddr();
-
-    String getMasternodePubKey();
-
-    String getTxid();
-
-    void setMasternodePubKey(String masternodePubKey);
-    void setMasternodePrivKey(String masternodePrivKey);
-    void setVoteAddr(String votAddr);
-    void setPayAddr(String  payAddr);
-    void setAddress(String host, int port);
+    void setOutScripts(String outScripts);
 
 }

@@ -37,7 +37,7 @@ import org.bitcoinj.core.Utils;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptChunk;
 import org.bitcoinj.script.ScriptOpCodes;
-import org.bitcoinj.core.Address;
+import org.bitcoinj.core.LegacyAddress;
 import org.bitcoinj.core.NetworkParameters;
 
 import java.util.List;
@@ -94,8 +94,8 @@ public final class AuditContract {
             }
 
             this.secretHash = Utils.HEX.encode(s.getChunks().get(5).data);
-            this.recipientAddr = new Address(parameters, s.getChunks().get(9).data).toBase58();
-            this.refundAddr = new Address(parameters, s.getChunks().get(16).data).toBase58();
+            this.recipientAddr = LegacyAddress.fromScriptHash(parameters, s.getChunks().get(9).data).toBase58();
+            this.refundAddr = LegacyAddress.fromScriptHash(parameters, s.getChunks().get(16).data).toBase58();
             this.lockTime  = Integer.parseInt(Utils.HEX.encode(Utils.reverseBytes(s.getChunks().get(11).data)), 16);
 
             this.secretSize = Integer.parseInt(Utils.HEX.encode(s.getChunks().get(2).data), 16);
@@ -105,7 +105,7 @@ public final class AuditContract {
             }
 
             byte[] contractHash = Utils.sha256hash160(Utils.HEX.decode(contract));
-            this.contractAddr = Address.fromP2SHHash(parameters, contractHash).toBase58();
+            this.contractAddr = LegacyAddress.fromScriptHash(parameters, contractHash).toBase58();
         }catch (Exception e) {
             this.atomicSwap = false;
         }

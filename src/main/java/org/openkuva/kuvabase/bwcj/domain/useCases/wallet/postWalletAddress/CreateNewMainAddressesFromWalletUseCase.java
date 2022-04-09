@@ -46,13 +46,18 @@ public class CreateNewMainAddressesFromWalletUseCase implements ICreateNewMainAd
 
     @Override
     public IAddressesResponse create() {
-        return create(false);
+        return create(false, false);
     }
 
     @Override
-    public IAddressesResponse create(Boolean ignoreMaxGap) {
+    public IAddressesResponse create(Boolean isChange) {
+        return create(true, isChange);
+    }
+
+    @Override
+    public IAddressesResponse create(Boolean ignoreMaxGap, Boolean isChange) {
         return
                 bwsApi.postAddresses(
-                        new AddressesRequest(ignoreMaxGap));
+                        new AddressesRequest(ignoreMaxGap, isChange));
     }
 }

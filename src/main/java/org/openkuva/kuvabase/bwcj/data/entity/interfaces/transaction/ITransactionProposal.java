@@ -113,5 +113,5 @@ public interface ITransactionProposal {
     String getAtomicswapAddr();
     String getAtomicswapSecretHash();
 
-
+    ITxExtends getTxExtends();
 }

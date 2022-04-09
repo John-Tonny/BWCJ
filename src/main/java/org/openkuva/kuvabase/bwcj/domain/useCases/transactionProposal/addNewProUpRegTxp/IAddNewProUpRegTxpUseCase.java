@@ -31,39 +31,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode;
+package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewProUpRegTxp;
 
-public interface IMasternode {
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodePro;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 
-    long getCreatedOn();
-    long getUpdatedOn();
-    String getWalletId();
-    String getCoin();
-    String getNetwork();
-    String getMasternodePrivKey();
-    long getReward();
+public interface IAddNewProUpRegTxpUseCase {
+    ITransactionProposal execute(
+            String customData,
+            boolean excludeMasternode,
+            String txid,
+            String masternodePubKey,
+            String masternodePrivKey);
 
-    String getProTxHash();
-    String getAddress();
-    String getPayee();
-    String getStatus();
+    ITransactionProposal execute(
+            String msg,
+            String customData,
+            boolean excludeMasternode,
+            String txid,
+            String masternodePubKey,
+            String masternodePrivKey,
+            String ownerPrivKey,
+            String voteAddr,
+            String payAddr);
 
-    long getCollateralBlock();
-    long getLastpaidTime();
-    long getLastpaidBlock();
-
-    String getOwnerAddr();
-    String getVoteAddr();
-    String getPayAddr();
-
-    String getMasternodePubKey();
-
-    String getTxid();
-
-    void setMasternodePubKey(String masternodePubKey);
-    void setMasternodePrivKey(String masternodePrivKey);
-    void setVoteAddr(String votAddr);
-    void setPayAddr(String  payAddr);
-    void setAddress(String host, int port);
-
+    ITransactionProposal execute(
+            String msg,
+            boolean dryRun,
+            String customData,
+            boolean excludeMasternode,
+            String txid,
+            String masternodePubKey,
+            String masternodePrivKey,
+            String ownerPrivKey,
+            String voteAddr,
+            String payAddr);
 }

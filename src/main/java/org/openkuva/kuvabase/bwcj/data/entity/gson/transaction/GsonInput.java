@@ -131,4 +131,9 @@ public class GsonInput implements IInput {
         return publicKeys;
     }
 
+    @Override
+    public void setInput(String txid, int vout){
+        this.txid = txid;
+        this.vout = vout;
+    }
 }

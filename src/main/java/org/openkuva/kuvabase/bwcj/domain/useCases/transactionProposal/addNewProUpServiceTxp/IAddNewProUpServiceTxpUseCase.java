@@ -31,39 +31,50 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode;
+package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewProUpServiceTxp;
 
-public interface IMasternode {
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodePro;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 
-    long getCreatedOn();
-    long getUpdatedOn();
-    String getWalletId();
-    String getCoin();
-    String getNetwork();
-    String getMasternodePrivKey();
-    long getReward();
+import javax.swing.*;
 
-    String getProTxHash();
-    String getAddress();
-    String getPayee();
-    String getStatus();
+public interface IAddNewProUpServiceTxpUseCase {
+    ITransactionProposal execute(
+            String customData,
+            boolean excludeMasternode,
+            String txid,
+            String address
+    );
 
-    long getCollateralBlock();
-    long getLastpaidTime();
-    long getLastpaidBlock();
+    ITransactionProposal execute(
+            String msg,
+            String customData,
+            boolean excludeMasternode,
+            String txid,
+            String address,
+            String masternodePrivKey
+    );
 
-    String getOwnerAddr();
-    String getVoteAddr();
-    String getPayAddr();
+    ITransactionProposal execute(
+            String msg,
+            String customData,
+            boolean excludeMasternode,
+            String txid,
+            String address,
+            String payAddr,
+            String masternodePrivKey
+    );
 
-    String getMasternodePubKey();
-
-    String getTxid();
-
-    void setMasternodePubKey(String masternodePubKey);
-    void setMasternodePrivKey(String masternodePrivKey);
-    void setVoteAddr(String votAddr);
-    void setPayAddr(String  payAddr);
-    void setAddress(String host, int port);
-
+    ITransactionProposal execute(
+            String msg,
+            boolean dryRun,
+            String customData,
+            boolean excludeMasternode,
+            String txid,
+            String address,
+            String payAddr,
+            String masternodePrivKey
+    );
 }

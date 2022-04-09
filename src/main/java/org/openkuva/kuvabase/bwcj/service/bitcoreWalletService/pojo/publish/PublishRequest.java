@@ -37,13 +37,20 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.publis
 
 public class PublishRequest implements IPublishRequest {
     private final String proposalSignature;
+    private final String outScripts;
 
-    public PublishRequest(String proposalSignature) {
+    public PublishRequest(String proposalSignature, String outScripts) {
         this.proposalSignature = proposalSignature;
+        this.outScripts = outScripts;
     }
 
     @Override
     public String getProposalSignature() {
         return proposalSignature;
+    }
+
+    @Override
+    public String getOutScripts() {
+        return outScripts;
     }
 }

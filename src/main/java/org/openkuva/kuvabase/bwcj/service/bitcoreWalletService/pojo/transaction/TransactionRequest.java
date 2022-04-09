@@ -33,10 +33,9 @@
 
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
+import com.google.common.collect.ImmutableCollection;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.*;
 
 
 public class TransactionRequest implements ITransactionRequest {
@@ -50,6 +49,7 @@ public class TransactionRequest implements ITransactionRequest {
     private String customData;
     private Object payProUrl;
     private boolean excludeMasternode;
+    private GsonTxExtends txExtends;
 
     public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode) {
         this.outputs = outputs;
@@ -61,6 +61,20 @@ public class TransactionRequest implements ITransactionRequest {
         this.customData = customData;
         this.payProUrl = payProUrl;
         this.excludeMasternode = excludeMasternode;
+        this.txExtends = null;
+    }
+
+    public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, GsonTxExtends txExtends) {
+        this.outputs = outputs;
+        this.feeLevel = feeLevel;
+        this.message = message;
+        this.excludeUnconfirmedUtxos = excludeUnconfirmedUtxos;
+        this.dryRun = dryRun;
+        this.operation = operation;
+        this.customData = customData;
+        this.payProUrl = payProUrl;
+        this.excludeMasternode = excludeMasternode;
+        this.txExtends = txExtends;
     }
 
     @Override
@@ -110,6 +124,11 @@ public class TransactionRequest implements ITransactionRequest {
     @Override
     public boolean isExcludeMasternode() {
         return excludeMasternode;
+    }
+
+    @Override
+    public GsonTxExtends getTxExtends() {
+        return txExtends;
     }
 
 }

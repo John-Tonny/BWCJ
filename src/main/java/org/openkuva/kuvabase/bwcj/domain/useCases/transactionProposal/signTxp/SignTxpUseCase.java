@@ -37,8 +37,11 @@ import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.core.Utils;
+import org.bitcoinj.core.LegacyAddress;
+import org.bitcoinj.core.SegwitAddress;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.TransactionSignature;
+import org.bitcoinj.script.ScriptBuilder;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
@@ -60,8 +63,8 @@ import static org.openkuva.kuvabase.bwcj.domain.utils.DeriveUtils.deriveChildByP
 public class SignTxpUseCase implements ISignTxpUseCase {
     private final IBitcoreWalletServerAPI bwsApi;
     private final ICredentials credentials;
-    private final TransactionBuilder transactionBuilder;
     private final CopayersCryptUtils copayersCryptUtils;
+    private final TransactionBuilder transactionBuilder;
 
     public SignTxpUseCase(IBitcoreWalletServerAPI bwsApi, ICredentials credentials, CopayersCryptUtils copayersCryptUtils, TransactionBuilder transactionBuilder) {
         this.bwsApi = bwsApi;
@@ -155,21 +158,39 @@ public class SignTxpUseCase implements ISignTxpUseCase {
                         .getInput(i)
                         .getOutpoint()
                         .getConnectedOutput();
-                if(Arrays.equals(
-                        connectedOutput
-                                .getAddressFromP2PKHScript(network)
-                                .getHash160(),
-                        priv.getPubKeyHash())) {
 
-                    result.add(
-                            new IndexedTransactionSignature(
-                                    transaction.calculateSignature(
-                                            i,
-                                            priv,
-                                            connectedOutput.getScriptBytes(),
-                                            Transaction.SigHash.ALL,
-                                            false),
-                                    i));
+                LegacyAddress legacyAddr = connectedOutput
+                        .getAddressFromP2PKHScript(network);
+                if(legacyAddr == null){
+
+                    SegwitAddress segwitAddr = connectedOutput
+                            .getAddressFromP2WPKHScript(network);
+                    if(segwitAddr != null && Arrays.equals(segwitAddr.getHash(), priv.getPubKeyHash())){
+                        result.add(
+                                new IndexedTransactionSignature(
+                                        transaction.calculateWitnessSignature(
+                                                i,
+                                                priv,
+                                                null,
+                                                ScriptBuilder.createP2PKHOutputScript(priv),
+                                                transaction.getInput(i).getValue(),
+                                                Transaction.SigHash.ALL,
+                                                false),
+                                        i));
+                    }                     
+                }else {
+                    if(Arrays.equals(legacyAddr.getHash(), priv.getPubKeyHash())) {
+                        result.add(
+                                new IndexedTransactionSignature(
+                                        transaction.calculateSignature(
+                                                i,
+                                                priv,
+                                                connectedOutput.getScriptBytes(),
+                                                Transaction.SigHash.ALL,
+                                                false),
+                                        i));
+
+                    }
                 }
             }
         }

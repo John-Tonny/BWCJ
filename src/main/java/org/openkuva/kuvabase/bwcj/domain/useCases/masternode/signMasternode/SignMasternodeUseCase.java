@@ -103,8 +103,8 @@ public class SignMasternodeUseCase implements ISignMasternodeUseCase {
         UnsafeByteArrayOutputStream outputStream1 = new UnsafeByteArrayOutputStream();
         UnsafeByteArrayOutputStream outputStream2 = new UnsafeByteArrayOutputStream();
         try {
-            serialize_input(txid, vout, outputStream);
-            hash_decode(pingHash, outputStream);
+            Utils.writeInput(txid, vout, outputStream);
+            Utils.writeHash(pingHash, outputStream);
             Date now = new Date();
             Utils.uint64ToByteStreamLE(BigInteger.valueOf(now.getTime()/1000), outputStream);
             outputStream.write(Utils.HEX.decode("01"));
@@ -112,8 +112,8 @@ public class SignMasternodeUseCase implements ISignMasternodeUseCase {
             Utils.uint32ToByteStreamLE(CLIENT_MASTERNODE_VERSION / 1000000, outputStream);
             String pingSig = this.signMessage(Utils.HEX.encode(outputStream.toByteArray()), masternodeKey);
 
-            serialize_input(txid, vout, outputStream1);
-            get_address(address, port, outputStream1);
+            Utils.writeInput(txid, vout, outputStream1);
+            Utils.writeIp(address, port, outputStream1);
             byte[] signPubKey = ECKey.fromPrivate(signPrivKey, true).getPubKey();
             outputStream1.write(Utils.HEX.decode(Integer.toHexString(signPubKey.length)));
             outputStream1.write(signPubKey);
@@ -125,8 +125,9 @@ public class SignMasternodeUseCase implements ISignMasternodeUseCase {
             String msgSig = this.signMessage(Utils.HEX.encode(outputStream1.toByteArray()), signPrivKey);
 
             outputStream2.write(Utils.HEX.decode("01"));
-            serialize_input(txid, vout, outputStream2);
-            get_address(address, port, outputStream2);
+            Utils.writeInput(txid, vout, outputStream2);
+            Utils.writeInput(txid, vout, outputStream2);
+            Utils.writeIp(address, port, outputStream2);
             outputStream2.write(Utils.HEX.decode(Integer.toHexString(signPubKey.length)));
             outputStream2.write(signPubKey);
             outputStream2.write(Utils.HEX.decode(Integer.toHexString(pubKey.length)));
@@ -135,8 +136,8 @@ public class SignMasternodeUseCase implements ISignMasternodeUseCase {
             outputStream2.write(Utils.HEX.decode(msgSig));
             Utils.uint64ToByteStreamLE(BigInteger.valueOf(now.getTime()/1000), outputStream2);
             Utils.uint32ToByteStreamLE(31800, outputStream2);
-            serialize_input(txid, vout, outputStream2);
-            hash_decode(pingHash, outputStream2);
+            Utils.writeInput(txid, vout, outputStream2);
+            Utils.writeHash(pingHash, outputStream2);
             Utils.uint64ToByteStreamLE(BigInteger.valueOf(now.getTime()/1000), outputStream2);
             outputStream2.write(Utils.HEX.decode(Integer.toHexString(pingSig.length()/2)));
             outputStream2.write(Utils.HEX.decode(pingSig));
@@ -149,28 +150,6 @@ public class SignMasternodeUseCase implements ISignMasternodeUseCase {
         }catch(IOException e){
             return null;
         }
-    }
-
-
-
-    public static void serialize_input(String txid, int vout, OutputStream outputStream) throws IOException {
-        outputStream.write(Utils.reverseBytes(Utils.HEX.decode(txid)));
-        Utils.uint32ToByteStreamLE(vout, outputStream);
-    }
-
-    public static void hash_decode(String pingHash, OutputStream outputStream) throws  IOException {
-        outputStream.write(Utils.reverseBytes(Utils.HEX.decode(pingHash)));
-    }
-
-    public static void get_address(String address, int port, OutputStream outputStream) throws IOException {
-        String[] strIp = address.split("\\.");
-        byte[] btIp= new byte[4];
-        for(int i=0;i<strIp.length;i++) {
-            btIp[i] = (byte)Integer.parseInt(strIp[i]);
-        }
-        outputStream.write(Utils.HEX.decode("00000000000000000000ffff"));
-        outputStream.write(btIp);
-        Utils.uint16ToByteStreamBE(port, outputStream);
     }
 
     private String signMessage(String message, String masternodeKey) {

@@ -33,37 +33,16 @@
 
 package org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode;
 
-public interface IMasternode {
-
-    long getCreatedOn();
-    long getUpdatedOn();
-    String getWalletId();
-    String getCoin();
-    String getNetwork();
+public interface IMasternodeCollateralPro {
+    String getCollateralId();
+    int getCollateralIndex();
+    String getCollateralPrivKey();
+    String getHost();
+    int getPort();
     String getMasternodePrivKey();
-    long getReward();
-
-    String getProTxHash();
-    String getAddress();
-    String getPayee();
-    String getStatus();
-
-    long getCollateralBlock();
-    long getLastpaidTime();
-    long getLastpaidBlock();
-
+    String getMasternodePubKey();
     String getOwnerAddr();
     String getVoteAddr();
     String getPayAddr();
-
-    String getMasternodePubKey();
-
-    String getTxid();
-
-    void setMasternodePubKey(String masternodePubKey);
-    void setMasternodePrivKey(String masternodePrivKey);
-    void setVoteAddr(String votAddr);
-    void setPayAddr(String  payAddr);
-    void setAddress(String host, int port);
-
+    int getReward();
 }

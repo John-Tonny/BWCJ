@@ -37,8 +37,10 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 
 public class AddressesRequest {
     private Boolean ignoreMaxGap;
+    private Boolean isChange;
 
-    public AddressesRequest(Boolean ignoreMaxGap) {
+    public AddressesRequest(Boolean ignoreMaxGap, Boolean isChange) {
         this.ignoreMaxGap = ignoreMaxGap;
+        this.isChange = isChange;
     }
 }

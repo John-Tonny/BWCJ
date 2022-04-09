@@ -41,7 +41,6 @@ import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.script.Script;
-import org.bitcoinj.core.PublicKey;
 import org.bitcoinj.core.Sha256Hash;
 
 public final class ExtractContract {
@@ -73,8 +72,7 @@ public final class ExtractContract {
             if (auditContract.getSecretHash().compareTo(Utils.HEX.encode(Sha256Hash.hash(s.getChunks().get(2).data)))>0) {
                 return;
             }
-
-            this.signAddr = ECKey.fromPublicOnly(s.getChunks().get(1).data).toAddress(params).toBase58();
+            // this.signAddr = ECKey.fromPublicOnly(s.getChunks().get(1).data).toAddress(params).toBase58();
             this.redeem = false;
             if (this.signAddr.compareTo(auditContract.getRecipientAddr())==0) {
                 this.redeem = true;

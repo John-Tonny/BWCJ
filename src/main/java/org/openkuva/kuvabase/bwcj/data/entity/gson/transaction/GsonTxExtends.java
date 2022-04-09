@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c)  2018 One Kuva LLC, known as OpenKuva.org
  * All rights reserved.
@@ -31,39 +32,55 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode;
+package org.openkuva.kuvabase.bwcj.data.entity.gson.transaction;
 
-public interface IMasternode {
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITxExtends;
 
-    long getCreatedOn();
-    long getUpdatedOn();
-    String getWalletId();
-    String getCoin();
-    String getNetwork();
-    String getMasternodePrivKey();
-    long getReward();
+public class GsonTxExtends implements ITxExtends {
 
-    String getProTxHash();
-    String getAddress();
-    String getPayee();
-    String getStatus();
+    @SerializedName("version")
+    @Expose
+    public int version;
 
-    long getCollateralBlock();
-    long getLastpaidTime();
-    long getLastpaidBlock();
+    @SerializedName("masternodePrivKey")
+    @Expose
+    public String masternodePrivKey;
 
-    String getOwnerAddr();
-    String getVoteAddr();
-    String getPayAddr();
+    @SerializedName("outScripts")
+    @Expose
+    public String outScripts;
 
-    String getMasternodePubKey();
+    public GsonTxExtends() {
+    }
 
-    String getTxid();
+    public GsonTxExtends(ITxExtends origin) {
+        this.version = origin.getVersion();
+        this.masternodePrivKey = origin.getMasternodePrivKey();
+        this.outScripts = origin.getOutScripts();
+    }
 
-    void setMasternodePubKey(String masternodePubKey);
-    void setMasternodePrivKey(String masternodePrivKey);
-    void setVoteAddr(String votAddr);
-    void setPayAddr(String  payAddr);
-    void setAddress(String host, int port);
+    public GsonTxExtends(int version, String masternodePrivKey) {
+        this.version = version;
+        this.masternodePrivKey = masternodePrivKey;
+        this.outScripts = null;
+    }
 
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public String getOutScripts() {
+        return outScripts;
+    }
+
+    @Override
+    public String getMasternodePrivKey() { return masternodePrivKey; }
+
+    public void setOutScripts(String outScripts) {
+        this.outScripts = outScripts;
+    }
 }

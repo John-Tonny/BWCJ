@@ -64,16 +64,33 @@ public class TransactionBuilder {
         Transaction transaction = new Transaction(network);
 
         // john
-        transaction.setVersion(2);
-        // transaction.setVersion(tp.getVersion());
-        transaction.setType(Transaction.Type.TRANSACTION_NORMAL);
+        if(tp.getTxExtends() != null && tp.getTxExtends().getVersion() > 0){
+          transaction.setVersion(tp.getTxExtends().getVersion());
+        }else {
+            transaction.setVersion(2);
+        }
+        // john
+        // transaction.setType(Transaction.Type.TRANSACTION_NORMAL);
 
         for (IOutput output : tp.getOutputs()) {
-            transaction.addOutput(
-                    Coin.valueOf(output.getAmount()),
-                    Address.fromBase58(
-                            network,
-                            output.getToAddress()));
+            // john 20220219
+            if(tp.getTxExtends() != null && tp.getTxExtends().getVersion() > 0 && tp.getTxExtends().getOutScripts()!= null) {
+                if (output.getAmount() == 0) {
+                    transaction.addOutput(
+                            Coin.valueOf(output.getAmount()),
+                            tp.getTxExtends().getOutScripts());
+                } else{
+                    transaction.addOutput(
+                            Coin.valueOf(output.getAmount()),
+                            Address.fromString(network,
+                                    output.getToAddress()));
+                }
+            }else {
+                transaction.addOutput(
+                        Coin.valueOf(output.getAmount()),
+                        Address.fromString(network,
+                                output.getToAddress()));
+            }
         }
 
         for (IInput input : tp.getInputs()) {
@@ -113,7 +130,7 @@ public class TransactionBuilder {
         if (changeAmount.isGreaterThan(Coin.ZERO)) {
             Script changeScript =
                     ScriptBuilder.createOutputScript(
-                            Address.fromBase58(
+                            Address.fromString(
                                     network,
                                     tp.getChangeAddress().getAddress()));
 
@@ -146,7 +163,7 @@ public class TransactionBuilder {
         Transaction result = new Transaction(transaction.getParams());
         // john
         result.setVersion((int) transaction.getVersion());
-        result.setType(transaction.getType());
+        // result.setType(transaction.getType());
 
         for (TransactionInput input : transaction.getInputs()) {
             result.addInput(input);

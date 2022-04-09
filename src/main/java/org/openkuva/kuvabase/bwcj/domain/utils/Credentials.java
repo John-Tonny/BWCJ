@@ -66,8 +66,7 @@ public final class Credentials implements ICredentials {
                 new DeterministicSeed(
                         new SecureRandom(),
                         DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS,
-                        "",
-                        Utils.currentTimeSeconds());
+                        "");
 
         this.seedWords = this.deterministicSeed.getSeedBytes();
         this.walletPrivateKey = new ECKey().getPrivKeyBytes();
@@ -85,8 +84,7 @@ public final class Credentials implements ICredentials {
                 new DeterministicSeed(
                         new SecureRandom(),
                         DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS,
-                        passphrase,
-                        Utils.currentTimeSeconds());
+                        passphrase);
 
         this.seedWords = this.deterministicSeed.getSeedBytes();
         this.walletPrivateKey = new ECKey().getPrivKeyBytes();
@@ -192,7 +190,13 @@ public final class Credentials implements ICredentials {
         return this.personalPrivateKey;
     }
 
+    @Override
     public AddressInfo getPrivateByPath(String path) {
+        return getPrivateByPath(path, false);
+    }
+
+    @Override
+    public AddressInfo getPrivateByPath(String path, boolean segwitMode) {
         if(this.copayersCryptUtils != null) {
             DeterministicKey xpriv =
                     this.copayersCryptUtils.derivedXPrivKey(
@@ -201,12 +205,9 @@ public final class Credentials implements ICredentials {
 
             DeterministicKey result = deriveChildByPath(xpriv, path);
 
-            return new AddressInfo(result.toAddress(this.getNetworkParameters()).toBase58(), result.getPrivateKeyAsHex(), path);
+            return new AddressInfo(result.toAddress(this.getNetworkParameters(), segwitMode).toString(), result.getPrivateKeyAsHex(), path);
         }else{
             return null;
         }
     }
-
-
-
 }

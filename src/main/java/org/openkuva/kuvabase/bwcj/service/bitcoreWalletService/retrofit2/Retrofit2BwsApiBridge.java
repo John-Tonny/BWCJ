@@ -35,12 +35,7 @@ package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2;
 
 import org.bitcoinj.core.NetworkParameters;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.fee.GsonFeeLevel;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternode;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeBroadcast;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeCollateral;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeRemove;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeStatus;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodePing;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.*;
 
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
@@ -539,6 +534,25 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public GsonMasternodeBlsSign getMasternodeBlsSign(@QueryMap Map<String, String> options) {
+        try {
+            Response<GsonMasternodeBlsSign> response = serverAPI
+                    .getMasternodeBlsSign(options)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public ITransactionProposal postInitiateTxProposals(ITransactionInitiateRequest transactionRequest, ICredentials credentials) {

@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c)  2018 One Kuva LLC, known as OpenKuva.org
  * All rights reserved.
@@ -31,39 +32,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode;
+package org.openkuva.kuvabase.bwcj.data.entity.gson.masternode;
 
-public interface IMasternode {
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeBlsSign;
 
-    long getCreatedOn();
-    long getUpdatedOn();
-    String getWalletId();
-    String getCoin();
-    String getNetwork();
-    String getMasternodePrivKey();
-    long getReward();
+public class GsonMasternodeBlsSign implements IMasternodeBlsSign {
+    @SerializedName("signature")
+    @Expose
+    public String signature;
 
-    String getProTxHash();
-    String getAddress();
-    String getPayee();
-    String getStatus();
+    public GsonMasternodeBlsSign() {
+    }
 
-    long getCollateralBlock();
-    long getLastpaidTime();
-    long getLastpaidBlock();
+    public GsonMasternodeBlsSign(IMasternodeBlsSign origin) {
+        this.signature = origin.getSignature();
+    }
 
-    String getOwnerAddr();
-    String getVoteAddr();
-    String getPayAddr();
-
-    String getMasternodePubKey();
-
-    String getTxid();
-
-    void setMasternodePubKey(String masternodePubKey);
-    void setMasternodePrivKey(String masternodePrivKey);
-    void setVoteAddr(String votAddr);
-    void setPayAddr(String  payAddr);
-    void setAddress(String host, int port);
-
+    @Override
+    public String getSignature() {
+        return signature;
+    }
 }

@@ -38,10 +38,7 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAction;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.*;
 import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonEncryptMessage;
 
@@ -169,6 +166,10 @@ public class GsonTransactionProposal implements ITransactionProposal {
     @Expose
     public String atomicswapSecretHash;
 
+    @SerializedName("txExtends")
+    @Expose
+    public GsonTxExtends txExtends;
+
     private String sharedEncryptingKey;
 
     public GsonTransactionProposal() {
@@ -221,6 +222,8 @@ public class GsonTransactionProposal implements ITransactionProposal {
                 ? null : new GsonAtomicswapData(origin.getAtomicswap());
         atomicswapAddr = origin.getAtomicswapAddr();
         atomicswapSecretHash = origin.getAtomicswapSecretHash();
+        txExtends = origin.getTxExtends() == null
+                ? null : new GsonTxExtends(origin.getTxExtends());
     }
 
     private static GsonAction[] mapActions(IAction[] origin) {
@@ -469,6 +472,11 @@ public class GsonTransactionProposal implements ITransactionProposal {
     @Override
     public String getAtomicswapSecretHash() {
         return atomicswapSecretHash;
+    }
+
+    @Override
+    public GsonTxExtends getTxExtends() {
+        return txExtends;
     }
 
     public void setSharedEncryptingKey(String sharedEncryptingKey) {

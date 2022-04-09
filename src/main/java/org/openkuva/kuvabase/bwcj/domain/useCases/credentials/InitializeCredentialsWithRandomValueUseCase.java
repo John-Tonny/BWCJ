@@ -63,8 +63,7 @@ public class InitializeCredentialsWithRandomValueUseCase implements IInitializeC
                 new DeterministicSeed(
                         new SecureRandom(),
                         DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS,
-                        passphrase,
-                        Utils.currentTimeSeconds());
+                        passphrase);
 
         credentials.setSeed(deterministicSeed.getSeedBytes());
         credentials.setWalletPrivateKey(new ECKey());

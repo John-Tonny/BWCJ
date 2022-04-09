@@ -39,6 +39,7 @@ import com.google.gson.annotations.SerializedName;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonCustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAtomicswapData;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonOutput;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
@@ -73,6 +74,10 @@ public class GsonTransactionRequest implements ITransactionRequest {
     @Expose
     private boolean excludeMasternode;
 
+    @SerializedName("txExtends")
+    @Expose
+    private GsonTxExtends txExtends;
+
     public GsonTransactionRequest(ITransactionRequest origin) {
         this.outputs = map(origin.getOutputs());
         this.feeLevel = origin.getFeeLevel();
@@ -84,6 +89,7 @@ public class GsonTransactionRequest implements ITransactionRequest {
         this.customData = origin.getCustomData();
         this.payProUrl = origin.getPayProUrl();
         this.excludeMasternode = origin.isExcludeMasternode();
+        this.txExtends = origin.getTxExtends();
     }
 
     private GsonOutput[] map(IOutput[] outputs) {
@@ -143,5 +149,8 @@ public class GsonTransactionRequest implements ITransactionRequest {
     public boolean isExcludeMasternode() {
         return excludeMasternode;
     }
+
+    @Override
+    public GsonTxExtends getTxExtends() { return txExtends; }
 
 }

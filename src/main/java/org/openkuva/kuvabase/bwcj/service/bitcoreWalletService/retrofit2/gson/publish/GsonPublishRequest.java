@@ -41,8 +41,12 @@ public class GsonPublishRequest implements IPublishRequest {
     @SerializedName("proposalSignature")
     String proposalSignature;
 
+    @SerializedName("outScripts")
+    String outScripts;
+
     public GsonPublishRequest(IPublishRequest origin) {
         proposalSignature = origin.getProposalSignature();
+        outScripts = origin.getOutScripts();
     }
 
     @Override
@@ -50,8 +54,13 @@ public class GsonPublishRequest implements IPublishRequest {
         return proposalSignature;
     }
 
-    public GsonPublishRequest(String proposalSignature) {
-        this.proposalSignature = proposalSignature;
+    @Override
+    public String getOutScripts() {
+        return outScripts;
+    }
 
+    public GsonPublishRequest(String proposalSignature, String outScripts) {
+        this.proposalSignature = proposalSignature;
+        this.outScripts = outScripts;
     }
 }

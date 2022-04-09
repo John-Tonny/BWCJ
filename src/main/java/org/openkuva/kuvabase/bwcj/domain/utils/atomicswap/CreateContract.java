@@ -71,8 +71,7 @@ public final class CreateContract {
                 new DeterministicSeed(
                         new SecureRandom(),
                         DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS,
-                        "",
-                        Utils.currentTimeSeconds());
+                        "");
         byte[] btSecret = deterministicSeed.getSeedBytes();
         this.secret = Utils.HEX.encode(btSecret);
         String secretHash = Utils.HEX.encode(Sha256Hash.hash(btSecret));
@@ -106,7 +105,7 @@ public final class CreateContract {
 
             s.op(ScriptOpCodes.OP_DUP);
             s.op(ScriptOpCodes.OP_HASH160);
-            s.data(Address.fromBase58(parameters, themAddr).getHash160());
+            s.data(Address.fromString(parameters, themAddr).getHash());
 
             s.op(ScriptOpCodes.OP_ELSE);
 
@@ -116,7 +115,7 @@ public final class CreateContract {
 
             s.op(ScriptOpCodes.OP_DUP);
             s.op(ScriptOpCodes.OP_HASH160);
-            s.data(Address.fromBase58(parameters, meAddr).getHash160());
+            s.data(Address.fromString(parameters, meAddr).getHash());
 
             s.op(ScriptOpCodes.OP_ENDIF);
 

@@ -35,16 +35,20 @@ package org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode;
 
 
 public interface IMasternodeStatus{
+    String getProTxHash();
     String getAddress();
     String getPayee();
     String getStatus();
-    int getProtocol();
-    String getDaemonversion();
-    String getSentinelversion();
-    String getSentinelstate();
-    long getLastseen();
-    long getActiveseconds();
-    long getLastpaidtime();
-    long getLastpaidblock();
-    int getPingretries();
+
+    long getCollateralBlock();
+    long getLastpaidTime();
+    long getLastpaidBlock();
+
+    String getOwnerAddr();
+    String getVoteAddr();
+    String getPayAddr();
+
+    String getMasternodePubKey();
+
+    String getTxid();
 }

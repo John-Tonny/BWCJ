@@ -36,12 +36,7 @@ package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces;
 import org.bitcoinj.core.NetworkParameters;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.fee.IFeeLevel;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternode;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeBroadcast;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeCollateral;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodePing;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeRemove;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeStatus;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.*;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionInitiateRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionParticipateRequest;
@@ -179,6 +174,12 @@ public interface IBitcoreWalletServerAPI {
      * GET v1/masternode/
      */
     IMasternodeRemove removeMasternodes(Map<String, String> options);
+
+
+    /**
+     * GET v1/masternode/blssign/
+     */
+    IMasternodeBlsSign getMasternodeBlsSign(Map<String, String> options);
 
     /**
      * POST v3/atomicswaptxproposals/

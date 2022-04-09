@@ -33,6 +33,8 @@
 
 package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
 
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
+
 public interface ITransactionRequest {
     IOutput[] getOutputs();
 
@@ -52,4 +54,6 @@ public interface ITransactionRequest {
     Object getPayProUrl();
 
     boolean isExcludeMasternode();
+
+    GsonTxExtends getTxExtends();
 }

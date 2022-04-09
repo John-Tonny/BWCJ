@@ -41,59 +41,81 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeS
 
 public class GsonMasternodeStatus implements IMasternodeStatus {
 
+    @SerializedName("proTxHash")
+    @Expose
+    public String proTxHash;
+
     @SerializedName("address")
     @Expose
     public String address;
-    @SerializedName("payee")
+
+    @SerializedName("collateraladdress")
     @Expose
     public String payee;
+
     @SerializedName("status")
     @Expose
     public String status;
-    @SerializedName("protocol")
+
+    @SerializedName("collateralblock")
     @Expose
-    public int protocol;
-    @SerializedName("daemonversion")
-    @Expose
-    public String daemonversion;
-    @SerializedName("sentinelversion")
-    @Expose
-    public String sentinelversion;
-    @SerializedName("sentinelstate")
-    @Expose
-    public String sentinelstate;
-    @SerializedName("lastseen")
-    @Expose
-    public long lastseen;
-    @SerializedName("activeseconds")
-    @Expose
-    public long activeseconds;
+    public long collateralBlock;
+
     @SerializedName("lastpaidtime")
     @Expose
-    public long lastpaidtime;
+    public long lastpaidTime;
+
     @SerializedName("lastpaidblock")
     @Expose
-    public long lastpaidblock;
-    @SerializedName("pingretries")
+    public long lastpaidBlock;
+
+    @SerializedName("owneraddress")
     @Expose
-    public int pingretries;
+    public String ownerAddr;
+
+    @SerializedName("votingaddress")
+    @Expose
+    public String voteAddr;
+
+    @SerializedName("payee")
+    @Expose
+    public String payAddr;
+
+    @SerializedName("pubkeyoperator")
+    @Expose
+    public String masternoderPubKey;
+
+    @SerializedName("txid")
+    @Expose
+    public String txid;
+
 
     public GsonMasternodeStatus() {
     }
 
+
     public GsonMasternodeStatus(IMasternodeStatus origin) {
+       proTxHash =origin.getProTxHash();
        address = origin.getAddress();
        payee = origin.getPayee();
        status = origin.getStatus();
-       protocol = origin.getProtocol();
-       daemonversion = origin.getDaemonversion();
-       sentinelversion = origin.getSentinelversion();
-       sentinelstate = origin.getSentinelstate();
-       lastseen = origin.getLastseen();
-       activeseconds = origin.getActiveseconds();
-       lastpaidtime = origin.getLastpaidtime();
-       lastpaidblock = origin.getLastpaidblock();
-       pingretries = origin.getPingretries();
+       collateralBlock = origin.getCollateralBlock();
+       lastpaidTime = origin.getLastpaidTime();
+       lastpaidBlock = origin.getLastpaidBlock();
+
+       ownerAddr = origin.getOwnerAddr();
+       voteAddr = origin.getVoteAddr();
+       payAddr = origin.getPayAddr();
+
+       masternoderPubKey = origin.getMasternodePubKey();
+
+       txid = origin.getTxid();
+
+    }
+
+    @Override
+    public String getProTxHash() {
+        return proTxHash;
     }
 
     @Override
@@ -108,30 +130,27 @@ public class GsonMasternodeStatus implements IMasternodeStatus {
     public String getStatus() { return status;}
 
     @Override
-    public int getProtocol() { return protocol; }
+    public long getCollateralBlock() { return collateralBlock; }
 
     @Override
-    public String getDaemonversion() { return daemonversion; }
+    public long getLastpaidTime() { return lastpaidTime; }
 
     @Override
-    public String getSentinelversion() { return sentinelversion; }
+    public long getLastpaidBlock() { return lastpaidBlock; }
 
     @Override
-    public String getSentinelstate() { return sentinelstate; }
+    public String getOwnerAddr() { return ownerAddr;}
 
     @Override
-    public long getLastseen() { return lastseen; }
+    public String getVoteAddr() { return voteAddr;}
 
     @Override
-    public long getActiveseconds() { return activeseconds; }
+    public String getPayAddr() { return payAddr;}
 
     @Override
-    public long getLastpaidtime() { return lastpaidtime; }
+    public String getMasternodePubKey() { return masternoderPubKey;}
 
     @Override
-    public long getLastpaidblock() { return lastpaidblock; }
-
-    @Override
-    public int getPingretries() { return pingretries; }
+    public String getTxid() { return txid; }
 
 }

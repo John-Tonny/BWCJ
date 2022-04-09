@@ -35,6 +35,8 @@ package org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials;
 
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.AddressInfo;
+
 import java.util.List;
 
 public interface ICredentials {
@@ -60,6 +62,6 @@ public interface ICredentials {
 
     List<String> getMnemonic();
 
-
-
+    AddressInfo getPrivateByPath(String path);
+    AddressInfo getPrivateByPath(String path, boolean segwitMode);
 }

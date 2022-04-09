@@ -31,39 +31,31 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode;
+package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewProRegTxp;
 
-public interface IMasternode {
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternode;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeCollateralPro;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.masternode.MasternodeBroadcastRequest;
 
-    long getCreatedOn();
-    long getUpdatedOn();
-    String getWalletId();
-    String getCoin();
-    String getNetwork();
-    String getMasternodePrivKey();
-    long getReward();
+public interface IAddNewProRegTxpUseCase {
+    ITransactionProposal execute(
+            String customData,
+            boolean excludeMasternode,
+            IMasternodeCollateralPro masternodeCollateralPro);
 
-    String getProTxHash();
-    String getAddress();
-    String getPayee();
-    String getStatus();
+    ITransactionProposal execute(
+            String msg,
+            String customData,
+            boolean excludeMasternode,
+            IMasternodeCollateralPro masternodeCollateralPro);
 
-    long getCollateralBlock();
-    long getLastpaidTime();
-    long getLastpaidBlock();
-
-    String getOwnerAddr();
-    String getVoteAddr();
-    String getPayAddr();
-
-    String getMasternodePubKey();
-
-    String getTxid();
-
-    void setMasternodePubKey(String masternodePubKey);
-    void setMasternodePrivKey(String masternodePrivKey);
-    void setVoteAddr(String votAddr);
-    void setPayAddr(String  payAddr);
-    void setAddress(String host, int port);
-
+    ITransactionProposal execute(
+            String msg,
+            boolean dryRun,
+            String customData,
+            boolean excludeMasternode,
+            IMasternodeCollateralPro masternodeCollateralPro);
 }

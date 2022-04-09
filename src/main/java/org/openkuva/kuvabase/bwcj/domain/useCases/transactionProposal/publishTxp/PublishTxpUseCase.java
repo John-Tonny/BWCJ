@@ -57,6 +57,10 @@ public class PublishTxpUseCase implements IPublishTxpUseCase {
 
     @Override
     public ITransactionProposal execute(ITransactionProposal toPublish) {
+        String outScripts = null;
+        if(toPublish.getTxExtends()!=null && toPublish.getTxExtends().getVersion()>0 && toPublish.getTxExtends().getOutScripts()!= null){
+            outScripts = toPublish.getTxExtends().getOutScripts();
+        }
         return
                 bwsApi.postTxProposalsTxIdPublish(
                         toPublish.getId(),
@@ -66,7 +70,7 @@ public class PublishTxpUseCase implements IPublishTxpUseCase {
                                                 transactionBuilder.buildTx(toPublish).unsafeBitcoinSerialize1()),
                                         copayersCryptUtils.requestDerivation(
                                                 credentials.getSeed())
-                                                .getPrivateKeyAsHex())),
+                                                .getPrivateKeyAsHex()), outScripts),
                         credentials);
     }
 }

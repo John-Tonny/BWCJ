@@ -53,4 +53,6 @@ public interface IInput {
     String getPath();
 
     List<String> getPublicKeys();
+
+    void setInput(String txid, int vout);
 }

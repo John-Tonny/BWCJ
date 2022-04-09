@@ -39,6 +39,7 @@ import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeBroa
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeCollateral;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodePing;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeRemove;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeBlsSign;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeStatus;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
@@ -200,5 +201,9 @@ public interface IRetrofit2BwsAPI {
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
     @GET("v2/atomicswaptxproposals/")
     Call<GsonTransactionProposal[]> getPendingAtomicswapTransactionProposals();
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v1/masternode/blssign/")
+    Call<GsonMasternodeBlsSign> getMasternodeBlsSign(@QueryMap Map<String, String> options);
 
 }

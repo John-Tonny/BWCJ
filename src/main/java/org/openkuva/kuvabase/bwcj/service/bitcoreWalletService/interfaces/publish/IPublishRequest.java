@@ -35,4 +35,5 @@ package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.publi
 
 public interface IPublishRequest {
     String getProposalSignature();
+    String getOutScripts();
 }

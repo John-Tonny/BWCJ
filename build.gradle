@@ -16,7 +16,7 @@ apply plugin: 'java-library'
 apply plugin: 'com.novoda.bintray-release'
 
 group 'org.openkuva.kuvabase'
-version '0.1.14'
+version '0.1.15'
 
 repositories {
     google()
@@ -24,11 +24,15 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // implementation files('.\\libs\\dashj-core-0.17.10.jar')
+    implementation files('.\\libs\\bitcoinj-core-0.16.1.jar')
+    implementation files('.\\libs\\bcprov-jdk15to18-1.69.jar')
 
     /*
     // implementation 'org.dashj:dashj-core:0.15'
-    implementation project(':dashj-core-0.15')
+    // implementation project(':dashj-core-0.15')
     // implementation project(':bitcoinj-core-0.15.5')
 
 
@@ -45,7 +49,8 @@ dependencies {
     api 'com.squareup.retrofit2:converter-gson:2.4.0'
 
     api group: 'org.mozilla', name: 'rhino', version: '1.7.10'
-    api 'com.google.guava:guava:18.0'
+    api 'com.google.guava:guava:31.0.1-android'
+
 
     implementation group: 'com.madgag.spongycastle', name: 'core', version: '1.51.0.0'
 
@@ -91,6 +96,16 @@ uploadShadow {
             pom.version ="$project.version"
             pom.artifactId ="$project.name"
             pom.groupId ="$project.group"
+        }
+    }
+}
+ */
+
+/*
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
         }
     }
 }

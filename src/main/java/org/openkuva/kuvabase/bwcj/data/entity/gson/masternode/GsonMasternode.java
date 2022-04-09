@@ -39,43 +39,113 @@ import com.google.gson.annotations.SerializedName;
 
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternode;
 
-public class GsonMasternode extends GsonMasternodeStatus implements IMasternode {
-    @SerializedName("createOn")
+public class GsonMasternode implements IMasternode {
+    @SerializedName("createdOn")
     @Expose
-    public long createOn;
+    public long createdOn;
+
+    @SerializedName("updatedOn")
+    @Expose
+    public long updatedOn;
+
     @SerializedName("walletId")
     @Expose
-    public String walletId;
+    String walletId;
+
     @SerializedName("txid")
     @Expose
-    public String txid;
-    @SerializedName("masternodeKey")
-    @Expose
-    public String masternodeKey;
+    String txid;
+
     @SerializedName("coin")
     @Expose
-    public String coin;
+    String coin;
+
     @SerializedName("network")
     @Expose
-    public String network;
+    String network;
 
+    @SerializedName("masternodePrivKey")
+    @Expose
+    String masternodePrivKey;
 
+    @SerializedName("masternodePubKey")
+    @Expose
+    String masternodePubKey;
+
+    @SerializedName("address")
+    @Expose
+    String address;
+
+    @SerializedName("payee")
+    @Expose
+    String payee;
+
+    @SerializedName("status")
+    @Expose
+    String status;
+
+    @SerializedName("proTxHash")
+    @Expose
+    String proTxHash;
+
+    @SerializedName("collateralBlock")
+    @Expose
+    long collateralBlock;
+
+    @SerializedName("lastpaidTime")
+    @Expose
+    long lastpaidTime;
+
+    @SerializedName("lastpaidBlock")
+    @Expose
+    long lastpaidBlock;
+
+    @SerializedName("ownerAddr")
+    @Expose
+    String ownerAddr;
+
+    @SerializedName("voteAddr")
+    @Expose
+    String voteAddr;
+
+    @SerializedName("payAddr")
+    @Expose
+    String payAddr;
+
+    @SerializedName("reward")
+    @Expose
+    long reward;
 
     public GsonMasternode() {
     }
 
     public GsonMasternode(IMasternode origin) {
-        super(origin);
-        createOn = origin.getCreatedOn();
+        createdOn = origin.getCreatedOn();
+        updatedOn = origin.getUpdatedOn();
         walletId = origin.getWalletId();
         txid = origin.getTxid();
-        masternodeKey = origin.getMasternodeKey();
+        masternodePrivKey = origin.getMasternodePrivKey();
+        masternodePubKey = origin.getMasternodePubKey();
         coin = origin.getCoin();
         network = origin.getNetwork();
+        address = origin.getAddress();
+        payee = origin.getPayee();
+        status = origin.getStatus();
+        proTxHash = origin.getProTxHash();
+        collateralBlock = origin.getCollateralBlock();
+        lastpaidTime = origin.getLastpaidTime();
+        lastpaidBlock = origin.getLastpaidBlock();
+        ownerAddr = origin.getOwnerAddr();
+        voteAddr = origin.getVoteAddr();
+        payAddr = origin.getPayAddr();
+        reward = origin.getReward();
     }
 
     @Override
-    public long getCreatedOn() { return createOn; }
+    public long getCreatedOn() { return createdOn; }
+
+    @Override
+    public long getUpdatedOn() { return updatedOn; }
 
     @Override
     public String getWalletId() { return walletId; }
@@ -84,11 +154,73 @@ public class GsonMasternode extends GsonMasternodeStatus implements IMasternode 
     public String getTxid() { return txid; }
 
     @Override
-    public String getMasternodeKey() { return masternodeKey;}
-
-    @Override
     public String getCoin() { return coin; }
 
     @Override
-    public String getNetwork() { return network; }
+    public String getNetwork() {return network; }
+
+    @Override
+    public String getMasternodePrivKey() { return masternodePrivKey; }
+
+    @Override
+    public String getMasternodePubKey() { return masternodePubKey; }
+
+    @Override
+    public String getAddress() {return address; }
+
+    @Override
+    public String getPayee() { return payee; }
+
+    @Override
+    public String getStatus() { return status; }
+
+    @Override
+    public String getProTxHash() { return proTxHash; }
+
+    @Override
+    public long getCollateralBlock() { return collateralBlock; }
+
+    @Override
+    public long getLastpaidTime() { return lastpaidTime; }
+
+    @Override
+    public long getLastpaidBlock() { return lastpaidBlock; }
+
+    @Override
+    public String getOwnerAddr() { return ownerAddr; }
+
+    @Override
+    public String getVoteAddr() { return voteAddr; }
+
+    @Override
+    public String getPayAddr() { return payAddr; }
+
+    @Override
+    public long getReward() { return reward; }
+
+    @Override
+    public void setMasternodePubKey(String masternodePubKey) {
+        this.masternodePubKey = masternodePubKey;
+    }
+
+    @Override
+    public void setMasternodePrivKey(String masternodePrivKey) {
+        this.masternodePrivKey = masternodePrivKey;
+    }
+
+    @Override
+    public void setVoteAddr(String voteAddr){
+        this.voteAddr = voteAddr;
+    }
+
+    @Override
+    public void setPayAddr(String payAddr){
+        this.payAddr = payAddr;
+    }
+
+    @Override
+    public void setAddress(String host, int port){
+        this.address = host + ":" + port;
+    }
+
 }
