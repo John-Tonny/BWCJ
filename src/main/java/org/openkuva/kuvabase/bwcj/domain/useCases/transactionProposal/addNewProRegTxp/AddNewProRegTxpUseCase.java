@@ -49,6 +49,7 @@ import org.openkuva.kuvabase.bwcj.domain.utils.masternode.ProRegTx;
 import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
 import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.IAddressesResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InsufficientFundsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidAmountException;
@@ -74,6 +75,12 @@ public class AddNewProRegTxpUseCase implements IAddNewProRegTxpUseCase {
         this.bwsApi = bwsApi;
     }
 
+    public AddNewProRegTxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+        this.bwsApi = bwsApi;
+    }
+
     @Override
     public ITransactionProposal execute(String customData, boolean excludeMasternode, IMasternodeCollateralPro masternodeCollateralPro) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
         return execute("" , customData, excludeMasternode, masternodeCollateralPro);
@@ -91,8 +98,8 @@ public class AddNewProRegTxpUseCase implements IAddNewProRegTxpUseCase {
 
     @Override
     public ITransactionProposal execute(String msg, boolean dryRun, String customData, boolean excludeMasternode, IMasternodeCollateralPro masternodeCollateralPro) {
-        CreateNewMainAddressesFromWalletUseCase createNewMainAddressesFromWalletUseCase = new CreateNewMainAddressesFromWalletUseCase(this.bwsApi);
-        IAddressesResponse changeAddrResponse = createNewMainAddressesFromWalletUseCase.create(true);
+        IAddressesResponse changeAddrResponse = this.bwsApi.postAddresses(
+                new AddressesRequest(true, true));
         String enMsg = new SjclMessageEncryptor()
                 .encrypt(
                         msg,
@@ -108,7 +115,7 @@ public class AddNewProRegTxpUseCase implements IAddNewProRegTxpUseCase {
                                 new IOutput[]{
                                         new Output(
                                                 changeAddrResponse.getAddress(),
-                                                0,
+                                                "0",
                                                 null)},
                                 "normal",
                                 enMsg,
@@ -123,7 +130,8 @@ public class AddNewProRegTxpUseCase implements IAddNewProRegTxpUseCase {
 
         String ownerAddr = masternodeCollateralPro.getOwnerAddr();
         if(ownerAddr == null ){
-            IAddressesResponse ownerAddrResponse = createNewMainAddressesFromWalletUseCase.create(false);
+            IAddressesResponse ownerAddrResponse = this.bwsApi.postAddresses(
+                    new AddressesRequest(true, false));
             ownerAddr = ownerAddrResponse.getAddress();
         }
 
@@ -134,7 +142,8 @@ public class AddNewProRegTxpUseCase implements IAddNewProRegTxpUseCase {
 
         String payAddr = masternodeCollateralPro.getPayAddr();
         if(payAddr == null ){
-            IAddressesResponse payAddrResponse = createNewMainAddressesFromWalletUseCase.create(false);
+            IAddressesResponse payAddrResponse = this.bwsApi.postAddresses(
+                    new AddressesRequest(true, false));
             payAddr = payAddrResponse.getAddress();
         }
 

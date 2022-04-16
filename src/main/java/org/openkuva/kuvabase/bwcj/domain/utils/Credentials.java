@@ -58,7 +58,34 @@ public final class Credentials implements ICredentials {
     private String sharedPrivateKey;
     private String personalPrivateKey;
     private DeterministicSeed deterministicSeed;
-    private final CopayersCryptUtils copayersCryptUtils;
+    private CopayersCryptUtils copayersCryptUtils;
+
+    public Credentials(String coin){
+        switch (coin) {
+            case "eth":{
+                this.copayersCryptUtils = new CopayersCryptUtils(new EthCoinTypeRetriever());
+                break;
+            }
+            default: {
+                this.copayersCryptUtils = new CopayersCryptUtils(new VircleCoinTypeRetriever());
+                break;
+            }
+        }
+        this.deterministicSeed =
+                new DeterministicSeed(
+                        new SecureRandom(),
+                        DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS,
+                        "");
+
+        this.seedWords = this.deterministicSeed.getSeedBytes();
+        this.walletPrivateKey = new ECKey().getPrivKeyBytes();
+        this.personalPrivateKey = copayersCryptUtils.personalEncryptingKey(
+                copayersCryptUtils.entropySource(
+                        copayersCryptUtils.requestDerivation(
+                                this.seedWords)));
+
+        this.networkParameters = MainNetParams.get();
+    }
 
     public Credentials(CopayersCryptUtils copayersCryptUtils) {
         this.copayersCryptUtils = copayersCryptUtils;
@@ -98,6 +125,27 @@ public final class Credentials implements ICredentials {
 
     public Credentials(List<String> mnemonic, String passphrase, CopayersCryptUtils copayersCryptUtils) {
         this.copayersCryptUtils = copayersCryptUtils;
+        this.deterministicSeed =
+                new DeterministicSeed(
+                        mnemonic,
+                        null,
+                        passphrase,
+                        Utils.currentTimeSeconds());
+
+        this.setSeed(this.deterministicSeed.getSeedBytes());
+        this.setWalletPrivateKey(new ECKey());
+        this.networkParameters = MainNetParams.get();
+    }
+
+    public Credentials(List<String> mnemonic, String passphrase, String coin) {
+        switch (coin) {
+            case "eth":{
+                this.copayersCryptUtils = new CopayersCryptUtils(new EthCoinTypeRetriever());
+            }
+            default: {
+                this.copayersCryptUtils = new CopayersCryptUtils(new VircleCoinTypeRetriever());
+            }
+        }
         this.deterministicSeed =
                 new DeterministicSeed(
                         mnemonic,
@@ -209,5 +257,15 @@ public final class Credentials implements ICredentials {
         }else{
             return null;
         }
+    }
+
+    @Override
+    public CopayersCryptUtils getCopayersCryptUtils(){
+        return this.copayersCryptUtils;
+    }
+
+    @Override
+    public String getCoin(){
+        return this.copayersCryptUtils.getCoin();
     }
 }

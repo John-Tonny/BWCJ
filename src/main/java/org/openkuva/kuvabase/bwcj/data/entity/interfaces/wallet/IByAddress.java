@@ -36,7 +36,7 @@ package org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet;
 public interface IByAddress {
     String getAddress();
 
-    long getAmount();
+    String getAmount();
 
     String getPath();
 }

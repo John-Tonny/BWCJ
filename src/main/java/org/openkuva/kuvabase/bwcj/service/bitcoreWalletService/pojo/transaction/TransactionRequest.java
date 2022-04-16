@@ -50,6 +50,7 @@ public class TransactionRequest implements ITransactionRequest {
     private Object payProUrl;
     private boolean excludeMasternode;
     private GsonTxExtends txExtends;
+    private String tokenAddress;
 
     public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode) {
         this.outputs = outputs;
@@ -62,6 +63,21 @@ public class TransactionRequest implements ITransactionRequest {
         this.payProUrl = payProUrl;
         this.excludeMasternode = excludeMasternode;
         this.txExtends = null;
+        this.tokenAddress = null;
+    }
+
+    public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, String tokenAddress) {
+        this.outputs = outputs;
+        this.feeLevel = feeLevel;
+        this.message = message;
+        this.excludeUnconfirmedUtxos = excludeUnconfirmedUtxos;
+        this.dryRun = dryRun;
+        this.operation = operation;
+        this.customData = customData;
+        this.payProUrl = payProUrl;
+        this.excludeMasternode = excludeMasternode;
+        this.txExtends = null;
+        this.tokenAddress = tokenAddress;
     }
 
     public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, GsonTxExtends txExtends) {
@@ -130,5 +146,8 @@ public class TransactionRequest implements ITransactionRequest {
     public GsonTxExtends getTxExtends() {
         return txExtends;
     }
+
+    @Override
+    public String getTokenAddress() { return tokenAddress; }
 
 }

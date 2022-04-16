@@ -78,6 +78,10 @@ public class GsonTransactionRequest implements ITransactionRequest {
     @Expose
     private GsonTxExtends txExtends;
 
+    @SerializedName("tokenAddress")
+    @Expose
+    private String tokenAddress;
+
     public GsonTransactionRequest(ITransactionRequest origin) {
         this.outputs = map(origin.getOutputs());
         this.feeLevel = origin.getFeeLevel();
@@ -90,6 +94,7 @@ public class GsonTransactionRequest implements ITransactionRequest {
         this.payProUrl = origin.getPayProUrl();
         this.excludeMasternode = origin.isExcludeMasternode();
         this.txExtends = origin.getTxExtends();
+        this.tokenAddress = origin.getTokenAddress();
     }
 
     private GsonOutput[] map(IOutput[] outputs) {
@@ -152,5 +157,8 @@ public class GsonTransactionRequest implements ITransactionRequest {
 
     @Override
     public GsonTxExtends getTxExtends() { return txExtends; }
+
+    @Override
+    public String  getTokenAddress() { return tokenAddress; }
 
 }

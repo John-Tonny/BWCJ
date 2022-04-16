@@ -40,14 +40,14 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 public interface IAtomicSendToUseCase {
     ITransactionProposal execute(
             String address,
-            long satoshis,
+            String amount,
             String msg,
             String customData,
             boolean excludeMasternode);
 
     ITransactionProposal execute(
             String address,
-            long dash,
+            String amount,
             String msg,
             String operation,
             String customData,

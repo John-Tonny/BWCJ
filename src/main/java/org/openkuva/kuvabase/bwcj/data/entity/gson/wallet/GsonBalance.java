@@ -41,23 +41,23 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IByAddress;
 public class GsonBalance implements IBalance {
 
     @SerializedName("availableAmount")
-    private long availableAmount;
+    private String availableAmount;
     @SerializedName("availableConfirmedAmount")
-    private long availableConfirmedAmount;
+    private String availableConfirmedAmount;
     @SerializedName("byAddress")
     private GsonByAddress[] byAddress;
     @SerializedName("lockedAmount")
-    private long lockedAmount;
+    private String lockedAmount;
     @SerializedName("lockedConfirmedAmount")
-    private long lockedConfirmedAmount;
+    private String lockedConfirmedAmount;
     @SerializedName("totalAmount")
-    private long totalAmount;
+    private String totalAmount;
     @SerializedName("totalConfirmedAmount")
-    private long totalConfirmedAmount;
+    private String totalConfirmedAmount;
     @SerializedName("availableAmountExcludeMasternode")
-    private long availableAmountExcludeMasternode;
+    private String availableAmountExcludeMasternode;
     @SerializedName("availableConfirmedAmountExcludeMasternode")
-    private long availableConfirmedAmountExcludeMasternode;
+    private String availableConfirmedAmountExcludeMasternode;
 
     public GsonBalance() {
     }
@@ -87,12 +87,12 @@ public class GsonBalance implements IBalance {
     }
 
     @Override
-    public long getAvailableAmount() {
+    public String getAvailableAmount() {
         return availableAmount;
     }
 
     @Override
-    public long getAvailableConfirmedAmount() {
+    public String getAvailableConfirmedAmount() {
         return availableConfirmedAmount;
     }
 
@@ -102,32 +102,32 @@ public class GsonBalance implements IBalance {
     }
 
     @Override
-    public long getLockedAmount() {
+    public String getLockedAmount() {
         return lockedAmount;
     }
 
     @Override
-    public long getLockedConfirmedAmount() {
+    public String getLockedConfirmedAmount() {
         return lockedConfirmedAmount;
     }
 
     @Override
-    public long getTotalAmount() {
+    public String getTotalAmount() {
         return totalAmount;
     }
 
     @Override
-    public long getTotalConfirmedAmount() {
+    public String getTotalConfirmedAmount() {
         return totalConfirmedAmount;
     }
 
     @Override
-    public long getAvailableAmountExcludeMasternode() {
+    public String getAvailableAmountExcludeMasternode() {
         return availableAmountExcludeMasternode;
     }
 
     @Override
-    public long getAvailableConfirmedAmountExcludeMasternode() {
+    public String getAvailableConfirmedAmountExcludeMasternode() {
         return availableConfirmedAmountExcludeMasternode;
     }
 

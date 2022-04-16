@@ -33,6 +33,9 @@
 
 package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public interface ITransactionProposal {
@@ -52,7 +55,7 @@ public interface ITransactionProposal {
 
     IOutput[] getOutputs();
 
-    long getAmount();
+    String getAmount();
 
     Object getMessage();
 
@@ -82,11 +85,11 @@ public interface ITransactionProposal {
 
     List<Integer> getOutputOrder();
 
-    int getFee();
+    long getFee();
 
     String getFeeLevel();
 
-    int getFeePerKb();
+    long getFeePerKb();
 
     boolean isExcludeUnconfirmedUtxos();
 
@@ -107,11 +110,36 @@ public interface ITransactionProposal {
 
     String getCreatorName();
 
-    String getRaw();
+    String[] getRaw();
 
     IAtomicswapData getAtomicswap();
     String getAtomicswapAddr();
     String getAtomicswapSecretHash();
 
     ITxExtends getTxExtends();
+
+    int getTxType();
+
+    long getMaxPriorityFeePerGas();
+
+    long getMaxFeePerGas();
+
+    String[] getAccessList();
+
+    String getFrom();
+
+    String getTokenAddress();
+
+    String getMultisigContractAddress();
+
+    long getNonce();
+
+    String getData();
+
+    boolean getIsTokenSwap();
+
+    String getDestinationTag();
+
+    long getGasLimit();
+
 }

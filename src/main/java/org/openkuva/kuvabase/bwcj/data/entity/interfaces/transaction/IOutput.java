@@ -34,9 +34,11 @@
 package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
 
 public interface IOutput {
+    String getAmount();
+    String getAddress();
     String getToAddress();
-
-    long getAmount();
-
     Object getMessage();
+    String getData();
+    long getGasLimit();
+    String getScript();
 }

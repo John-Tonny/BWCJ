@@ -50,6 +50,7 @@ import org.openkuva.kuvabase.bwcj.domain.utils.masternode.ProRevokeTx;
 import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
 import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.IAddressesResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InsufficientFundsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidAmountException;
@@ -74,6 +75,13 @@ public class AddNewProUpRevokeTxpUseCase implements IAddNewProUpRevokeTxpUseCase
         this.copayersCryptUtils = copayersCryptUtils;
         this.bwsApi = bwsApi;
     }
+
+    public AddNewProUpRevokeTxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi)  {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+        this.bwsApi = bwsApi;
+    }
+
 
     @Override
     public ITransactionProposal execute(String customData, boolean excludeMasternode, String txid) throws InvalidParamsException,InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
@@ -116,8 +124,9 @@ public class AddNewProUpRevokeTxpUseCase implements IAddNewProUpRevokeTxpUseCase
             }
         }
 
-        CreateNewMainAddressesFromWalletUseCase createNewMainAddressesFromWalletUseCase = new CreateNewMainAddressesFromWalletUseCase(this.bwsApi);
-        IAddressesResponse addressesResponse = createNewMainAddressesFromWalletUseCase.create(true);
+        IAddressesResponse changeAddrResponse = this.bwsApi.postAddresses(
+                new AddressesRequest(true, true));
+
         String enMsg = new SjclMessageEncryptor()
                 .encrypt(
                         msg,
@@ -131,8 +140,8 @@ public class AddNewProUpRevokeTxpUseCase implements IAddNewProUpRevokeTxpUseCase
                 new TransactionRequest(
                         new IOutput[]{
                                 new Output(
-                                        addressesResponse.getAddress(),
-                                        0,
+                                        changeAddrResponse.getAddress(),
+                                        "0",
                                         null)},
                         "normal",
                         enMsg,

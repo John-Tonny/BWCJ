@@ -33,30 +33,27 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.signTxp;
 
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionOutput;
-import org.bitcoinj.core.Utils;
-import org.bitcoinj.core.LegacyAddress;
-import org.bitcoinj.core.SegwitAddress;
 import org.bitcoinj.crypto.DeterministicKey;
-import org.bitcoinj.crypto.TransactionSignature;
-import org.bitcoinj.script.ScriptBuilder;
+import org.bitcoinj.core.Transaction;
+
+import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.AddressInfo;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.domain.utils.CommonNetworkParametersBuilder;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
+import org.openkuva.kuvabase.bwcj.domain.utils.transactions.EthTransactionBuilder;
 import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.signatures.SignatureRequest;
+import org.openkuva.kuvabase.bwcj.domain.utils.transactions.IndexedTransactionSignature;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import static org.openkuva.kuvabase.bwcj.domain.utils.DeriveUtils.deriveChildByPath;
 
@@ -64,146 +61,77 @@ public class SignTxpUseCase implements ISignTxpUseCase {
     private final IBitcoreWalletServerAPI bwsApi;
     private final ICredentials credentials;
     private final CopayersCryptUtils copayersCryptUtils;
-    private final TransactionBuilder transactionBuilder;
 
-    public SignTxpUseCase(IBitcoreWalletServerAPI bwsApi, ICredentials credentials, CopayersCryptUtils copayersCryptUtils, TransactionBuilder transactionBuilder) {
+    public SignTxpUseCase(IBitcoreWalletServerAPI bwsApi, ICredentials credentials, CopayersCryptUtils copayersCryptUtils) {
         this.bwsApi = bwsApi;
         this.credentials = credentials;
         this.copayersCryptUtils = copayersCryptUtils;
-        this.transactionBuilder = transactionBuilder;
+    }
+
+    public SignTxpUseCase(IBitcoreWalletServerAPI bwsApi, ICredentials credentials) {
+        this.bwsApi = bwsApi;
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
     }
 
     @Override
     public ITransactionProposal execute(ITransactionProposal txToSign) {
+        String secret = null;
         DeterministicKey xpriv =
                 copayersCryptUtils.derivedXPrivKey(
                         credentials.getSeed(),
                         credentials.getNetworkParameters());
 
-        Map<String, DeterministicKey> derived = new HashMap<>();
-        LinkedList<DeterministicKey> privs = new LinkedList<>();
+        if(txToSign.getCoin().equalsIgnoreCase("vcl")) {
+            List<List<IndexedTransactionSignature>> signaturesLists = new ArrayList<>();
+            TransactionBuilder transactionBuilder = new TransactionBuilder(new CommonNetworkParametersBuilder());
 
-        for (IInput input : txToSign.getInputs()) {
-            if (derived.get(input.getPath()) == null) {
-                DeterministicKey result = deriveChildByPath(xpriv, input.getPath());
-                derived.put(input.getPath(), result);
-                privs.push(derived.get(input.getPath()));
-            }
-        }
+            Map<String, DeterministicKey> derived = new HashMap<>();
+            LinkedList<DeterministicKey> privs = new LinkedList<>();
 
-        Transaction transaction = transactionBuilder.buildTx(txToSign);
-        List<List<IndexedTransactionSignature>> signaturesLists = new ArrayList<>();
-        for (int i = 0; i < privs.size(); i++) {
-            signaturesLists.add(
-                    getSignatures(
-                            transaction,
-                            privs.get(i),
-                            credentials.getNetworkParameters()));
-        }
-
-        String secret = null;
-        if (txToSign.getAtomicswap()!=null){
-            secret = txToSign.getAtomicswap().getSecret();
-        }
-        return
-                bwsApi.postTxProposalsTxIdSignatures(
-                        txToSign.getId(),
-                        new SignatureRequest(
-                                mapSignatures(
-                                        sort(
-                                                flat(signaturesLists))), secret),
-                        credentials);
-    }
-
-    private static List<IndexedTransactionSignature> sort(List<IndexedTransactionSignature> toSort) {
-        Collections.sort(toSort, (o1, o2) -> Integer.compare(o1.index, o2.index));
-        return toSort;
-    }
-
-    private static List<IndexedTransactionSignature> flat(List<List<IndexedTransactionSignature>> lists) {
-        List<IndexedTransactionSignature> result = new ArrayList<>();
-        for (List<IndexedTransactionSignature> list : lists) {
-            result.addAll(list);
-        }
-        return result;
-    }
-
-    private static List<String> mapSignatures(List<IndexedTransactionSignature> signatures) {
-        List<String> result = new ArrayList<>();
-        for (IndexedTransactionSignature signature : signatures) {
-            result.add(
-                    Utils.HEX.encode(
-                            signature.signature.encodeToDER()));
-
-        }
-        return result;
-    }
-
-    private static List<IndexedTransactionSignature> getSignatures(Transaction transaction, DeterministicKey priv, NetworkParameters network) {
-        List<IndexedTransactionSignature> result = new ArrayList<>();
-        for (int i = 0; i < transaction.getInputs().size(); i++) {
-            // john
-            if ( transaction.getAtomicswap()!=null && transaction.getAtomicswap().isRedeem()!=null) {
-                result.add(
-                        new IndexedTransactionSignature(
-                                transaction.calculateSignature(
-                                        i,
-                                        priv,
-                                        transaction.getInput(i).getScriptBytes(),
-                                        Transaction.SigHash.ALL,
-                                        false),
-                                i));
-            }else{
-                TransactionOutput connectedOutput = transaction
-                        .getInput(i)
-                        .getOutpoint()
-                        .getConnectedOutput();
-
-                LegacyAddress legacyAddr = connectedOutput
-                        .getAddressFromP2PKHScript(network);
-                if(legacyAddr == null){
-
-                    SegwitAddress segwitAddr = connectedOutput
-                            .getAddressFromP2WPKHScript(network);
-                    if(segwitAddr != null && Arrays.equals(segwitAddr.getHash(), priv.getPubKeyHash())){
-                        result.add(
-                                new IndexedTransactionSignature(
-                                        transaction.calculateWitnessSignature(
-                                                i,
-                                                priv,
-                                                null,
-                                                ScriptBuilder.createP2PKHOutputScript(priv),
-                                                transaction.getInput(i).getValue(),
-                                                Transaction.SigHash.ALL,
-                                                false),
-                                        i));
-                    }                     
-                }else {
-                    if(Arrays.equals(legacyAddr.getHash(), priv.getPubKeyHash())) {
-                        result.add(
-                                new IndexedTransactionSignature(
-                                        transaction.calculateSignature(
-                                                i,
-                                                priv,
-                                                connectedOutput.getScriptBytes(),
-                                                Transaction.SigHash.ALL,
-                                                false),
-                                        i));
-
-                    }
+            for (IInput input : txToSign.getInputs()) {
+                if (derived.get(input.getPath()) == null) {
+                    DeterministicKey result = deriveChildByPath(xpriv, input.getPath());
+                    derived.put(input.getPath(), result);
+                    privs.push(derived.get(input.getPath()));
                 }
             }
-        }
-        return result;
-    }
 
-    private static class IndexedTransactionSignature {
-        private final TransactionSignature signature;
-        private final int index;
+            Transaction transaction = transactionBuilder.buildTx(txToSign);
+            for (int i = 0; i < privs.size(); i++) {
+                signaturesLists.add(
+                        TransactionBuilder.getSignatures(
+                                transaction,
+                                privs.get(i),
+                                credentials.getNetworkParameters()));
+            }
 
-        private IndexedTransactionSignature(TransactionSignature signature, int index) {
-            this.signature = signature;
-            this.index = index;
+            if (txToSign.getAtomicswap() != null) {
+                secret = txToSign.getAtomicswap().getSecret();
+            }
+
+            return
+                    bwsApi.postTxProposalsTxIdSignatures(
+                            txToSign.getId(),
+                            new SignatureRequest(
+                                     IndexedTransactionSignature.mapSignatures(
+                                            IndexedTransactionSignature.sort(
+                                                    IndexedTransactionSignature.flat(signaturesLists))), secret),
+                            credentials);
+        }else if(txToSign.getCoin().equalsIgnoreCase("eth")){
+            EthTransactionBuilder ethTransactionBuilder = new EthTransactionBuilder(new CommonNetworkParametersBuilder());
+
+            AddressInfo addressInfo = this.credentials.getPrivateByPath("m/0/0");
+
+            return
+                    bwsApi.postTxProposalsTxIdSignatures(
+                            txToSign.getId(),
+                            new SignatureRequest(
+                                    ethTransactionBuilder.getSignatures(txToSign, addressInfo.getPrivateKey()),
+                                    secret),
+                            credentials);
+        }else{
+            throw new InvalidParamsException("coin is not support");
         }
     }
 }

@@ -26,24 +26,12 @@ repositories {
 dependencies {
     // implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    // implementation files('.\\libs\\dashj-core-0.17.10.jar')
     implementation files('.\\libs\\bitcoinj-core-0.16.1.jar')
-    implementation files('.\\libs\\bcprov-jdk15to18-1.69.jar')
+    // implementation files('.\\libs\\bcprov-jdk15to18-1.69.jar')
 
-    /*
-    // implementation 'org.dashj:dashj-core:0.15'
-    // implementation project(':dashj-core-0.15')
-    // implementation project(':bitcoinj-core-0.15.5')
+    implementation 'org.bouncycastle:bcprov-jdk15to18:1.69'
 
-
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-
-    implementation group: 'org.mozilla', name: 'rhino', version: '1.7.10'
-    implementation 'com.google.guava:guava:18.0'
-     */
-
-    // api project(':dashj-core-0.15')
+    api ('org.web3j:core:4.8.8')
 
     api 'com.squareup.retrofit2:retrofit:2.4.0'
     api 'com.squareup.retrofit2:converter-gson:2.4.0'

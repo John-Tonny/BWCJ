@@ -50,6 +50,7 @@ import org.openkuva.kuvabase.bwcj.domain.utils.masternode.ProUpServiceTx;
 import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
 import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.IAddressesResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InsufficientFundsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidAmountException;
@@ -71,6 +72,12 @@ public class AddNewProUpServiceTxpUseCase implements IAddNewProUpServiceTxpUseCa
     public AddNewProUpServiceTxpUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi)  {
         this.credentials = credentials;
         this.copayersCryptUtils = copayersCryptUtils;
+        this.bwsApi = bwsApi;
+    }
+
+    public AddNewProUpServiceTxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi)  {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
         this.bwsApi = bwsApi;
     }
 
@@ -139,8 +146,8 @@ public class AddNewProUpServiceTxpUseCase implements IAddNewProUpServiceTxpUseCa
             }
         }
 
-        CreateNewMainAddressesFromWalletUseCase createNewMainAddressesFromWalletUseCase = new CreateNewMainAddressesFromWalletUseCase(this.bwsApi);
-        IAddressesResponse addressesResponse = createNewMainAddressesFromWalletUseCase.create(true);
+        IAddressesResponse changeAddrResponse = this.bwsApi.postAddresses(
+                new AddressesRequest(true, true));
         String enMsg = new SjclMessageEncryptor()
                 .encrypt(
                         msg,
@@ -154,8 +161,8 @@ public class AddNewProUpServiceTxpUseCase implements IAddNewProUpServiceTxpUseCa
                         new TransactionRequest(
                                 new IOutput[]{
                                     new Output(
-                                        addressesResponse.getAddress(),
-                                        0,
+                                            changeAddrResponse.getAddress(),
+                                        "0",
                                         null)},
                                 "normal",
                                 enMsg,

@@ -71,7 +71,7 @@ public class AddNewAtomicswapRefundTxpUseCase implements IAddNewAtomicswapRefund
                 new IOutput[]{
                         new Output(
                                 address,
-                                0,
+                                "0",
                                 null)},
                 msg,
                 dryRun,

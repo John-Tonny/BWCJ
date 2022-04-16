@@ -56,4 +56,6 @@ public interface ITransactionRequest {
     boolean isExcludeMasternode();
 
     GsonTxExtends getTxExtends();
+
+    String getTokenAddress();
 }

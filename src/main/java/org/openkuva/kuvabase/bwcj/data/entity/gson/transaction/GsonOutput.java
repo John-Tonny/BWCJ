@@ -40,23 +40,55 @@ import com.google.gson.annotations.SerializedName;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 
 public class GsonOutput implements IOutput {
+    @SerializedName("amount")
+    @Expose
+    private String amount;
+
+    @SerializedName("address")
+    @Expose
+    private String address;
+
     @SerializedName("toAddress")
     @Expose
     private String toAddress;
-    @SerializedName("amount")
-    @Expose
-    private long amount;
+
     @SerializedName("message")
     @Expose
     private Object message;
+
+    @SerializedName("data")
+    @Expose
+    private String data;
+
+    @SerializedName("gasLimit")
+    @Expose
+    private long gasLimit;
+
+    @SerializedName("script")
+    @Expose
+    private String script;
 
     public GsonOutput() {
     }
 
     public GsonOutput(IOutput output) {
-        toAddress = output.getToAddress();
         amount = output.getAmount();
+        address = output.getAddress();
+        toAddress = output.getToAddress();
         message = output.getMessage();
+        data = output.getData();
+        gasLimit = output.getGasLimit();
+        script = output.getScript();
+    }
+
+    @Override
+    public String getAmount() {
+        return amount;
+    }
+
+    @Override
+    public String getAddress() {
+        return address;
     }
 
     @Override
@@ -65,13 +97,22 @@ public class GsonOutput implements IOutput {
     }
 
     @Override
-    public long getAmount() {
-        return amount;
-    }
-
-    @Override
     public Object getMessage() {
         return message;
     }
 
+    @Override
+    public String getData() {
+        return data;
+    }
+
+    @Override
+    public long getGasLimit() {
+        return gasLimit;
+    }
+
+    @Override
+    public String getScript() {
+        return script;
+    }
 }

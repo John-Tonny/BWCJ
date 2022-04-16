@@ -34,21 +34,21 @@
 package org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet;
 
 public interface IBalance {
-    long getAvailableAmount();
+    String getAvailableAmount();
 
-    long getAvailableConfirmedAmount();
+    String getAvailableConfirmedAmount();
 
     IByAddress[] getByAddress();
 
-    long getLockedAmount();
+    String getLockedAmount();
 
-    long getLockedConfirmedAmount();
+    String getLockedConfirmedAmount();
 
-    long getTotalAmount();
+    String getTotalAmount();
 
-    long getTotalConfirmedAmount();
+    String getTotalConfirmedAmount();
 
-    long getAvailableAmountExcludeMasternode();
+    String getAvailableAmountExcludeMasternode();
 
-    long getAvailableConfirmedAmountExcludeMasternode();
+    String getAvailableConfirmedAmountExcludeMasternode();
 }

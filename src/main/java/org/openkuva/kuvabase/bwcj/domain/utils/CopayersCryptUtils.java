@@ -54,6 +54,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import static org.bitcoinj.core.Utils.HEX;
 import static org.openkuva.kuvabase.bwcj.domain.utils.ListUtils.join;
+import static org.openkuva.kuvabase.bwcj.domain.useCases.wallet.DefaultConstants.DEFAULT_COIN;
 
 public final class CopayersCryptUtils {
 
@@ -63,12 +64,23 @@ public final class CopayersCryptUtils {
         this.coinTypeRetriever = coinTypeRetriever;
     }
 
+    public String getCoin() {
+        if(coinTypeRetriever instanceof EthCoinTypeRetriever){
+            return "eth";
+        }
+        return DEFAULT_COIN;
+    }
+
     public String copayerId(byte[] seed, NetworkParameters netParams) {
+        return copayerId(seed, netParams, DEFAULT_COIN);
+    }
+
+    public String copayerId(byte[] seed, NetworkParameters netParams, String coinName) {
         return
                 xPubToCopayerId(
                         xPubKey(
                                 derivedXPrivKey(seed, netParams),
-                                netParams));
+                                netParams), coinName);
     }
 
     public DeterministicKey derivedXPrivKey(byte[] seed, NetworkParameters netParams) {
@@ -105,9 +117,12 @@ public final class CopayersCryptUtils {
                                         requestDerivation.getPrivateKeyAsHex())));
     }
 
-    public String xPubToCopayerId(String xpub) {
+    public String xPubToCopayerId(String xpub, String coinName) {
         try {
             String shaHex = "";
+            if(coinName != DEFAULT_COIN){
+                xpub = coinName + xpub;
+            }
             MessageDigest md = MessageDigest.getInstance("SHA-256");
 
             md.update(xpub.getBytes());

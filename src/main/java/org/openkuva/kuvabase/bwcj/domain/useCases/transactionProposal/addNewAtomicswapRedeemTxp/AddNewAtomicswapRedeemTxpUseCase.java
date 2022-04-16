@@ -69,7 +69,7 @@ public class AddNewAtomicswapRedeemTxpUseCase implements IAddNewAtomicswapRedeem
                 new IOutput[]{
                         new Output(
                                 address,
-                                0,
+                                "0",
                                 null)},
                 msg,
                 dryRun,

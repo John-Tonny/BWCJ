@@ -72,7 +72,7 @@ public class GsonTransactionProposal implements ITransactionProposal {
     public GsonOutput[] outputs = null;
     @SerializedName("amount")
     @Expose
-    public long amount;
+    public String amount;
     @SerializedName("message")
     @Expose
     public Object message;
@@ -111,13 +111,13 @@ public class GsonTransactionProposal implements ITransactionProposal {
     public List<Integer> outputOrder = null;
     @SerializedName("fee")
     @Expose
-    public int fee;
+    public long fee;
     @SerializedName("feeLevel")
     @Expose
     public String feeLevel;
     @SerializedName("feePerKb")
     @Expose
-    public int feePerKb;
+    public long feePerKb;
     @SerializedName("excludeUnconfirmedUtxos")
     @Expose
     public boolean excludeUnconfirmedUtxos;
@@ -154,7 +154,7 @@ public class GsonTransactionProposal implements ITransactionProposal {
     public Object proposalSignaturePubKeySig;
     @SerializedName("raw")
     @Expose
-    public String raw;
+    public String[] raw;
 
     @SerializedName("atomicswap")
     @Expose
@@ -169,6 +169,54 @@ public class GsonTransactionProposal implements ITransactionProposal {
     @SerializedName("txExtends")
     @Expose
     public GsonTxExtends txExtends;
+
+    @SerializedName("txType")
+    @Expose
+    public int txType;
+
+    @SerializedName("maxPriorityFeePerGas")
+    @Expose
+    public long maxPriorityFeePerGas;
+
+    @SerializedName("maxFeePerGas")
+    @Expose
+    public long maxFeePerGas;
+
+    @SerializedName("accessList")
+    @Expose
+    public String[] accessList;
+
+    @SerializedName("from")
+    @Expose
+    public String from;
+
+    @SerializedName("tokenAddress")
+    @Expose
+    public String tokenAddress;
+
+    @SerializedName("multisigContractAddress")
+    @Expose
+    public String multisigContractAddress;
+
+    @SerializedName("nonce")
+    @Expose
+    public long nonce;
+
+    @SerializedName("data")
+    @Expose
+    public String data;
+
+    @SerializedName("isTokenSwap")
+    @Expose
+    public boolean isTokenSwap;
+
+    @SerializedName("destinationTag")
+    @Expose
+    public String destinationTag;
+
+    @SerializedName("gasLimit")
+    @Expose
+    public long gasLimit;
 
     private String sharedEncryptingKey;
 
@@ -224,6 +272,18 @@ public class GsonTransactionProposal implements ITransactionProposal {
         atomicswapSecretHash = origin.getAtomicswapSecretHash();
         txExtends = origin.getTxExtends() == null
                 ? null : new GsonTxExtends(origin.getTxExtends());
+
+
+        txType = origin.getTxType();
+        maxPriorityFeePerGas = origin.getMaxPriorityFeePerGas();
+        maxFeePerGas = origin.getMaxFeePerGas();
+        accessList = origin.getAccessList();
+        from = origin.getFrom();
+        tokenAddress = origin.getTokenAddress();
+        multisigContractAddress = origin.getMultisigContractAddress();
+        nonce = origin.getNonce();
+        gasLimit = origin.getGasLimit();
+
     }
 
     private static GsonAction[] mapActions(IAction[] origin) {
@@ -303,7 +363,7 @@ public class GsonTransactionProposal implements ITransactionProposal {
     }
 
     @Override
-    public long getAmount() {
+    public String getAmount() {
         return amount;
     }
 
@@ -392,7 +452,7 @@ public class GsonTransactionProposal implements ITransactionProposal {
     }
 
     @Override
-    public int getFee() {
+    public long getFee() {
         return fee;
     }
 
@@ -402,7 +462,7 @@ public class GsonTransactionProposal implements ITransactionProposal {
     }
 
     @Override
-    public int getFeePerKb() {
+    public long getFeePerKb() {
         return feePerKb;
     }
 
@@ -455,7 +515,7 @@ public class GsonTransactionProposal implements ITransactionProposal {
     }
 
     @Override
-    public String getRaw() {
+    public String[] getRaw() {
         return raw;
     }
 
@@ -478,6 +538,56 @@ public class GsonTransactionProposal implements ITransactionProposal {
     public GsonTxExtends getTxExtends() {
         return txExtends;
     }
+
+    @Override
+    public int getTxType() {
+        return txType;
+    }
+
+    @Override
+    public long getMaxPriorityFeePerGas() {
+        return maxPriorityFeePerGas;
+    }
+
+    @Override
+    public long getMaxFeePerGas() {
+        return maxFeePerGas;
+    }
+
+    @Override
+    public String[] getAccessList() {
+        return accessList;
+    }
+
+    @Override
+    public String getFrom() {
+        return from;
+    }
+
+    @Override
+    public String getTokenAddress() {
+        return tokenAddress;
+    }
+
+    @Override
+    public String getMultisigContractAddress() {
+        return multisigContractAddress;
+    }
+
+    @Override
+    public long getNonce() { return nonce; }
+
+    @Override
+    public String getData() { return data; }
+
+    @Override
+    public boolean getIsTokenSwap() { return isTokenSwap; }
+
+    @Override
+    public String getDestinationTag() { return destinationTag; }
+
+    @Override
+    public long getGasLimit() { return gasLimit; }
 
     public void setSharedEncryptingKey(String sharedEncryptingKey) {
         this.sharedEncryptingKey = sharedEncryptingKey;

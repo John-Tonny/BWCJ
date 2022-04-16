@@ -37,10 +37,11 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 
 public class Output implements IOutput {
     private final String toAddress;
-    private final long amount;
+    private final String amount;
     private final Object message;
+    private long gasLimit;
 
-    public Output(String toAddress, long amount, Object message) {
+    public Output(String toAddress, String amount, Object message) {
         this.toAddress = toAddress;
         this.amount = amount;
         this.message = message;
@@ -52,7 +53,7 @@ public class Output implements IOutput {
     }
 
     @Override
-    public long getAmount() {
+    public String getAmount() {
         return amount;
     }
 
@@ -60,4 +61,18 @@ public class Output implements IOutput {
     public Object getMessage() {
         return message;
     }
+
+    @Override
+    public String getAddress() { return null; }
+
+    @Override
+    public String getData() { return null; }
+
+    @Override
+    public String getScript() { return null; }
+
+    @Override
+    public long getGasLimit() { return gasLimit; }
+
+
 }

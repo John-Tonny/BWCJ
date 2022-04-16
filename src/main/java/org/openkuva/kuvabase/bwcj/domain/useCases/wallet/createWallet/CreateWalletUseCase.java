@@ -62,9 +62,23 @@ public class CreateWalletUseCase implements ICreateWalletUseCase {
         this.bwsApi = bwsApi;
     }
 
+    public CreateWalletUseCase(
+            ICredentials credentials,
+            IBitcoreWalletServerAPI bwsApi) {
+
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+        this.bwsApi = bwsApi;
+    }
+
     @Override
     public String execute() {
         return execute(DEFAULT_SINGLE_ADDRESS);
+    }
+
+    @Override
+    public String execute(String coin) {
+        return this.execute(true, coin);
     }
 
     @Override
@@ -74,6 +88,10 @@ public class CreateWalletUseCase implements ICreateWalletUseCase {
 
     @Override
     public String execute(boolean singleAddress, String coin) {
+        if(coin == "eth"){
+            singleAddress = true;
+        }
+
         return
                 bwsApi.postWallets(
                         new CreateWalletRequest(

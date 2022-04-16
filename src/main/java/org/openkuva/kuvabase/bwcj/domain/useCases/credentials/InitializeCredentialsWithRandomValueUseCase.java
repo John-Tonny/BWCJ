@@ -57,6 +57,11 @@ public class InitializeCredentialsWithRandomValueUseCase implements IInitializeC
         this.copayersCryptUtils = copayersCryptUtils;
     }
 
+    public InitializeCredentialsWithRandomValueUseCase(ICredentials credentials) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+    }
+
     @Override
     public List<String> execute(String passphrase) {
         DeterministicSeed deterministicSeed =

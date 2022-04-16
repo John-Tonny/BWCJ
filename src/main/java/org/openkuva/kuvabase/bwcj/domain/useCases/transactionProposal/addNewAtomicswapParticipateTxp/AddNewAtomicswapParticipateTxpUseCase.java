@@ -49,9 +49,12 @@ import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncrypt
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InsufficientFundsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidAmountException;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidWalletAddressException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionParticipateRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRequest;
+
+import java.math.BigDecimal;
 
 
 public class AddNewAtomicswapParticipateTxpUseCase implements IAddNewAtomicswapParticipateTxpUseCase {
@@ -65,13 +68,32 @@ public class AddNewAtomicswapParticipateTxpUseCase implements IAddNewAtomicswapP
         this.bwsApi = bwsApi;
     }
 
-    @Override
-    public ITransactionProposal execute(String address, long satoshis,  boolean dryRun, String customData, boolean excludeMasternode, String secretHash) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
-        return execute(address, satoshis, dryRun, "send", customData, excludeMasternode, secretHash);
+    public AddNewAtomicswapParticipateTxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+        this.bwsApi = bwsApi;
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, boolean dryRun, String operation, String customData, boolean excludeMasternode, String secretHash) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+    public ITransactionProposal execute(String address, String amount,  boolean dryRun, String customData, boolean excludeMasternode, String secretHash) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+        return execute(address, amount, dryRun, "send", customData, excludeMasternode, secretHash);
+    }
+
+    @Override
+    public ITransactionProposal execute(String address, String amount, boolean dryRun, String operation, String customData, boolean excludeMasternode, String secretHash) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+        String satoshis = null;
+        try {
+            if (this.copayersCryptUtils.getCoin().equalsIgnoreCase("vcl")) {
+                satoshis = new BigDecimal(amount).movePointRight(8).toString();
+            } else if (this.copayersCryptUtils.getCoin().equalsIgnoreCase( "eth")) {
+                satoshis = new BigDecimal(amount).movePointRight(18).toString();
+            } else {
+                throw new InvalidParamsException("coin is not support");
+            }
+        }catch(NumberFormatException e){
+            throw new InvalidParamsException("amount is invalid");
+        }
+
         return execute(
                 new IOutput[]{
                         new Output(

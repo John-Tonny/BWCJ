@@ -59,6 +59,12 @@ public class JoinWalletInCreationUseCase implements IJoinWalletInCreationUseCase
         this.bwsApi = bwsApi;
     }
 
+    public JoinWalletInCreationUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+        this.bwsApi = bwsApi;
+    }
+
     @Override
     public IJoinWalletResponse execute(String walletId) {
         return execute(walletId, DEFAULT_COIN);

@@ -58,6 +58,12 @@ public class BWCRequestSignatureInterceptor implements Interceptor {
         this.urlBws = url;
     }
 
+    public BWCRequestSignatureInterceptor(ICredentials credentials, String url) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+        this.urlBws = url;
+    }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request oldReq = chain.request();
@@ -68,7 +74,8 @@ public class BWCRequestSignatureInterceptor implements Interceptor {
                                 "x-identity",
                                 copayersCryptUtils.copayerId(
                                         credentials.getSeed(),
-                                        credentials.getNetworkParameters()))
+                                        credentials.getNetworkParameters(),
+                                        credentials.getCoin()))
                         .addHeader("x-signature",
                                 signRequest(
                                         oldReq.method().toLowerCase(),

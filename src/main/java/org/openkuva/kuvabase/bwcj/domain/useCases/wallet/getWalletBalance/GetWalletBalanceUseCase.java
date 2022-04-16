@@ -57,6 +57,13 @@ public class GetWalletBalanceUseCase implements IGetWalletBalanceUseCase {
         this.repository = repository;
     }
 
+    public GetWalletBalanceUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi, IWalletRepository repository) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+        this.bwsApi = bwsApi;
+        this.repository = repository;
+    }
+
     @Override
     public IWallet execute() throws CopayerNotFoundException {
         String personalEncryptingKey =

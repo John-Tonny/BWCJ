@@ -57,6 +57,12 @@ public class RecoveryWalletFromMnemonicUseCase implements IRecoveryWalletFromMne
         this.bwsApi = bwsApi;
     }
 
+    public RecoveryWalletFromMnemonicUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+        this.bwsApi = bwsApi;
+    }
+
     @Override
     public IWallet execute(List<String> mnemonic, String passphrase) throws CopayerNotFoundException {
         credentials.setSeed(MnemonicCode.toSeed(mnemonic, passphrase));

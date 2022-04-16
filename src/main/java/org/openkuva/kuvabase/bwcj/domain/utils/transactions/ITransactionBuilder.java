@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2018 One Kuva LLC, known as OpenKuva.org
+ * Copyright (c)  2019 One Kuva LLC, known as OpenKuva.org
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,7 +13,7 @@
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
  *
- *      * Neither the name of the One Kuva LLC, known as OpenKuva.org nor the names of its
+ *      * Neither the name of the copyright holder nor the names of its
  *      contributors may be used to endorse or promote products derived from this
  *      software without specific prior written permission.
  *
@@ -31,43 +31,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.gson.wallet;
+package org.openkuva.kuvabase.bwcj.domain.utils.transactions;
 
-import com.google.gson.annotations.SerializedName;
+import org.bitcoinj.core.*;
+import org.bitcoinj.script.Script;
+import org.bitcoinj.script.ScriptBuilder;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.domain.utils.INetworkParametersBuilder;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IByAddress;
+import java.util.List;
 
-public class GsonByAddress implements IByAddress {
-
-    @SerializedName("address")
-    private String address;
-    @SerializedName("amount")
-    private String amount;
-    @SerializedName("path")
-    private String path;
-
-    public GsonByAddress() {
-    }
-
-    public GsonByAddress(IByAddress origin) {
-        this.address = origin.getAddress();
-        this.amount = origin.getAmount();
-        this.path = origin.getPath();
-    }
-
-    @Override
-    public String getAddress() {
-        return address;
-    }
-
-    @Override
-    public String getAmount() {
-        return amount;
-    }
-
-    @Override
-    public String getPath() {
-        return path;
-    }
+public interface ITransactionBuilder {
+    public String serializeHash(ITransactionProposal txp);
 }
-

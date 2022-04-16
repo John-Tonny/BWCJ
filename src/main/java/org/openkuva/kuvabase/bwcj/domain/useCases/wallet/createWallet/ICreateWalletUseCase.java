@@ -35,6 +35,7 @@ package org.openkuva.kuvabase.bwcj.domain.useCases.wallet.createWallet;
 
 public interface ICreateWalletUseCase {
     String execute();
+    String execute(String coin);
     String execute(boolean singleAddress);
     String execute(boolean singleAddress, String coin);
 }

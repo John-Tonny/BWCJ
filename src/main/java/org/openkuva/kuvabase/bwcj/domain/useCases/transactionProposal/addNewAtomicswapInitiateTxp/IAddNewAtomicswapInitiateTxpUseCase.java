@@ -41,14 +41,14 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 public interface IAddNewAtomicswapInitiateTxpUseCase {
     ITransactionProposal execute(
             String address,
-            long satoshis,
+            String amount,
             boolean dryRun,
             String customData,
             boolean excludeMasternode);
 
     ITransactionProposal execute(
             String address,
-            long satoshis,
+            String amount,
             boolean dryRun,
             String operation,
             String customData,

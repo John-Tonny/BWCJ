@@ -42,6 +42,10 @@ import org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.broadcastT
 import org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.deletePendingTxp.IDeletePendingTxpUseCase;
 import org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.publishTxp.IPublishTxpUseCase;
 import org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.signTxp.ISignTxpUseCase;
+import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
+
+import java.math.BigDecimal;
 
 public class AtomicSendToUseCase implements IAtomicSendToUseCase {
     private final IAddNewTxpUseCase addNewTxpUseCases;
@@ -49,28 +53,43 @@ public class AtomicSendToUseCase implements IAtomicSendToUseCase {
     private final ISignTxpUseCase signTxpUseCases;
     private final IBroadcastTxpUseCase broadcastTxpUseCases;
     private final IDeletePendingTxpUseCase deletePendingTxp;
+    private final CopayersCryptUtils copayersCryptUtils;
 
     public AtomicSendToUseCase(
             IAddNewTxpUseCase addNewTxpUseCases,
             IPublishTxpUseCase publishTxpUseCases,
             ISignTxpUseCase signTxpUseCases,
             IBroadcastTxpUseCase broadcastTxpUseCases,
-            IDeletePendingTxpUseCase deletePendingTxp) {
+            IDeletePendingTxpUseCase deletePendingTxp,
+            CopayersCryptUtils copayersCryptUtils) {
 
         this.addNewTxpUseCases = addNewTxpUseCases;
         this.publishTxpUseCases = publishTxpUseCases;
         this.signTxpUseCases = signTxpUseCases;
         this.broadcastTxpUseCases = broadcastTxpUseCases;
         this.deletePendingTxp = deletePendingTxp;
+        this.copayersCryptUtils = copayersCryptUtils;
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, String customData, boolean excludeMasternode) {
-        return execute(address, satoshis, msg, "send", customData, excludeMasternode);
+    public ITransactionProposal execute(String address, String amount, String msg, String customData, boolean excludeMasternode) {
+        return execute(address, amount, msg, "send", customData, excludeMasternode);
     }
 
     @Override
-    public ITransactionProposal execute(String address, long satoshis, String msg, String operation, String customData, boolean excludeMasternode) {
+    public ITransactionProposal execute(String address, String amount,  String msg, String operation, String customData, boolean excludeMasternode) {
+        String satoshis = null;
+        try {
+            if (this.copayersCryptUtils.getCoin().equalsIgnoreCase( "vcl")) {
+                satoshis = new BigDecimal(amount).movePointRight(8).toString();
+            } else if (this.copayersCryptUtils.getCoin().equalsIgnoreCase( "eth")) {
+                satoshis = new BigDecimal(amount).movePointRight(18).toString();
+            } else {
+                throw new InvalidParamsException("coin is not support");
+            }
+        }catch(NumberFormatException e){
+            throw new InvalidParamsException("amount is invalid");
+        }
         return execute(
                 new IOutput[]{
                         new Output(

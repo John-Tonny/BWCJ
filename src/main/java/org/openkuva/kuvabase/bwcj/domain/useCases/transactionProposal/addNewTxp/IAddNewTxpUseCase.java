@@ -40,7 +40,16 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 public interface IAddNewTxpUseCase {
     ITransactionProposal execute(
             String address,
-            long satoshis,
+            String amount,
+            String msg,
+            boolean dryRun,
+            String customData,
+            boolean excludeMasternode);
+
+    ITransactionProposal execute(
+            String tokenAddress,
+            String address,
+            String amount,
             String msg,
             boolean dryRun,
             String customData,
@@ -48,7 +57,17 @@ public interface IAddNewTxpUseCase {
 
     ITransactionProposal execute(
             String address,
-            long satoshis,
+            String amount,
+            String msg,
+            boolean dryRun,
+            String operation,
+            String customData,
+            boolean excludeMasternode);
+
+    ITransactionProposal execute(
+            String tokenAddress,
+            String address,
+            String amount,
             String msg,
             boolean dryRun,
             String operation,
@@ -62,4 +81,14 @@ public interface IAddNewTxpUseCase {
             String operation,
             String customData,
             boolean excludeMasternode);
+
+    ITransactionProposal execute(
+            String tokenAddress,
+            IOutput[] outputs,
+            String msg,
+            boolean dryRun,
+            String operation,
+            String customData,
+            boolean excludeMasternode);
+
 }

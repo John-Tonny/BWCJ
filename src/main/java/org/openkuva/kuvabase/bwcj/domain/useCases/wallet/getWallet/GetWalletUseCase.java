@@ -57,6 +57,12 @@ public class GetWalletUseCase implements IGetWalletUseCase {
         this.bwsApi = bwsApi;
     }
 
+    public GetWalletUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+        this.bwsApi = bwsApi;
+    }
+
     @Override
     public IWallet execute() throws CopayerNotFoundException {
         return bwsApi.getWallets(getUrlOptions(), credentials, copayersCryptUtils);
