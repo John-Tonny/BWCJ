@@ -43,8 +43,8 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 public class TransactionInitiateRequest extends TransactionRequest implements ITransactionInitiateRequest{
     private IAtomicswapInitiateData atomicswap;
 
-    public TransactionInitiateRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, IAtomicswapInitiateData atomicswap) {
-        super(outputs, feeLevel, message, excludeUnconfirmedUtxos, dryRun, operation, customData, payProUrl, excludeMasternode);
+    public TransactionInitiateRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, IAtomicswapInitiateData atomicswap) {
+        super(coin, network, outputs, feeLevel, message, excludeUnconfirmedUtxos, dryRun, operation, customData, payProUrl, excludeMasternode);
         this.atomicswap  = atomicswap;
     }
 

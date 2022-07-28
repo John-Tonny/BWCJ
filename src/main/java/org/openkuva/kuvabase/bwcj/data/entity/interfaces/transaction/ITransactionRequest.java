@@ -34,8 +34,14 @@
 package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
 
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAsset;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonRelay;
 
 public interface ITransactionRequest {
+    String getCoin();
+
+    String getNetwork();
+
     IOutput[] getOutputs();
 
     String getFeeLevel();
@@ -58,4 +64,13 @@ public interface ITransactionRequest {
     GsonTxExtends getTxExtends();
 
     String getTokenAddress();
+
+    GsonAsset getAsset();
+
+    GsonRelay getRelay();
+
+    String getMaxPriorityFeePerGas();
+
+    String getMaxFeePerGas();
+
 }

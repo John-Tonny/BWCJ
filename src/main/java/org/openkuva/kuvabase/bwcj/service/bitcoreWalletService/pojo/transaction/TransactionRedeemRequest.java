@@ -44,8 +44,8 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 public class TransactionRedeemRequest extends TransactionRequest implements ITransactionRedeemRequest {
     private IAtomicswapRedeemData atomicswap;
 
-    public TransactionRedeemRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, IAtomicswapRedeemData atomicswap) {
-        super(outputs, feeLevel, message, excludeUnconfirmedUtxos, dryRun, operation, customData, payProUrl, excludeMasternode);
+    public TransactionRedeemRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, IAtomicswapRedeemData atomicswap) {
+        super(coin, network, outputs, feeLevel, message, excludeUnconfirmedUtxos, dryRun, operation, customData, payProUrl, excludeMasternode);
         this.atomicswap  = atomicswap;
     }
 

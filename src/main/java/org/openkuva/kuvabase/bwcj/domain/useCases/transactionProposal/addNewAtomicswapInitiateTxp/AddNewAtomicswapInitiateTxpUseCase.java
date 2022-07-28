@@ -119,6 +119,8 @@ public class AddNewAtomicswapInitiateTxpUseCase implements IAddNewAtomicswapInit
         return
                 bwsApi.postInitiateTxProposals(
                         new TransactionInitiateRequest(
+                                copayersCryptUtils.getCoin(),
+                                "livenet",
                                 outputs,
                                 "normal",
                                 enMsg,

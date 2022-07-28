@@ -55,4 +55,8 @@ public interface IInput {
     List<String> getPublicKeys();
 
     void setInput(String txid, int vout);
+
+    String getScript();
+
+    long getSequenceNumber();
 }

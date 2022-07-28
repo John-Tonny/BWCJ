@@ -74,8 +74,10 @@ public class TransactionBuilder {
         Transaction transaction = new Transaction(network);
 
         // john
-        if(tp.getTxExtends() != null && tp.getTxExtends().getVersion() > 0){
-          transaction.setVersion(tp.getTxExtends().getVersion());
+        if(tp.getTxExtends() != null && tp.getTxExtends().getVersion() > 0) {
+            transaction.setVersion(tp.getTxExtends().getVersion());
+        }else if(tp.getAsset() != null && tp.getAsset().getVersion() > 0){
+                transaction.setVersion(tp.getAsset().getVersion());
         }else {
             transaction.setVersion(2);
         }
@@ -97,77 +99,103 @@ public class TransactionBuilder {
                                     output.getToAddress()));
                 }
             }else {
-                transaction.addOutput(
-                        Coin.valueOf(amount),
-                        Address.fromString(network,
-                                output.getToAddress()));
-            }
-        }
-
-        for (IInput input : tp.getInputs()) {
-            transaction.addInput(
-                    new TransactionInput(
-                            network,
-                            transaction,
-                            /*new ScriptBuilder()
-                                    .build()
-                                    .getProgram(),*/
-                            Utils.HEX.decode(input.getScriptPubKey()),  // john
-                            new TransactionOutPoint(
-                                    network,
-                                    new FreeStandingTransactionOutput(
-                                            network,
-                                            new UTXO(
-                                                    Sha256Hash.wrap(input.getTxid()),
-                                                    input.getVout(),
-                                                    Coin.valueOf(input.getSatoshis()),
-                                                    0,
-                                                    false,
-                                                    new Script(Utils.HEX.decode(input.getScriptPubKey()))))),
-                            Coin.valueOf(input.getSatoshis())));
-        }
-        // john
-        /*for (TransactionInput transactionInput : transaction.getInputs()) {
-            transactionInput.clearScriptBytes();
-        }*/
-
-        Coin changeAmount =
-                transaction
-                        .getFee()
-                        .minus(
-                                Coin.valueOf(
-                                        tp.getFee()));
-
-        if (changeAmount.isGreaterThan(Coin.ZERO)) {
-            Script changeScript =
-                    ScriptBuilder.createOutputScript(
-                            Address.fromString(
-                                    network,
-                                    tp.getChangeAddress().getAddress()));
-
-            transaction.addOutput(changeAmount, changeScript);
-        }
-
-        if(tp.getAtomicswap() != null) {
-            transaction.addAtomicswap(tp.getAtomicswapSecretHash(),
-                    tp.getAtomicswap().isInitiate(),
-                    tp.getAtomicswap().getContract(),
-                    tp.getAtomicswap().getSecret(),
-                    tp.getAtomicswap().isRedeem(),
-                    tp.getAtomicswap().isAtomicSwap(),
-                    tp.getAtomicswap().getLockTime());
-
-            if (tp.getAtomicswap().isAtomicSwap()!=null && tp.getAtomicswap().isAtomicSwap().booleanValue() && tp.getAtomicswap().isRedeem()!=null) {
-                transaction.getInput(0).setScriptSig(new Script(Utils.HEX.decode(tp.getAtomicswap().getContract())));
-                if (!tp.getAtomicswap().isRedeem().booleanValue()) {
-                    transaction.getInput(0).setSequenceNumber(TransactionInput.NO_SEQUENCE - 1);
-                }
-                if(tp.getAtomicswap().getLockTime()!=null) {
-                    transaction.setLockTime(tp.getAtomicswap().getLockTime().longValue());
+                if (output.getScript()!=null) {
+                    transaction.addOutput(
+                            Coin.valueOf(amount),
+                            output.getScript());
+                }else {
+                    transaction.addOutput(
+                            Coin.valueOf(amount),
+                            Address.fromString(network,
+                                    output.getToAddress()));
                 }
             }
         }
+        if(tp.getAsset()==null || tp.getAsset().getVersion()==0) {
+            for (IInput input : tp.getInputs()) {
+                transaction.addInput(
+                        new TransactionInput(
+                                network,
+                                transaction,
+                                /*new ScriptBuilder()
+                                        .build()
+                                        .getProgram(),*/
+                                Utils.HEX.decode(input.getScriptPubKey()),  // john
+                                new TransactionOutPoint(
+                                        network,
+                                        new FreeStandingTransactionOutput(
+                                                network,
+                                                new UTXO(
+                                                        Sha256Hash.wrap(input.getTxid()),
+                                                        input.getVout(),
+                                                        Coin.valueOf(input.getSatoshis()),
+                                                        0,
+                                                        false,
+                                                        new Script(Utils.HEX.decode(input.getScriptPubKey()))))),
+                                Coin.valueOf(input.getSatoshis())));
+            }
+            // john
+            /*for (TransactionInput transactionInput : transaction.getInputs()) {
+                transactionInput.clearScriptBytes();
+            }*/
 
+            Coin changeAmount =
+                    transaction
+                            .getFee()
+                            .minus(
+                                    Coin.valueOf(
+                                            tp.getFee()));
+
+            if (changeAmount.isGreaterThan(Coin.ZERO)) {
+                Script changeScript =
+                        ScriptBuilder.createOutputScript(
+                                Address.fromString(
+                                        network,
+                                        tp.getChangeAddress().getAddress()));
+
+                transaction.addOutput(changeAmount, changeScript);
+            }
+
+            if (tp.getAtomicswap() != null) {
+                transaction.addAtomicswap(tp.getAtomicswapSecretHash(),
+                        tp.getAtomicswap().isInitiate(),
+                        tp.getAtomicswap().getContract(),
+                        tp.getAtomicswap().getSecret(),
+                        tp.getAtomicswap().isRedeem(),
+                        tp.getAtomicswap().isAtomicSwap(),
+                        tp.getAtomicswap().getLockTime());
+
+                if (tp.getAtomicswap().isAtomicSwap() != null && tp.getAtomicswap().isAtomicSwap().booleanValue() && tp.getAtomicswap().isRedeem() != null) {
+                    transaction.getInput(0).setScriptSig(new Script(Utils.HEX.decode(tp.getAtomicswap().getContract())));
+                    if (!tp.getAtomicswap().isRedeem().booleanValue()) {
+                        transaction.getInput(0).setSequenceNumber(TransactionInput.NO_SEQUENCE - 1);
+                    }
+                    if (tp.getAtomicswap().getLockTime() != null) {
+                        transaction.setLockTime(tp.getAtomicswap().getLockTime().longValue());
+                    }
+                }
+            }
+        }else{
+            for (IInput input : tp.getInputs()) {
+                transaction.addInput(
+                        new TransactionInput(
+                                network,
+                                transaction,
+                                Utils.HEX.decode(input.getScript()),  // john
+                                new TransactionOutPoint(
+                                        network,
+                                        new FreeStandingTransactionOutput(
+                                                network,
+                                                new UTXO(
+                                                        Sha256Hash.wrap(input.getTxid()),
+                                                        input.getVout(),
+                                                        Coin.valueOf(input.getSatoshis()),
+                                                        0,
+                                                        false,
+                                                        new Script(Utils.HEX.decode(input.getScript()))))),
+                                Coin.valueOf(input.getSatoshis())));
+            }
+        }
         return sort(transaction, tp.getOutputOrder());
     }
     public static Transaction sort(Transaction transaction, List<Integer> outputOrder) {

@@ -158,7 +158,9 @@ public class AddNewProUpServiceTxpUseCase implements IAddNewProUpServiceTxpUseCa
         GsonTxExtends txExtends = new GsonTxExtends(TX_VERSION_MN_UPDATE_SERVICE, null);
 
         ITransactionProposal txp = bwsApi.postTxProposals(
-                        new TransactionRequest(
+                new TransactionRequest(
+                        copayersCryptUtils.getCoin(),
+                        "livenet",
                                 new IOutput[]{
                                     new Output(
                                             changeAddrResponse.getAddress(),

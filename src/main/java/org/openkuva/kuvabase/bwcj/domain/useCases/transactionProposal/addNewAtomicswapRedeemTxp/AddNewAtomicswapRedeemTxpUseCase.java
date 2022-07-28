@@ -85,6 +85,8 @@ public class AddNewAtomicswapRedeemTxpUseCase implements IAddNewAtomicswapRedeem
         return
                 bwsApi.postRedeemTxProposals(
                         new TransactionRedeemRequest(
+                                credentials.getCopayersCryptUtils().getCoin(),
+                                "livenet",
                                 outputs,
                                 "normal",
                                 msg,

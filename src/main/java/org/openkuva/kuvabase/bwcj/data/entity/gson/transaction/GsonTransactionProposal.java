@@ -218,6 +218,18 @@ public class GsonTransactionProposal implements ITransactionProposal {
     @Expose
     public long gasLimit;
 
+    @SerializedName("tokenId")
+    @Expose
+    public long tokenId;
+
+    @SerializedName("asset")
+    @Expose
+    public GsonAsset asset;
+
+    @SerializedName("relay")
+    @Expose
+    public GsonRelay relay;
+
     private String sharedEncryptingKey;
 
     public GsonTransactionProposal() {
@@ -283,6 +295,14 @@ public class GsonTransactionProposal implements ITransactionProposal {
         multisigContractAddress = origin.getMultisigContractAddress();
         nonce = origin.getNonce();
         gasLimit = origin.getGasLimit();
+        tokenId = origin.getTokenId();
+
+        asset = origin.getAsset() == null
+                ? null : new GsonAsset(origin.getAsset());
+
+        relay = origin.getRelay() == null
+                ? null : new GsonRelay(origin.getRelay());
+
 
     }
 
@@ -565,6 +585,11 @@ public class GsonTransactionProposal implements ITransactionProposal {
     }
 
     @Override
+    public long getTokenId() {
+        return tokenId;
+    }
+
+    @Override
     public String getTokenAddress() {
         return tokenAddress;
     }
@@ -588,6 +613,16 @@ public class GsonTransactionProposal implements ITransactionProposal {
 
     @Override
     public long getGasLimit() { return gasLimit; }
+
+    @Override
+    public GsonAsset getAsset() {
+        return asset;
+    }
+
+    @Override
+    public GsonRelay getRelay() {
+        return relay;
+    }
 
     public void setSharedEncryptingKey(String sharedEncryptingKey) {
         this.sharedEncryptingKey = sharedEncryptingKey;

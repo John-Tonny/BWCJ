@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c)  2018 One Kuva LLC, known as OpenKuva.org
  * All rights reserved.
@@ -31,27 +32,66 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction;
+package org.openkuva.kuvabase.bwcj.data.entity.gson.transaction;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapParticipateData;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionParticipateRequest;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAsset;
+
+public class GsonAsset implements IAsset {
+
+    @SerializedName("version")
+    @Expose
+    public int version;
+
+    @SerializedName("assetGuid")
+    @Expose
+    public String assetGuid;
 
 
-public class TransactionParticipateRequest extends TransactionRequest implements ITransactionParticipateRequest {
-    private IAtomicswapParticipateData atomicswap;
+    @SerializedName("ethAddr")
+    @Expose
+    public String ethAddr;
 
-    public TransactionParticipateRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, IAtomicswapParticipateData atomicswap) {
-        super(coin, network, outputs, feeLevel, message, excludeUnconfirmedUtxos, dryRun, operation, customData, payProUrl, excludeMasternode);
-        this.atomicswap  = atomicswap;
+    @SerializedName("ethtxid")
+    @Expose
+    public String ethtxid;
+
+
+    public GsonAsset() {
+    }
+
+    public GsonAsset(IAsset origin) {
+        this.version = origin.getVersion();
+        this.assetGuid = origin.getAssetGuid();
+        this.ethAddr = origin.getEthAddr();
+        this.ethtxid = origin.getEthtxid();
+    }
+
+    public GsonAsset(int version, String assetGuid, String ethAddr, String ethtxid) {
+        this.version = version;
+        this.assetGuid = assetGuid;
+        this.ethAddr = ethAddr;
+        this.ethtxid = ethtxid;
     }
 
     @Override
-    public IAtomicswapParticipateData getAtomicswap() {
-        return atomicswap;
+    public int getVersion() {
+        return version;
     }
 
+    @Override
+    public String getAssetGuid() {
+        return assetGuid;
+    }
+
+    @Override
+    public String getEthAddr() {
+        return ethAddr;
+    }
+
+    @Override
+    public String getEthtxid() {
+        return ethtxid;
+    }
 }

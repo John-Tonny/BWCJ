@@ -36,6 +36,7 @@ package org.openkuva.kuvabase.bwcj.domain.utils.transactions;
 import org.openkuva.kuvabase.bwcj.domain.utils.INetworkParametersBuilder;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.SignedRawTransaction;
 import org.web3j.crypto.TransactionEncoder;
@@ -50,7 +51,13 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.abi.datatypes.generated.Uint64;
+import org.web3j.abi.datatypes.generated.Uint32;
 import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.DynamicBytes;
+import org.web3j.abi.datatypes.DynamicArray;
+
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -65,6 +72,8 @@ public class EthTransactionBuilder {
     private final INetworkParametersBuilder networkParametersBuilder;
     private final boolean isCompact = false;
     private long chainId = 90L;
+    private final String ERC20ManagerAddr = "0xeEc8C8875dC98FfB5da5CD2e83102Aab962C96C3";
+    private final String RelayAddr = "0x62aa89614d2ec79dc7Db2A0e84026bBD02b3d7fD";
     public EthTransactionBuilder(INetworkParametersBuilder networkParametersBuilder) {
         this.networkParametersBuilder = networkParametersBuilder;
     }
@@ -73,20 +82,88 @@ public class EthTransactionBuilder {
         // NetworkParameters network = networkParametersBuilder.fromTP(tp);
 
         String data = "";
-        BigInteger amount = new BigInteger(tp.getOutputs()[0].getAmount());
-        String toAddress = tp.getOutputs()[0].getToAddress();
-        if(tp.getTokenAddress() != null) {
-            Address address = new Address(toAddress);
-            Uint256 value = new Uint256(amount);
-            List<Type> parametersList = new ArrayList<>();
-            parametersList.add(address);
-            parametersList.add(value);
-            List<TypeReference<?>> outList = new ArrayList<>();
-            Function function = new Function("transfer", parametersList, outList);
-            data = FunctionEncoder.encode(function);
-            amount = new BigInteger("0");
-            toAddress = tp.getTokenAddress();
+        List<Type> parametersList = new ArrayList<Type>();
+        List<TypeReference<?>> outList = new ArrayList<>();
+        BigInteger amount ;
+        String toAddress;
+        if(tp.getRelay() == null) {
+            amount = new BigInteger(tp.getOutputs()[0].getAmount());
+            toAddress = tp.getOutputs()[0].getToAddress();
+            if(tp.getTokenAddress() != null ) {
+                if (tp.getTokenId() == 0) {
+                    parametersList.add(new Address(toAddress));
+                    parametersList.add(new Uint256(amount));
+                    Function function = new Function("transfer", parametersList, outList);
+                    data = FunctionEncoder.encode(function);
+                    amount = new BigInteger("0");
+                    toAddress = tp.getTokenAddress();
+                }else{
+                    parametersList.add(new Address(tp.getFrom()));
+                    parametersList.add(new Address(toAddress));
+                    parametersList.add(new Uint256(tp.getTokenId()));
+                    Function function = new Function("safeTransferFrom", parametersList, outList);
+                    data = FunctionEncoder.encode(function);
+                    amount = new BigInteger("0");
+                    toAddress = tp.getTokenAddress();
+                }
+            }
+        }else{
+            if (tp.getRelay().getCmd() == 1) {
+                amount = new BigInteger(tp.getOutputs()[0].getAmount());
+                parametersList.add(new Address(ERC20ManagerAddr));
+                parametersList.add(new Uint256(amount));
+                Function function = new Function("approve", parametersList, outList);
+                data = FunctionEncoder.encode(function);
+                amount = new BigInteger("0");
+                toAddress = tp.getTokenAddress();
+            } else if (tp.getRelay().getCmd() == 2) {
+                amount = new BigInteger(tp.getOutputs()[0].getAmount());
+                parametersList.add(new Uint256(amount));
+                parametersList.add(new Uint32(new Long(tp.getRelay().getAssetGuid()).longValue()));
+                parametersList.add(new Utf8String(tp.getRelay().getSysAddr()));
+                Function function = new Function("freezeBurnERC20", parametersList, outList);
+                data = FunctionEncoder.encode(function);
+                amount = new BigInteger("0");
+                toAddress = ERC20ManagerAddr;
+            } else if (tp.getRelay().getCmd() == 3 || tp.getRelay().getCmd() == 4) {
+                parametersList.add(new Uint64(tp.getRelay().getNevmBlockNumber()));
+                String txBytes = tp.getRelay().getTxBytes();
+                if (txBytes.startsWith("0x")) {
+                    txBytes = txBytes.substring(2);
+                }
+                parametersList.add(new DynamicBytes(Utils.HEX.decode(txBytes)));
+                parametersList.add(new Uint256(tp.getRelay().getTxIndex()));
+
+                String[] txSibling = tp.getRelay().getTxSibling();
+                List<Uint256> lsTxSibling = new ArrayList<>();
+                for (int i = 0; i < txSibling.length; i++) {
+                    if (txSibling[i].startsWith("0x")) {
+                        txSibling[i] = txSibling[i].substring(2);
+                    }
+                    lsTxSibling.add(new Uint256(new BigInteger(txSibling[i], 16)));
+                }
+                parametersList.add(new DynamicArray(lsTxSibling));
+
+                String sysBlockHeader = tp.getRelay().getSyscoinBlockHeader();
+                if (sysBlockHeader.startsWith("0x")) {
+                    sysBlockHeader = sysBlockHeader.substring(2);
+                }
+                parametersList.add(new DynamicBytes(Utils.HEX.decode(sysBlockHeader)));
+
+                if (tp.getRelay().getCmd() == 3) {
+                    Function function = new Function("relayTx", parametersList, outList);
+                    data = FunctionEncoder.encode(function);
+                } else {
+                    Function function = new Function("relayAssetTx", parametersList, outList);
+                    data = FunctionEncoder.encode(function);
+                }
+                amount = new BigInteger("0");
+                toAddress = RelayAddr;
+            } else {
+                throw new InvalidParamsException("cmd is invalid");
+            }
         }
+
         return RawTransaction.createTransaction(chainId,
                 new BigInteger(Long.toString(tp.getNonce())),
                 new BigInteger(Long.toString(tp.getGasLimit())),

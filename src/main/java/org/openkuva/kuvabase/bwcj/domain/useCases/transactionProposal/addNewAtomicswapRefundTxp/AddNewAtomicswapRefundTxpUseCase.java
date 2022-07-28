@@ -86,6 +86,8 @@ public class AddNewAtomicswapRefundTxpUseCase implements IAddNewAtomicswapRefund
         return
                 bwsApi.postRefundTxProposals(
                         new TransactionRefundRequest(
+                                credentials.getCopayersCryptUtils().getCoin(),
+                                "livenet",
                                 outputs,
                                 "normal",
                                 msg,

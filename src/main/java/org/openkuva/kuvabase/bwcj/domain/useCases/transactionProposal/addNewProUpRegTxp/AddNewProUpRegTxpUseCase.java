@@ -164,6 +164,8 @@ public class AddNewProUpRegTxpUseCase implements IAddNewProUpRegTxpUseCase {
 
         ITransactionProposal txp = bwsApi.postTxProposals(
                         new TransactionRequest(
+                                copayersCryptUtils.getCoin(),
+                                "livenet",
                                 new IOutput[]{
                                         new Output(
                                                 changeAddrResponse.getAddress(),

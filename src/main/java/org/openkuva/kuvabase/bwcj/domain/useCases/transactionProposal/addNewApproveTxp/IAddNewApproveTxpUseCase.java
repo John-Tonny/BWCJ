@@ -31,27 +31,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction;
+package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewApproveTxp;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapParticipateData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionParticipateRequest;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 
+public interface IAddNewApproveTxpUseCase {
+    ITransactionProposal execute(
+            long assetGuid,
+            String amount);
 
-public class TransactionParticipateRequest extends TransactionRequest implements ITransactionParticipateRequest {
-    private IAtomicswapParticipateData atomicswap;
+    ITransactionProposal execute(
+            long assetGuid,
+            String amount,
+            String msg);
 
-    public TransactionParticipateRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, IAtomicswapParticipateData atomicswap) {
-        super(coin, network, outputs, feeLevel, message, excludeUnconfirmedUtxos, dryRun, operation, customData, payProUrl, excludeMasternode);
-        this.atomicswap  = atomicswap;
-    }
-
-    @Override
-    public IAtomicswapParticipateData getAtomicswap() {
-        return atomicswap;
-    }
+    ITransactionProposal execute(
+            long assetGuid,
+            String amount,
+            String msg,
+            String customData);
 
 }

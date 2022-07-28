@@ -40,11 +40,20 @@ import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonCustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAtomicswapData;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAsset;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonRelay;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
 
-public class GsonTransactionRequest implements ITransactionRequest {
+public  class GsonTransactionRequest implements ITransactionRequest {
+    @SerializedName("coin")
+    @Expose
+    private String coin;
+    @SerializedName("network")
+    @Expose
+    private String network;
+
     @SerializedName("outputs")
     @Expose
     private GsonOutput[] outputs;
@@ -82,7 +91,26 @@ public class GsonTransactionRequest implements ITransactionRequest {
     @Expose
     private String tokenAddress;
 
+    @SerializedName("asset")
+    @Expose
+    private GsonAsset asset;
+
+    @SerializedName("relay")
+    @Expose
+    private GsonRelay relay;
+
+    @SerializedName("maxPriorityFeePerGas")
+    @Expose
+    private String maxPriorityFeePerGas;
+
+    @SerializedName("maxFeePerGas")
+    @Expose
+    private String maxFeePerGas;
+
     public GsonTransactionRequest(ITransactionRequest origin) {
+        this.coin = origin.getCoin();
+        this.network = origin.getNetwork();
+
         this.outputs = map(origin.getOutputs());
         this.feeLevel = origin.getFeeLevel();
         this.message = origin.getMessage();
@@ -95,6 +123,10 @@ public class GsonTransactionRequest implements ITransactionRequest {
         this.excludeMasternode = origin.isExcludeMasternode();
         this.txExtends = origin.getTxExtends();
         this.tokenAddress = origin.getTokenAddress();
+        this.asset = origin.getAsset();
+        this.relay = origin.getRelay();
+        this.maxFeePerGas = origin.getMaxFeePerGas();
+        this.maxPriorityFeePerGas = origin.getMaxPriorityFeePerGas();
     }
 
     private GsonOutput[] map(IOutput[] outputs) {
@@ -104,6 +136,16 @@ public class GsonTransactionRequest implements ITransactionRequest {
             result[i] = new GsonOutput(output);
         }
         return result;
+    }
+
+    @Override
+    public String getCoin() {
+        return coin;
+    }
+
+    @Override
+    public String getNetwork() {
+        return network;
     }
 
     @Override
@@ -160,5 +202,21 @@ public class GsonTransactionRequest implements ITransactionRequest {
 
     @Override
     public String  getTokenAddress() { return tokenAddress; }
+
+    @Override
+    public GsonAsset getAsset() { return asset; }
+
+    @Override
+    public GsonRelay getRelay() { return relay; }
+
+    @Override
+    public String getMaxPriorityFeePerGas() {
+        return maxPriorityFeePerGas;
+    }
+
+    @Override
+    public String getMaxFeePerGas() {
+        return maxFeePerGas;
+    }
 
 }

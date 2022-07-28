@@ -66,6 +66,13 @@ public class PublishTxpUseCase implements IPublishTxpUseCase {
     public ITransactionProposal execute(ITransactionProposal toPublish) {
         String outScripts = null;
         String msg = "";
+        if(toPublish.getRelay()!=null && this.copayersCryptUtils.getCoin() != "eth"){
+            throw new InvalidParamsException("coin is not support");
+        }
+        if(toPublish.getAsset()!=null && this.copayersCryptUtils.getCoin() != "vcl"){
+            throw new InvalidParamsException("coin is not support");
+        }
+
         if(toPublish.getCoin().equalsIgnoreCase( "vcl")){
             if(toPublish.getTxExtends()!=null && toPublish.getTxExtends().getVersion()>0 && toPublish.getTxExtends().getOutScripts()!= null){
                 outScripts = toPublish.getTxExtends().getOutScripts();
@@ -79,7 +86,6 @@ public class PublishTxpUseCase implements IPublishTxpUseCase {
         }else{
             throw new InvalidParamsException("coin is not support");
         }
-
         return
                 bwsApi.postTxProposalsTxIdPublish(
                         toPublish.getId(),

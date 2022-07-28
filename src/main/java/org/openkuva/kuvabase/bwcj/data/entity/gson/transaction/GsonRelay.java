@@ -36,63 +36,73 @@ package org.openkuva.kuvabase.bwcj.data.entity.gson.transaction;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IRelay;
 
-import java.util.List;
+public class GsonRelay implements IRelay {
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
+    @SerializedName("cmd")
+    @Expose
+    public int cmd;
 
-public class GsonInput implements IInput {
+    @SerializedName("assetGuid")
+    @Expose
+    public String assetGuid;
+
 
     @SerializedName("txid")
     @Expose
     public String txid;
-    @SerializedName("vout")
-    @Expose
-    public int vout;
-    @SerializedName("address")
-    @Expose
-    public String address;
-    @SerializedName("scriptPubKey")
-    @Expose
-    public String scriptPubKey;
-    @SerializedName("satoshis")
-    @Expose
-    public long satoshis;
-    @SerializedName("confirmations")
-    @Expose
-    public int confirmations;
-    @SerializedName("locked")
-    @Expose
-    public boolean locked;
-    @SerializedName("path")
-    @Expose
-    public String path;
-    @SerializedName("publicKeys")
-    @Expose
-    public List<String> publicKeys = null;
-    @SerializedName("script")
-    @Expose
-    public String script;
-    @SerializedName("sequenceNumber")
-    @Expose
-    public long sequenceNumber;
 
-    public GsonInput() {
+    @SerializedName("sysAddr")
+    @Expose
+    public String sysAddr;
+
+    @SerializedName("nevmBlockNumber")
+    @Expose
+    public long nevmBlockNumber;
+
+    @SerializedName("txBytes")
+    @Expose
+    public String txBytes;
+
+    @SerializedName("txIndex")
+    @Expose
+    public int txIndex;
+
+    @SerializedName("txSibling")
+    @Expose
+    public String[] txSibling;
+
+    @SerializedName("syscoinBlockHeader")
+    @Expose
+    public String syscoinBlockHeader;
+
+
+    public GsonRelay() {
     }
 
-    public GsonInput(IInput input) {
-        this.txid = input.getTxid();
-        this.vout = input.getVout();
-        this.address = input.getAddress();
-        this.scriptPubKey = input.getScriptPubKey();
-        this.satoshis = input.getSatoshis();
-        this.confirmations = input.getConfirmations();
-        this.locked = input.isLocked();
-        this.path = input.getPath();
-        this.publicKeys = input.getPublicKeys();
-        this.script = input.getScript();
-        this.sequenceNumber = input.getSequenceNumber();
+    public GsonRelay(IRelay origin) {
+        this.cmd = origin.getCmd();
+        this.assetGuid = origin.getAssetGuid();
+        this.txid = origin.getTxid();
+        this.sysAddr = origin.getSysAddr();
+    }
 
+    public GsonRelay(int cmd, String assetGuid, String txid, String sysAddr) {
+        this.cmd = cmd;
+        this.assetGuid = assetGuid;
+        this.txid = txid;
+        this.sysAddr = sysAddr;
+    }
+
+    @Override
+    public int getCmd() {
+        return cmd;
+    }
+
+    @Override
+    public String getAssetGuid() {
+        return assetGuid;
     }
 
     @Override
@@ -101,59 +111,33 @@ public class GsonInput implements IInput {
     }
 
     @Override
-    public int getVout() {
-        return vout;
+    public String getSysAddr() {
+        return sysAddr;
     }
 
     @Override
-    public String getAddress() {
-        return address;
+    public long getNevmBlockNumber() {
+        return nevmBlockNumber;
     }
 
     @Override
-    public String getScriptPubKey() {
-        return scriptPubKey;
+    public String getTxBytes() {
+        return txBytes;
     }
 
     @Override
-    public long getSatoshis() {
-        return satoshis;
+    public int getTxIndex() {
+        return txIndex;
     }
 
     @Override
-    public int getConfirmations() {
-        return confirmations;
+    public String[] getTxSibling() {
+        return txSibling;
     }
 
     @Override
-    public boolean isLocked() {
-        return locked;
-    }
-
-    @Override
-    public String getPath() {
-        return path;
-    }
-
-    @Override
-    public List<String> getPublicKeys() {
-        return publicKeys;
-    }
-
-    @Override
-    public void setInput(String txid, int vout){
-        this.txid = txid;
-        this.vout = vout;
-    }
-
-    @Override
-    public String getScript() {
-        return script;
-    }
-
-    @Override
-    public long getSequenceNumber() {
-        return sequenceNumber;
+    public String getSyscoinBlockHeader() {
+        return syscoinBlockHeader;
     }
 
 }

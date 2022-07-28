@@ -34,6 +34,8 @@
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction;
 
 import com.google.common.collect.ImmutableCollection;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAsset;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonRelay;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.*;
 
@@ -51,8 +53,17 @@ public class TransactionRequest implements ITransactionRequest {
     private boolean excludeMasternode;
     private GsonTxExtends txExtends;
     private String tokenAddress;
+    private GsonAsset asset;
+    private GsonRelay relay;
+    private String coin;
+    private String network;
+    private String maxPriorityFeePerGas;
+    private String maxFeePerGas;
 
-    public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode) {
+
+    public TransactionRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode) {
+        this.coin = coin;
+        this.network = network;
         this.outputs = outputs;
         this.feeLevel = feeLevel;
         this.message = message;
@@ -64,9 +75,13 @@ public class TransactionRequest implements ITransactionRequest {
         this.excludeMasternode = excludeMasternode;
         this.txExtends = null;
         this.tokenAddress = null;
+        this.asset = null;
+        this.relay = null;
     }
 
-    public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, String tokenAddress) {
+    public TransactionRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, String tokenAddress, GsonAsset asset) {
+        this.coin = coin;
+        this.network = network;
         this.outputs = outputs;
         this.feeLevel = feeLevel;
         this.message = message;
@@ -78,9 +93,33 @@ public class TransactionRequest implements ITransactionRequest {
         this.excludeMasternode = excludeMasternode;
         this.txExtends = null;
         this.tokenAddress = tokenAddress;
+        this.asset = asset;
+        this.relay = null;
     }
 
-    public TransactionRequest(IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, GsonTxExtends txExtends) {
+    public TransactionRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, String tokenAddress, GsonRelay relay, String maxFeePerGas) {
+        this.coin = coin;
+        this.network = network;
+        this.outputs = outputs;
+        this.feeLevel = feeLevel;
+        this.message = message;
+        this.excludeUnconfirmedUtxos = excludeUnconfirmedUtxos;
+        this.dryRun = dryRun;
+        this.operation = operation;
+        this.customData = customData;
+        this.payProUrl = payProUrl;
+        this.excludeMasternode = excludeMasternode;
+        this.txExtends = null;
+        this.tokenAddress = tokenAddress;
+        this.asset = null;
+        this.relay = relay;
+        this.maxFeePerGas = maxFeePerGas;
+        this.maxPriorityFeePerGas = maxFeePerGas;
+    }
+
+    public TransactionRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, GsonTxExtends txExtends) {
+        this.coin = coin;
+        this.network = network;
         this.outputs = outputs;
         this.feeLevel = feeLevel;
         this.message = message;
@@ -91,6 +130,19 @@ public class TransactionRequest implements ITransactionRequest {
         this.payProUrl = payProUrl;
         this.excludeMasternode = excludeMasternode;
         this.txExtends = txExtends;
+        this.tokenAddress = null ;
+        this.asset = null;
+        this.relay =null;
+    }
+
+    @Override
+    public String getCoin() {
+        return coin;
+    }
+
+    @Override
+    public String getNetwork() {
+        return network;
     }
 
     @Override
@@ -149,5 +201,25 @@ public class TransactionRequest implements ITransactionRequest {
 
     @Override
     public String getTokenAddress() { return tokenAddress; }
+
+    @Override
+    public GsonAsset getAsset() {
+        return asset;
+    }
+
+    @Override
+    public GsonRelay getRelay() {
+        return relay;
+    }
+
+    @Override
+    public String getMaxPriorityFeePerGas() {
+        return maxPriorityFeePerGas;
+    }
+
+    @Override
+    public String getMaxFeePerGas() {
+        return maxFeePerGas;
+    }
 
 }

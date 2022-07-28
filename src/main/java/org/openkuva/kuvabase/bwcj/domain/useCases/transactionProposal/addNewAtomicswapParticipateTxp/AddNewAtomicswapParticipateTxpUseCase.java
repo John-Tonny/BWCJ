@@ -112,6 +112,8 @@ public class AddNewAtomicswapParticipateTxpUseCase implements IAddNewAtomicswapP
         return
                 bwsApi.postParticipateTxProposals(
                         new TransactionParticipateRequest(
+                                copayersCryptUtils.getCoin(),
+                                "livenet",
                                 outputs,
                                 "normal",
                                 null,

@@ -138,6 +138,8 @@ public class AddNewProUpRevokeTxpUseCase implements IAddNewProUpRevokeTxpUseCase
 
         ITransactionProposal txp = bwsApi.postTxProposals(
                 new TransactionRequest(
+                        copayersCryptUtils.getCoin(),
+                        "livenet",
                         new IOutput[]{
                                 new Output(
                                         changeAddrResponse.getAddress(),

@@ -31,27 +31,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction;
+package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapParticipateData;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionParticipateRequest;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
-
-
-public class TransactionParticipateRequest extends TransactionRequest implements ITransactionParticipateRequest {
-    private IAtomicswapParticipateData atomicswap;
-
-    public TransactionParticipateRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, IAtomicswapParticipateData atomicswap) {
-        super(coin, network, outputs, feeLevel, message, excludeUnconfirmedUtxos, dryRun, operation, customData, payProUrl, excludeMasternode);
-        this.atomicswap  = atomicswap;
-    }
-
-    @Override
-    public IAtomicswapParticipateData getAtomicswap() {
-        return atomicswap;
-    }
-
+public interface IAsset {
+    int getVersion();
+    String getAssetGuid();
+    String getEthAddr();
+    String getEthtxid();
 }

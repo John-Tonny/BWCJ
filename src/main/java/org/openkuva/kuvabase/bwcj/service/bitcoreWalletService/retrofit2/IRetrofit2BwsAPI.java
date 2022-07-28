@@ -102,7 +102,7 @@ public interface IRetrofit2BwsAPI {
 
 
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
-    @POST("v2/txproposals/")
+    @POST("v3/txproposals/")
     Call<GsonTransactionProposal> postTxProposals(
             @Body GsonTransactionRequest transactionRequest);
 
@@ -112,13 +112,13 @@ public interface IRetrofit2BwsAPI {
             @QueryMap Map<String, String> options);
 
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
-    @POST("v1/txproposals/{tx_id}/publish")
+    @POST("v2/txproposals/{tx_id}/publish")
     Call<GsonTransactionProposal> postTxProposalsTxIdPublish(
             @Path(value = "tx_id", encoded = true) String txId,
             @Body GsonPublishRequest publishRequest);
 
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
-    @POST("v1/txproposals/{tx_id}/signatures")
+    @POST("v2/txproposals/{tx_id}/signatures")
     Call<GsonTransactionProposal> postTxProposalsTxIdSignatures(
             @Path(value = "tx_id", encoded = true) String txId,
             @Body GsonSignatureRequest signatureRequest);

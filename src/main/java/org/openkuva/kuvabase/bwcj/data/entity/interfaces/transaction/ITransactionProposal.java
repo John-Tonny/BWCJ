@@ -142,4 +142,9 @@ public interface ITransactionProposal {
 
     long getGasLimit();
 
+    long getTokenId();
+
+    IAsset getAsset();
+    IRelay getRelay();
+
 }
