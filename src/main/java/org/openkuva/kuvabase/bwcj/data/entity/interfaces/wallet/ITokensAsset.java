@@ -33,18 +33,15 @@
 
 package org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
-
-public interface IWallet {
-    IWalletCore getWalletCore();
-
-    IPreferences getPreferences();
-
-    ITransactionProposal[] getPendingTxps();
-
-    ITransactionProposal[] getPendingAtomicSwapTxps();
-
-    IBalance getBalance();
-
-    ITokensAsset[] getTokensAsset();
+public interface ITokensAsset {
+    String getType();
+    String getName();
+    String getPath();
+    String getAssetGuid();
+    int getTransfers();
+    String getSymbol();
+    int getDecimals();
+    String getBalance();
+    String getTotalReceived();
+    String getTotalSent();
 }

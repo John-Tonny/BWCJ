@@ -31,20 +31,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet;
+package org.openkuva.kuvabase.bwcj.domain.useCases.asset;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.asset.IAssetInfo;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.CopayerNotFoundException;
 
-public interface IWallet {
-    IWalletCore getWalletCore();
-
-    IPreferences getPreferences();
-
-    ITransactionProposal[] getPendingTxps();
-
-    ITransactionProposal[] getPendingAtomicSwapTxps();
-
-    IBalance getBalance();
-
-    ITokensAsset[] getTokensAsset();
+public interface IGetAssetInfoUseCase {
+    IAssetInfo execute(String assetGuid) throws CopayerNotFoundException;
 }

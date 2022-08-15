@@ -31,20 +31,40 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet;
+package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+public interface ITransaction {
+    String getId();
 
-public interface IWallet {
-    IWalletCore getWalletCore();
+    String getTxid();
 
-    IPreferences getPreferences();
+    long getConfirmations();
 
-    ITransactionProposal[] getPendingTxps();
+    long getBlockheight();
 
-    ITransactionProposal[] getPendingAtomicSwapTxps();
+    int getFees();
 
-    IBalance getBalance();
+    long getTime();
 
-    ITokensAsset[] getTokensAsset();
+    String getSize();
+
+    String getAmount();
+
+    String getAction();
+
+    String getAddressTo();
+
+    IOutput2[] getOutputs();
+
+    boolean getDust();
+
+    String getEncryptedMessage();
+
+    Object getMessage();
+
+    String getCreatorName();
+
+    boolean getHasUnconfirmedInputs();
+
+    String getCustomData();
 }

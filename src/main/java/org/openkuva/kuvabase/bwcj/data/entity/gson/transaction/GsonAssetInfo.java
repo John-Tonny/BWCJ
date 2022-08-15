@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c)  2018 One Kuva LLC, known as OpenKuva.org
  * All rights reserved.
@@ -31,20 +32,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet;
+package org.openkuva.kuvabase.bwcj.data.entity.gson.transaction;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAssetInfo;
 
-public interface IWallet {
-    IWalletCore getWalletCore();
+public class GsonAssetInfo implements IAssetInfo {
+    @SerializedName("assetGuid")
+    @Expose
+    private String assetGuid;
 
-    IPreferences getPreferences();
+    @SerializedName(value="value")
+    @Expose
+    private String amount;
 
-    ITransactionProposal[] getPendingTxps();
+    @SerializedName(value="valueStr")
+    @Expose
+    private String amountStr;
 
-    ITransactionProposal[] getPendingAtomicSwapTxps();
+    public GsonAssetInfo() {
+    }
 
-    IBalance getBalance();
+    public GsonAssetInfo(IAssetInfo origin) {
+        assetGuid = origin.getAssetGuid();
+        amount = origin.getAmount();
+        amountStr = origin.getAmountStr();
+    }
 
-    ITokensAsset[] getTokensAsset();
+    @Override
+    public String getAssetGuid() {
+        return assetGuid;
+    }
+
+    @Override
+    public String getAmount() {
+        return amount;
+    }
+
+    @Override
+    public String getAmountStr() {
+        return amountStr;
+    }
 }

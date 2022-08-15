@@ -31,20 +31,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet;
+package org.openkuva.kuvabase.bwcj.domain.useCases.getTxHistory;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionHistory2;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 
-public interface IWallet {
-    IWalletCore getWalletCore();
+import java.util.HashMap;
+import java.util.Map;
 
-    IPreferences getPreferences();
+public class GetTxHistory2UseCase implements IGetTxHistory2UseCase {
+    private final ICredentials credentials;
+    private final IBitcoreWalletServerAPI bwsApi;
 
-    ITransactionProposal[] getPendingTxps();
+    public GetTxHistory2UseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.bwsApi = bwsApi;
+    }
 
-    ITransactionProposal[] getPendingAtomicSwapTxps();
+    @Override
+    public ITransactionHistory2 execute() {
+        return execute(null, null);
+    }
 
-    IBalance getBalance();
+    @Override
+    public ITransactionHistory2 execute(Integer page, Integer pageSize) {
+        Map<String, String> options = new HashMap<String, String>();
+        if (page != null) {
+            options.put("page", page.toString());
+        }
+        if (pageSize != null) {
+            options.put("pageSize", pageSize.toString());
+        }
+        options.put("includeExtendedInfo", "1");
 
-    ITokensAsset[] getTokensAsset();
+        return
+                bwsApi.getTxHistory2(options, credentials);
+    }
 }

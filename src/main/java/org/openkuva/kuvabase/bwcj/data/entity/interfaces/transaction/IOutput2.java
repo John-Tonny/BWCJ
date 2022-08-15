@@ -31,20 +31,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet;
+package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAssetInfo;
 
-public interface IWallet {
-    IWalletCore getWalletCore();
-
-    IPreferences getPreferences();
-
-    ITransactionProposal[] getPendingTxps();
-
-    ITransactionProposal[] getPendingAtomicSwapTxps();
-
-    IBalance getBalance();
-
-    ITokensAsset[] getTokensAsset();
+public interface IOutput2 {
+    String getAmount();
+    String getN();
+    String getHex();
+    String[] getAddresses();
+    boolean getIsAddress();
+    GsonAssetInfo getAssetInfo();
+    boolean getSpent();
 }

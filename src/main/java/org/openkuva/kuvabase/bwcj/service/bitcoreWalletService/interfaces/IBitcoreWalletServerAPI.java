@@ -33,17 +33,11 @@
 
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces;
 
-import org.bitcoinj.core.NetworkParameters;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.fee.IFeeLevel;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.*;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionHistory;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionInitiateRequest;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionParticipateRequest;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRedeemRequest;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRefundRequest;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.*;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.asset.IAssetInfo;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
@@ -145,8 +139,14 @@ public interface IBitcoreWalletServerAPI {
      */
     ITransactionHistory[] getTxHistory(Map<String, String> options, ICredentials credentials);
 
+    // john 20220813
     /**
-     * GET v1/txhistory/
+     * GET v2/txhistory/
+     */
+    ITransactionHistory2 getTxHistory2(Map<String, String> options, ICredentials credentials);
+
+    /**
+     * GET v1/masternode/status/
      */
     IMasternodeStatus getMasternodeStatus(Map<String, String> options);
 
@@ -205,5 +205,11 @@ public interface IBitcoreWalletServerAPI {
      * GET v2/txproposals/
      */
     ITransactionProposal[] getPendingAtomicswapTransactionProposals(ICredentials credentials);
+
+    /**
+     * GET v1/asset/
+     */
+    IAssetInfo getAssetInfo(Map<String, String> options);
+
 
 }

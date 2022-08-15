@@ -42,8 +42,10 @@ import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeRemo
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeBlsSign;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeStatus;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory2;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonWallet;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.asset.*;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.broadcast.BroadcastRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.login.LoginRequest;
@@ -150,6 +152,11 @@ public interface IRetrofit2BwsAPI {
     @GET("v1/txhistory/")
     Call<GsonTransactionHistory[]> getTxHistory(@QueryMap Map<String, String> options);
 
+    // john 20220813
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v2/txhistory/")
+    Call<GsonTransactionHistory2> getTxHistory2(@QueryMap Map<String, String> options);
+
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
     @GET("v1/masternode/status/")
     Call<GsonMasternodeStatus> getMasternodeStatus(@QueryMap Map<String, String> options);
@@ -205,5 +212,9 @@ public interface IRetrofit2BwsAPI {
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
     @GET("v1/masternode/blssign/")
     Call<GsonMasternodeBlsSign> getMasternodeBlsSign(@QueryMap Map<String, String> options);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v1/asset/")
+    Call<GsonAssetInfo> getAssetInfo(@QueryMap Map<String, String> options);
 
 }

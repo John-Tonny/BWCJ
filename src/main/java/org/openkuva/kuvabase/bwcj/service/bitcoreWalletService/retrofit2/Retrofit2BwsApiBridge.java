@@ -33,16 +33,16 @@
 
 package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2;
 
-import org.bitcoinj.core.NetworkParameters;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.fee.GsonFeeLevel;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.*;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.asset.GsonAssetInfo;
 
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory2;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.wallet.GsonWallet;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.copayer.ICopayer;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeRemove;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionInitiateRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionParticipateRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
@@ -51,7 +51,6 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
-import org.openkuva.kuvabase.bwcj.domain.utils.atomicswap.AuditContract;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.IAddressesResponse;
@@ -421,6 +420,30 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
         }
     }
 
+    // john 20220813
+    @Override
+    public GsonTransactionHistory2 getTxHistory2(@QueryMap Map<String, String> options, ICredentials credentials) {
+        try {
+            Response<GsonTransactionHistory2> response = serverAPI
+                    .getTxHistory2(options)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                GsonTransactionHistory2 gsonTransactionHistory2 = response.body();
+                /*if(gsonTransactionHistory2 !=null) {
+                    for (int i = 0; i < gsonTransactionHistory2.transactions.length; i++) {
+                        gsonTransactionHistory2.transactions[i].setSharedEncryptingKey(credentials.getSharedEncryptingKey());
+                    }
+                }*/
+                return gsonTransactionHistory2;
+            } else {
+                throw new RequestFailedException(response);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public GsonMasternodeStatus getMasternodeStatus(@QueryMap Map<String, String> options) {
         try {
@@ -718,6 +741,26 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
                 for(int i=0;i<gsonTransactionProposals.length;i++) {
                     gsonTransactionProposals[i].setSharedEncryptingKey(credentials.getSharedEncryptingKey());
                 }
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public GsonAssetInfo getAssetInfo(@QueryMap Map<String, String> options) {
+        try {
+            Response<GsonAssetInfo> response = serverAPI
+                    .getAssetInfo(options)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                GsonAssetInfo gsonAssetInfo = response.body();
                 return response.body();
             } else {
                 throw new RequestFailedException(response);

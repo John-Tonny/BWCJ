@@ -37,6 +37,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.ITokensAsset;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
 
@@ -56,6 +57,10 @@ public class GsonWallet implements IWallet {
     @SerializedName("balance")
     private GsonBalance balance;
 
+    @SerializedName("tokensAsset")
+    private GsonTokensAsset[] tokensAsset;
+
+
     public GsonWallet() {
     }
 
@@ -65,6 +70,7 @@ public class GsonWallet implements IWallet {
         this.pendingTxps = mapPendingTxps(origin.getPendingTxps());
         this.pendingAtomicSwapTxps = mapPendingTxps(origin.getPendingAtomicSwapTxps());
         this.balance = new GsonBalance(origin.getBalance());
+        this.tokensAsset = mapTokensAsset(origin.getTokensAsset());
     }
 
     private static GsonTransactionProposal[] mapPendingTxps(ITransactionProposal[] origin) {
@@ -75,6 +81,18 @@ public class GsonWallet implements IWallet {
         GsonTransactionProposal[] result = new GsonTransactionProposal[origin.length];
         for (int i = 0; i < origin.length; i++) {
             result[i] = new GsonTransactionProposal(origin[i]);
+        }
+        return result;
+    }
+
+    private static GsonTokensAsset[] mapTokensAsset(ITokensAsset[] origin) {
+        if (origin == null) {
+            return null;
+        }
+
+        GsonTokensAsset[] result = new GsonTokensAsset[origin.length];
+        for (int i = 0; i < origin.length; i++) {
+            result[i] = new GsonTokensAsset(origin[i]);
         }
         return result;
     }
@@ -103,5 +121,8 @@ public class GsonWallet implements IWallet {
     public GsonBalance getBalance() {
         return balance;
     }
+
+    @Override
+    public GsonTokensAsset[] getTokensAsset() {return tokensAsset;}
 
 }
