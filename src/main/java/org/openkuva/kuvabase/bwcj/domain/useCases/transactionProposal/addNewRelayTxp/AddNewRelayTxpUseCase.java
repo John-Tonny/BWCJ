@@ -33,29 +33,19 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewRelayTxp;
 
-import org.bitcoinj.core.NetworkParameters;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonRelay;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IRelay;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.Output;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
-import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InsufficientFundsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidAmountException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidWalletAddressException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRequest;
-
-import java.math.BigDecimal;
-
-import static org.openkuva.kuvabase.bwcj.domain.useCases.wallet.DefaultConstants.DEFAULT_WALLET_NAME;
-
-import org.web3j.crypto.*;
 
 public class AddNewRelayTxpUseCase implements IAddNewRelayTxpUseCase {
     private final IBitcoreWalletServerAPI bwsApi;

@@ -31,49 +31,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
+package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewErc721MintNFTTxp;
 
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonToken;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAsset;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonRelay;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 
-public interface ITransactionRequest {
-    String getCoin();
+public interface IAddNewErc721MintNFTTxpUseCase {
+    ITransactionProposal execute(
+            String tokenAddress,
+            String toAddress,
+            String tokenUri);
 
-    String getNetwork();
+    ITransactionProposal execute(
+            String tokenAddress,
+            String toAddress,
+            String tokenUri,
+            String maxFeePerGas);
 
-    IOutput[] getOutputs();
+    ITransactionProposal execute(
+            String tokenAddress,
+            String toAddress,
+            String tokenUri,
+            String msg,
+            String maxFeePerGas);
 
-    String getFeeLevel();
-
-    Object getMessage();
-
-    boolean isExcludeUnconfirmedUtxos();
-
-    boolean isDryRun();
-
-    String getOperation();
-
-    //ICustomData getCustomData();
-    String getCustomData();
-
-    Object getPayProUrl();
-
-    boolean isExcludeMasternode();
-
-    GsonTxExtends getTxExtends();
-
-    String getTokenAddress();
-
-    GsonAsset getAsset();
-
-    GsonRelay getRelay();
-
-    GsonToken getToken();
-
-    String getMaxPriorityFeePerGas();
-
-    String getMaxFeePerGas();
-
+    ITransactionProposal execute(
+            String tokenAddress,
+            String toAddress,
+            String tokenUri,
+            String msg,
+            String customData,
+            String maxFeePerGas);
 }

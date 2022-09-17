@@ -69,6 +69,9 @@ public class PublishTxpUseCase implements IPublishTxpUseCase {
         if(toPublish.getRelay()!=null && this.copayersCryptUtils.getCoin() != "eth"){
             throw new InvalidParamsException("coin is not support");
         }
+        if(toPublish.getToken()!=null && this.copayersCryptUtils.getCoin() != "eth"){
+            throw new InvalidParamsException("coin is not support");
+        }
         if(toPublish.getAsset()!=null && this.copayersCryptUtils.getCoin() != "vcl"){
             throw new InvalidParamsException("coin is not support");
         }

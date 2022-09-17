@@ -33,22 +33,17 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewProUpRevokeTxp;
 
-import org.bitcoinj.core.NetworkParameters;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeBlsSign;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternode;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeBlsSign;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.Output;
-import org.openkuva.kuvabase.bwcj.domain.useCases.wallet.postWalletAddress.CreateNewMainAddressesFromWalletUseCase;
 
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.domain.utils.masternode.ProRevokeTx;
 import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
-import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.IAddressesResponse;
@@ -57,9 +52,6 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.except
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidWalletAddressException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRequest;
-
-import static org.openkuva.kuvabase.bwcj.domain.useCases.wallet.DefaultConstants.DEFAULT_WALLET_NAME;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodePro;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -156,7 +148,6 @@ public class AddNewProUpRevokeTxpUseCase implements IAddNewProUpRevokeTxpUseCase
                         txExtends),
                 credentials);
 
-        NetworkParameters params = this.credentials.getNetworkParameters();
         ProRevokeTx proRevokeTx = new ProRevokeTx(txp.getInputs(), proTxHash, masternodePrivKey, this.credentials.getNetworkParameters());
         try {
             String msgHash = proRevokeTx.getMessageHash();

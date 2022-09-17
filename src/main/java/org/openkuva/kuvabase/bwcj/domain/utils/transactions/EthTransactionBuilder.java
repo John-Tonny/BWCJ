@@ -86,28 +86,8 @@ public class EthTransactionBuilder {
         List<TypeReference<?>> outList = new ArrayList<>();
         BigInteger amount ;
         String toAddress;
-        if(tp.getRelay() == null) {
-            amount = new BigInteger(tp.getOutputs()[0].getAmount());
-            toAddress = tp.getOutputs()[0].getToAddress();
-            if(tp.getTokenAddress() != null ) {
-                if (tp.getTokenId() == 0) {
-                    parametersList.add(new Address(toAddress));
-                    parametersList.add(new Uint256(amount));
-                    Function function = new Function("transfer", parametersList, outList);
-                    data = FunctionEncoder.encode(function);
-                    amount = new BigInteger("0");
-                    toAddress = tp.getTokenAddress();
-                }else{
-                    parametersList.add(new Address(tp.getFrom()));
-                    parametersList.add(new Address(toAddress));
-                    parametersList.add(new Uint256(tp.getTokenId()));
-                    Function function = new Function("safeTransferFrom", parametersList, outList);
-                    data = FunctionEncoder.encode(function);
-                    amount = new BigInteger("0");
-                    toAddress = tp.getTokenAddress();
-                }
-            }
-        }else{
+        if(tp.getRelay()!=null) {
+            // vcl-eth bridge
             if (tp.getRelay().getCmd() == 1) {
                 amount = new BigInteger(tp.getOutputs()[0].getAmount());
                 parametersList.add(new Address(ERC20ManagerAddr));
@@ -161,6 +141,77 @@ public class EthTransactionBuilder {
                 toAddress = RelayAddr;
             } else {
                 throw new InvalidParamsException("cmd is invalid");
+            }
+        }else if(tp.getToken()!=null) {
+            //erc 721
+            if (tp.getToken().getType() == 1) {
+                if (tp.getToken().getCmd() == 1) {
+                    parametersList.add(new Address(tp.getFrom()));
+                    parametersList.add(new Address(tp.getOutputs()[0].getToAddress()));
+                    parametersList.add(new Uint256(new BigInteger(tp.getToken().getId())));
+                    Function function = new Function("safeTransferFrom", parametersList, outList);
+                    data = FunctionEncoder.encode(function);
+                    amount = new BigInteger("0");
+                    toAddress = tp.getTokenAddress();
+                } else if (tp.getToken().getCmd() == 2) {
+                    parametersList.add(new Address(tp.getOutputs()[0].getToAddress()));
+                    parametersList.add(new Uint256(new BigInteger(tp.getToken().getId())));
+                    parametersList.add(new Utf8String(tp.getToken().getUri()));
+                    Function function = new Function("mint", parametersList, outList);
+                    data = FunctionEncoder.encode(function);
+                    amount = new BigInteger("0");
+                    toAddress = tp.getTokenAddress();;
+                } else if (tp.getToken().getCmd() == 3) {
+                    parametersList.add(new Address(tp.getOutputs()[0].getToAddress()));
+                    parametersList.add(new Utf8String(tp.getToken().getUri()));
+                    Function function = new Function("mintNFT", parametersList, outList);
+                    data = FunctionEncoder.encode(function);
+                    amount = new BigInteger("0");
+                    toAddress = tp.getTokenAddress();;
+               } else {
+                    throw new InvalidParamsException("token cmd is invalid");
+                }
+            } else if(tp.getToken().getType() == 2){
+                // erc1155
+                if (tp.getToken().getCmd() == 1) {
+                    parametersList.add(new Address(tp.getFrom()));
+                    parametersList.add(new Address(tp.getOutputs()[0].getToAddress()));
+                    parametersList.add(new Uint256(new BigInteger(tp.getToken().getId())));
+                    parametersList.add(new Uint256(new BigInteger(tp.getOutputs()[0].getAmount())));
+                    String mdata = tp.getToken().getData();
+                    if(mdata == null){
+                        parametersList.add(new DynamicBytes(new byte[]{}));
+                    }else {
+                        parametersList.add(new DynamicBytes(mdata.getBytes()));
+                    }
+                    Function function = new Function("safeTransferFrom", parametersList, outList);
+                    data = FunctionEncoder.encode(function);
+                    amount = new BigInteger("0");
+                    toAddress = tp.getTokenAddress();
+                } else if (tp.getToken().getCmd() == 2) {
+                    parametersList.add(new Address(tp.getOutputs()[0].getToAddress()));
+                    parametersList.add(new Uint256(new BigInteger(tp.getToken().getId())));
+                    parametersList.add(new Uint256(new BigInteger(tp.getOutputs()[0].getAmount())));
+                    Function function = new Function("mint", parametersList, outList);
+                    data = FunctionEncoder.encode(function);
+                    amount = new BigInteger("0");
+                    toAddress = tp.getTokenAddress();;
+                } else {
+                    throw new InvalidParamsException("token cmd is invalid");
+                }
+            } else {
+                throw new InvalidParamsException("token type is not supported");
+            }
+        } else {
+            amount = new BigInteger(tp.getOutputs()[0].getAmount());
+            toAddress = tp.getOutputs()[0].getToAddress();
+            if(tp.getTokenAddress() != null ) {
+                parametersList.add(new Address(toAddress));
+                parametersList.add(new Uint256(amount));
+                Function function = new Function("transfer", parametersList, outList);
+                data = FunctionEncoder.encode(function);
+                amount = new BigInteger("0");
+                toAddress = tp.getTokenAddress();
             }
         }
 

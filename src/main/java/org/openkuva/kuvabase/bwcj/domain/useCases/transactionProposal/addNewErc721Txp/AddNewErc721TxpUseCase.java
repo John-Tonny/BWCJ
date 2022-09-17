@@ -31,9 +31,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewFreezeBurnTxp;
+package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewErc721Txp;
 
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonRelay;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonToken;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
@@ -47,62 +47,71 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.except
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidWalletAddressException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.TransactionRequest;
 
-import java.math.BigDecimal;
-
-public class AddNewFreezeBurnTxpUseCase implements IAddNewFreezeBurnTxpUseCase {
+public class AddNewErc721TxpUseCase implements IAddNewErc721TxpUseCase {
     private final IBitcoreWalletServerAPI bwsApi;
     private final ICredentials credentials;
     private final CopayersCryptUtils copayersCryptUtils;
 
-    public AddNewFreezeBurnTxpUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
+    public AddNewErc721TxpUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
         this.credentials = credentials;
         this.copayersCryptUtils = copayersCryptUtils;
         this.bwsApi = bwsApi;
     }
 
-    public AddNewFreezeBurnTxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+    public AddNewErc721TxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
         this.credentials = credentials;
         this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
         this.bwsApi = bwsApi;
     }
 
     @Override
-    public ITransactionProposal execute(long assetGuid, String sysAddr, String amount) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
-        return execute(assetGuid, sysAddr, amount, null, null);
+    public ITransactionProposal execute(String tokenAddress,
+                                        String toAddress,
+                                        String tokenId) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+        return execute(tokenAddress, toAddress, tokenId,  null, null, null);
     }
 
     @Override
-    public ITransactionProposal execute(long assetGuid, String sysAddr, String amount, String msg) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
-        return execute(assetGuid, sysAddr, amount, msg, null);
+    public ITransactionProposal execute(String tokenAddress,
+                                        String toAddress,
+                                        String tokenId,
+                                        String maxFeePerGas) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+        return execute(tokenAddress, toAddress, tokenId,  null, null, maxFeePerGas);
     }
 
+    @Override
+    public ITransactionProposal execute(String tokenAddress,
+                                        String toAddress,
+                                        String tokenId,
+                                        String msg,
+                                        String maxFeePerGas) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+        return execute(tokenAddress, toAddress, tokenId, msg, null, maxFeePerGas);
+    }
 
     @Override
-    public ITransactionProposal execute(long assetGuid, String sysAddr, String amount, String msg, String customData) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
-        String satoshis = null;
-        try {
-            if (this.copayersCryptUtils.getCoin() == "eth") {
-                satoshis = new BigDecimal(amount).movePointRight(8).toString();
-            } else {
-                throw new InvalidParamsException("coin is not support");
+    public ITransactionProposal execute(String tokenAddress,
+                                        String toAddress,
+                                        String tokenId,
+                                        String msg,
+                                        String customData,
+                                        String maxFeePerGas) throws InsufficientFundsException, InvalidWalletAddressException, InvalidAmountException {
+        if (this.copayersCryptUtils.getCoin() != "eth") {
+            throw new InvalidParamsException("coin is not support");
+        }
+        try{
+            if(Integer.valueOf(tokenId).longValue()<=0){
+                throw new InvalidParamsException("tokenId cannot be zero");
             }
-        }catch(NumberFormatException e){
-            throw new InvalidParamsException("amount is invalid");
+        }catch(Exception e){
+            throw new InvalidParamsException("tokenId format mismatch");
         }
-        if(assetGuid <=0 ){
-            throw new InvalidParamsException("assetGuid cannot be zero");
-        }
-        if(sysAddr == null){
-            throw new InvalidParamsException("sysAddr is required");
-        }
-
-        GsonRelay relay= new GsonRelay(2, String.valueOf(assetGuid),  null, sysAddr);
-
-        IOutput[] outputs =  new IOutput[]{
+        IOutput[] outputs = new IOutput[]{
                 new Output(
-                        null,
-                        satoshis,
+                        toAddress,
+                        "1",
                         null)};
+
+        GsonToken token= new GsonToken(1, 1, tokenId, null, null);
 
         String enMsg = new SjclMessageEncryptor()
                 .encrypt(
@@ -120,13 +129,13 @@ public class AddNewFreezeBurnTxpUseCase implements IAddNewFreezeBurnTxpUseCase {
                                 enMsg,
                                 false,
                                 false,
-                                "freezeBurn",
+                                "erc721",
                                 customData,
                                 null,
                                 false,
-                                null,
-                                relay,
-                                null),
+                                tokenAddress,
+                                token,
+                                maxFeePerGas),
                         credentials);
     }
 }

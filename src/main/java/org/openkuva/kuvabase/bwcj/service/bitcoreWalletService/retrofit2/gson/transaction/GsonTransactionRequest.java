@@ -36,12 +36,7 @@ package org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.retrofit2.gson.t
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonCustomData;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAtomicswapData;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonOutput;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAsset;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonRelay;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.*;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
@@ -99,6 +94,10 @@ public  class GsonTransactionRequest implements ITransactionRequest {
     @Expose
     private GsonRelay relay;
 
+    @SerializedName("token")
+    @Expose
+    private GsonToken token;
+
     @SerializedName("maxPriorityFeePerGas")
     @Expose
     private String maxPriorityFeePerGas;
@@ -125,6 +124,7 @@ public  class GsonTransactionRequest implements ITransactionRequest {
         this.tokenAddress = origin.getTokenAddress();
         this.asset = origin.getAsset();
         this.relay = origin.getRelay();
+        this.token = origin.getToken();
         this.maxFeePerGas = origin.getMaxFeePerGas();
         this.maxPriorityFeePerGas = origin.getMaxPriorityFeePerGas();
     }
@@ -208,6 +208,9 @@ public  class GsonTransactionRequest implements ITransactionRequest {
 
     @Override
     public GsonRelay getRelay() { return relay; }
+
+    @Override
+    public GsonToken getToken() { return token; }
 
     @Override
     public String getMaxPriorityFeePerGas() {

@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c)  2018 One Kuva LLC, known as OpenKuva.org
  * All rights reserved.
@@ -31,49 +32,75 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
+package org.openkuva.kuvabase.bwcj.data.entity.gson.transaction;
 
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonToken;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAsset;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonRelay;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IToken;
 
-public interface ITransactionRequest {
-    String getCoin();
+public class GsonToken implements IToken {
 
-    String getNetwork();
+    @SerializedName("type")
+    @Expose
+    public int type;
 
-    IOutput[] getOutputs();
+    @SerializedName("cmd")
+    @Expose
+    public int cmd;
 
-    String getFeeLevel();
+    @SerializedName("id")
+    @Expose
+    public String id;
 
-    Object getMessage();
+    @SerializedName("uri")
+    @Expose
+    public String uri;
 
-    boolean isExcludeUnconfirmedUtxos();
+    @SerializedName("data")
+    @Expose
+    public String data;
 
-    boolean isDryRun();
+    public GsonToken() {
+    }
 
-    String getOperation();
+    public GsonToken(IToken origin) {
+        this.type = origin.getType();
+        this.cmd = origin.getCmd();
+        this.id = origin.getId();
+        this.uri = origin.getUri();
+        this.data = origin.getData();
+    }
 
-    //ICustomData getCustomData();
-    String getCustomData();
+    public GsonToken( int type, int cmd, String id, String uri, String data) {
+        this.type = type;
+        this.cmd = cmd;
+        this.id = id;
+        this.uri = uri;
+        this.data = data;
+    }
 
-    Object getPayProUrl();
+    @Override
+    public int getCmd() {
+        return cmd;
+    }
 
-    boolean isExcludeMasternode();
+    @Override
+    public int getType() {
+        return type;
+    }
 
-    GsonTxExtends getTxExtends();
+    @Override
+    public String getId() {
+        return id;
+    }
 
-    String getTokenAddress();
+    @Override
+    public String getUri() {
+        return uri;
+    }
 
-    GsonAsset getAsset();
-
-    GsonRelay getRelay();
-
-    GsonToken getToken();
-
-    String getMaxPriorityFeePerGas();
-
-    String getMaxFeePerGas();
-
+    @Override
+    public String getData() {
+        return data;
+    }
 }

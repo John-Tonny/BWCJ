@@ -33,21 +33,15 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewProRegTxp;
 
-import org.bitcoinj.core.NetworkParameters;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternode;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeCollateralPro;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITxExtends;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.Output;
-import org.openkuva.kuvabase.bwcj.domain.useCases.wallet.postWalletAddress.CreateNewMainAddressesFromWalletUseCase;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.domain.utils.masternode.ProRegTx;
 import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
-import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.IAddressesResponse;
@@ -149,7 +143,6 @@ public class AddNewProRegTxpUseCase implements IAddNewProRegTxpUseCase {
             payAddr = payAddrResponse.getAddress();
         }
 
-        NetworkParameters params = this.credentials.getNetworkParameters();
         ProRegTx proRegTx = new ProRegTx(txp.getInputs(), masternodeCollateralPro.getCollateralId(), masternodeCollateralPro.getCollateralIndex(), masternodeCollateralPro.getCollateralPrivKey(), masternodeCollateralPro.getHost(), masternodeCollateralPro.getPort(), masternodeCollateralPro.getMasternodePubKey(), ownerAddr, voteAddr, payAddr, masternodeCollateralPro.getReward(), this.credentials.getNetworkParameters());
         try {
             txp.getTxExtends().setOutScripts(proRegTx.getOutScripts(true));

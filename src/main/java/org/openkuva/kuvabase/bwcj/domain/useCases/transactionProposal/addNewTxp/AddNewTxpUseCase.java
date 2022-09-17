@@ -33,17 +33,13 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewTxp;
 
-import org.bitcoinj.core.NetworkParameters;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAsset;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAsset;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.Output;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
-import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InsufficientFundsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidAmountException;
@@ -53,25 +49,39 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.
 
 import java.math.BigDecimal;
 
-import static org.openkuva.kuvabase.bwcj.domain.useCases.wallet.DefaultConstants.DEFAULT_WALLET_NAME;
-
-import org.web3j.crypto.*;
 
 public class AddNewTxpUseCase implements IAddNewTxpUseCase {
     private final IBitcoreWalletServerAPI bwsApi;
     private final ICredentials credentials;
     private final CopayersCryptUtils copayersCryptUtils;
+    private final boolean isAsset;
 
     public AddNewTxpUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
         this.credentials = credentials;
         this.copayersCryptUtils = copayersCryptUtils;
         this.bwsApi = bwsApi;
+        this.isAsset = false;
     }
 
     public AddNewTxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
         this.credentials = credentials;
         this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
         this.bwsApi = bwsApi;
+        this.isAsset = false;
+    }
+
+    public AddNewTxpUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi, boolean isAsset) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = copayersCryptUtils;
+        this.bwsApi = bwsApi;
+        this.isAsset = isAsset;
+    }
+
+    public AddNewTxpUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi, boolean isAsset) {
+        this.credentials = credentials;
+        this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
+        this.bwsApi = bwsApi;
+        this.isAsset = isAsset;
     }
 
     @Override
@@ -125,7 +135,7 @@ public class AddNewTxpUseCase implements IAddNewTxpUseCase {
     @Override
     public ITransactionProposal execute(String tokenAddress, IOutput[] outputs, String msg, boolean dryRun, String operation, String customData, boolean excludeMasternode) {
         GsonAsset asset = new GsonAsset();
-        if (this.copayersCryptUtils.getCoin() == "vcl"){
+        if (this.copayersCryptUtils.getCoin() == "vcl" && this.isAsset){
             asset = new GsonAsset(2, null, null, null);
             if(tokenAddress != null  ) {
                 throw new InvalidParamsException("tokenAddress is not supported");

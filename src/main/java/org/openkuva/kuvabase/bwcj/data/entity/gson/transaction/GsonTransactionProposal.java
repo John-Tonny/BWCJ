@@ -218,9 +218,9 @@ public class GsonTransactionProposal implements ITransactionProposal {
     @Expose
     public long gasLimit;
 
-    @SerializedName("tokenId")
+    @SerializedName("token")
     @Expose
-    public long tokenId;
+    public GsonToken token;
 
     @SerializedName("asset")
     @Expose
@@ -295,7 +295,8 @@ public class GsonTransactionProposal implements ITransactionProposal {
         multisigContractAddress = origin.getMultisigContractAddress();
         nonce = origin.getNonce();
         gasLimit = origin.getGasLimit();
-        tokenId = origin.getTokenId();
+        token = origin.getToken() == null
+                ? null: new GsonToken(origin.getToken());
 
         asset = origin.getAsset() == null
                 ? null : new GsonAsset(origin.getAsset());
@@ -585,8 +586,8 @@ public class GsonTransactionProposal implements ITransactionProposal {
     }
 
     @Override
-    public long getTokenId() {
-        return tokenId;
+    public GsonToken getToken() {
+        return token;
     }
 
     @Override

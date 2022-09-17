@@ -33,22 +33,16 @@
 
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewProUpServiceTxp;
 
-import org.bitcoinj.core.NetworkParameters;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternode;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodeBlsSign;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.masternode.IMasternodePro;
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.Output;
-import org.openkuva.kuvabase.bwcj.domain.useCases.wallet.postWalletAddress.CreateNewMainAddressesFromWalletUseCase;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
-import org.openkuva.kuvabase.bwcj.domain.utils.masternode.ProRevokeTx;
 import org.openkuva.kuvabase.bwcj.domain.utils.masternode.ProUpServiceTx;
 import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
-import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.AddressesRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.address.IAddressesResponse;
@@ -60,8 +54,6 @@ import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.transaction.
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.openkuva.kuvabase.bwcj.domain.useCases.wallet.DefaultConstants.DEFAULT_WALLET_NAME;
 
 public class AddNewProUpServiceTxpUseCase implements IAddNewProUpServiceTxpUseCase {
     private final IBitcoreWalletServerAPI bwsApi;
@@ -177,7 +169,6 @@ public class AddNewProUpServiceTxpUseCase implements IAddNewProUpServiceTxpUseCa
                                 txExtends),
                         credentials);
 
-        NetworkParameters params = this.credentials.getNetworkParameters();
         ProUpServiceTx proUpServiceTx = new ProUpServiceTx(txp.getInputs(), proTxHash, host, port,  masternodePrivKey, payAddr, this.credentials.getNetworkParameters());
         try {
             String msgHash = proUpServiceTx.getMessageHash();
