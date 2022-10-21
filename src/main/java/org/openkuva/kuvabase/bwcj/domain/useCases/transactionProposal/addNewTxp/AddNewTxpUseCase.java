@@ -35,6 +35,7 @@ package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewTxp
 
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAsset;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.data.entity.pojo.transaction.Output;
@@ -133,8 +134,13 @@ public class AddNewTxpUseCase implements IAddNewTxpUseCase {
     }
 
     @Override
+    public ITransactionProposal execute(IInput[] inputs, IOutput[] outputs, String msg, boolean dryRun, String operation, String customData) {
+        return execute(null, inputs, outputs, msg, dryRun, operation, customData, true);
+    }
+
+    @Override
     public ITransactionProposal execute(String tokenAddress, IOutput[] outputs, String msg, boolean dryRun, String operation, String customData, boolean excludeMasternode) {
-        GsonAsset asset = new GsonAsset();
+        GsonAsset asset = null;
         if (this.copayersCryptUtils.getCoin() == "vcl" && this.isAsset){
             asset = new GsonAsset(2, null, null, null);
             if(tokenAddress != null  ) {
@@ -172,5 +178,69 @@ public class AddNewTxpUseCase implements IAddNewTxpUseCase {
                                 asset
                             ),
                         credentials);
+    }
+
+    @Override
+    public ITransactionProposal execute(String tokenAddress, IInput[] inputs, IOutput[] outputs, String msg, boolean dryRun, String operation, String customData, boolean excludeMasternode) {
+        GsonAsset asset = null;
+        if (this.copayersCryptUtils.getCoin() == "vcl" && this.isAsset){
+            asset = new GsonAsset(2, null, null, null);
+            if(tokenAddress != null  ) {
+                throw new InvalidParamsException("tokenAddress is not supported");
+            }
+        }
+        if(outputs.length == 0){
+            throw new InvalidParamsException("outputs cannot be zero");
+        }
+        if(this.copayersCryptUtils.getCoin() == "eth" && outputs.length>1){
+            throw new InvalidParamsException("outputs length must be 1");
+        }
+
+        String enMsg = new SjclMessageEncryptor()
+                .encrypt(
+                        msg,
+                        copayersCryptUtils.sharedEncryptingKey(
+                                credentials.getWalletPrivateKey()
+                                        .getPrivateKeyAsHex()));
+        if(inputs == null || inputs.length == 0) {
+            return
+                    bwsApi.postTxProposals(
+                            new TransactionRequest(
+                                    copayersCryptUtils.getCoin(),
+                                    "livenet",
+                                    outputs,
+                                    "normal",
+                                    enMsg,
+                                    false,
+                                    dryRun,
+                                    operation,
+                                    customData,
+                                    null,
+                                    excludeMasternode,
+                                    tokenAddress,
+                                    asset
+                            ),
+                            credentials);
+        }else{
+            return
+                bwsApi.postTxProposals(
+                    new TransactionRequest(
+                            copayersCryptUtils.getCoin(),
+                            "livenet",
+                            inputs,
+                            outputs,
+                            "normal",
+                            enMsg,
+                            false,
+                            dryRun,
+                            operation,
+                            customData,
+                            null,
+                            excludeMasternode,
+                            tokenAddress,
+                            asset
+                    ),
+                    credentials);
+        }
     }
 }

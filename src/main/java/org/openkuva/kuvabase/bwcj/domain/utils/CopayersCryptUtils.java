@@ -59,9 +59,22 @@ import static org.openkuva.kuvabase.bwcj.domain.useCases.wallet.DefaultConstants
 public final class CopayersCryptUtils {
 
     private final ICoinTypeRetriever coinTypeRetriever;
+    private boolean isElectrum = false;
+    private NetworkParameters networkParameters;
 
     public CopayersCryptUtils(ICoinTypeRetriever coinTypeRetriever) {
         this.coinTypeRetriever = coinTypeRetriever;
+    }
+
+    public void setElectrum(boolean bElectrum) {
+        this.isElectrum = bElectrum;
+    }
+    public boolean getElectrum() {
+        return this.isElectrum;
+    }
+
+    public void setNetParams(NetworkParameters netParams) {
+        this.networkParameters = netParams;
     }
 
     public String getCoin() {
@@ -91,6 +104,11 @@ public final class CopayersCryptUtils {
     }
 
     public DeterministicKey requestDerivation(byte[] seed) {
+        if(isElectrum){
+            return derivedXPrivKey(
+                    HDKeyDerivation.createMasterPrivateKey(seed),
+                    this.networkParameters).derive(0);
+        }
         return
                 HDKeyDerivation.deriveChildKey(
                         HDKeyDerivation.createMasterPrivateKey(seed)
@@ -195,6 +213,9 @@ public final class CopayersCryptUtils {
     }
 
     public DeterministicKey derivedXPrivKey(DeterministicKey masterPrivateKey, NetworkParameters netParams) {
+        if(isElectrum){
+            return masterPrivateKey;
+        }
         return masterPrivateKey
                 .derive(44)
                 .derive(getCoinFromNetwork(netParams))

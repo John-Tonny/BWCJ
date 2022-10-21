@@ -42,6 +42,7 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.*;
 
 
 public class TransactionRequest implements ITransactionRequest {
+    private IInput[] inputs;
     private IOutput[] outputs;
     private String feeLevel;
     private Object message;
@@ -64,6 +65,7 @@ public class TransactionRequest implements ITransactionRequest {
 
 
     public TransactionRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode) {
+        this.inputs = null;
         this.coin = coin;
         this.network = network;
         this.outputs = outputs;
@@ -83,6 +85,7 @@ public class TransactionRequest implements ITransactionRequest {
     }
 
     public TransactionRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, String tokenAddress, GsonAsset asset) {
+        this.inputs = null;
         this.coin = coin;
         this.network = network;
         this.outputs = outputs;
@@ -101,7 +104,28 @@ public class TransactionRequest implements ITransactionRequest {
         this.token = null;
     }
 
+    public TransactionRequest(String coin, String network, IInput[] inputs, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, String tokenAddress, GsonAsset asset) {
+        this.coin = coin;
+        this.network = network;
+        this.inputs = inputs;
+        this.outputs = outputs;
+        this.feeLevel = feeLevel;
+        this.message = message;
+        this.excludeUnconfirmedUtxos = excludeUnconfirmedUtxos;
+        this.dryRun = dryRun;
+        this.operation = operation;
+        this.customData = customData;
+        this.payProUrl = payProUrl;
+        this.excludeMasternode = excludeMasternode;
+        this.txExtends = null;
+        this.tokenAddress = tokenAddress;
+        this.asset = asset;
+        this.relay = null;
+        this.token = null;
+    }
+
     public TransactionRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, String tokenAddress, GsonRelay relay, String maxFeePerGas) {
+        this.inputs = null;
         this.coin = coin;
         this.network = network;
         this.outputs = outputs;
@@ -123,6 +147,7 @@ public class TransactionRequest implements ITransactionRequest {
     }
 
     public TransactionRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, String tokenAddress, GsonToken token, String maxFeePerGas) {
+        this.inputs = null;
         this.coin = coin;
         this.network = network;
         this.outputs = outputs;
@@ -144,6 +169,7 @@ public class TransactionRequest implements ITransactionRequest {
     }
 
     public TransactionRequest(String coin, String network, IOutput[] outputs, String feeLevel, Object message, boolean excludeUnconfirmedUtxos, boolean dryRun, String operation, String customData, Object payProUrl, boolean excludeMasternode, GsonTxExtends txExtends) {
+        this.inputs = null;
         this.coin = coin;
         this.network = network;
         this.outputs = outputs;
@@ -170,6 +196,11 @@ public class TransactionRequest implements ITransactionRequest {
     @Override
     public String getNetwork() {
         return network;
+    }
+
+    @Override
+    public IInput[] getInputs() {
+        return inputs;
     }
 
     @Override

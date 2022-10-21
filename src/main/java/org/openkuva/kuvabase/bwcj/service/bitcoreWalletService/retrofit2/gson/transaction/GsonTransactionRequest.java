@@ -38,6 +38,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.*;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IAtomicswapData;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionRequest;
 
@@ -48,6 +49,10 @@ public  class GsonTransactionRequest implements ITransactionRequest {
     @SerializedName("network")
     @Expose
     private String network;
+
+    @SerializedName("inputs")
+    @Expose
+    private GsonInput[] inputs;
 
     @SerializedName("outputs")
     @Expose
@@ -110,6 +115,7 @@ public  class GsonTransactionRequest implements ITransactionRequest {
         this.coin = origin.getCoin();
         this.network = origin.getNetwork();
 
+        this.inputs = map1(origin.getInputs());
         this.outputs = map(origin.getOutputs());
         this.feeLevel = origin.getFeeLevel();
         this.message = origin.getMessage();
@@ -138,6 +144,16 @@ public  class GsonTransactionRequest implements ITransactionRequest {
         return result;
     }
 
+    private GsonInput[] map1(IInput[] inputs) {
+        if (inputs == null) return null;
+        GsonInput[] result = new GsonInput[inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            IInput input = inputs[i];
+            result[i] = new GsonInput(input);
+        }
+        return result;
+    }
+
     @Override
     public String getCoin() {
         return coin;
@@ -146,6 +162,11 @@ public  class GsonTransactionRequest implements ITransactionRequest {
     @Override
     public String getNetwork() {
         return network;
+    }
+
+    @Override
+    public GsonInput[] getInputs() {
+        return inputs;
     }
 
     @Override

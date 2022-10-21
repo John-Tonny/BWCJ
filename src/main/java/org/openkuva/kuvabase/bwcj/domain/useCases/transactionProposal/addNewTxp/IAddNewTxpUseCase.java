@@ -34,6 +34,7 @@
 package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.addNewTxp;
 
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ICustomData;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IOutput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 
@@ -83,7 +84,26 @@ public interface IAddNewTxpUseCase {
             boolean excludeMasternode);
 
     ITransactionProposal execute(
+            IInput[] inputs,
+            IOutput[] outputs,
+            String msg,
+            boolean dryRun,
+            String operation,
+            String customData);
+
+    ITransactionProposal execute(
             String tokenAddress,
+            IOutput[] outputs,
+            String msg,
+            boolean dryRun,
+            String operation,
+            String customData,
+            boolean excludeMasternode);
+
+
+    ITransactionProposal execute(
+            String tokenAddress,
+            IInput[] inputs,
             IOutput[] outputs,
             String msg,
             boolean dryRun,

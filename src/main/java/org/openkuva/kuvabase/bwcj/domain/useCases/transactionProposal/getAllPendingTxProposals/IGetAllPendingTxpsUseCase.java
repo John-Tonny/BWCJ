@@ -31,51 +31,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
+package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.getAllPendingTxProposals;
 
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonToken;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAsset;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonRelay;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 
-public interface ITransactionRequest {
-    String getCoin();
-
-    String getNetwork();
-
-    IInput[]  getInputs();
-
-    IOutput[] getOutputs();
-
-    String getFeeLevel();
-
-    Object getMessage();
-
-    boolean isExcludeUnconfirmedUtxos();
-
-    boolean isDryRun();
-
-    String getOperation();
-
-    //ICustomData getCustomData();
-    String getCustomData();
-
-    Object getPayProUrl();
-
-    boolean isExcludeMasternode();
-
-    GsonTxExtends getTxExtends();
-
-    String getTokenAddress();
-
-    GsonAsset getAsset();
-
-    GsonRelay getRelay();
-
-    GsonToken getToken();
-
-    String getMaxPriorityFeePerGas();
-
-    String getMaxFeePerGas();
-
+public interface IGetAllPendingTxpsUseCase {
+    ITransactionProposal[] execute();
 }

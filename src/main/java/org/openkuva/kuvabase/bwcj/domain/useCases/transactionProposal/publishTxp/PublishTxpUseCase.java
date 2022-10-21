@@ -35,10 +35,12 @@ package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.publishTx
 
 import org.bitcoinj.core.Utils;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
 import org.openkuva.kuvabase.bwcj.domain.utils.CommonNetworkParametersBuilder;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.domain.utils.transactions.EthTransactionBuilder;
+import org.openkuva.kuvabase.bwcj.domain.utils.transactions.FreeStandingTransactionOutput;
 import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
@@ -80,7 +82,6 @@ public class PublishTxpUseCase implements IPublishTxpUseCase {
             if(toPublish.getTxExtends()!=null && toPublish.getTxExtends().getVersion()>0 && toPublish.getTxExtends().getOutScripts()!= null){
                 outScripts = toPublish.getTxExtends().getOutScripts();
             }
-
             TransactionBuilder transactionBuilder = new TransactionBuilder(new CommonNetworkParametersBuilder());
             msg = Utils.HEX.encode(transactionBuilder.buildTx(toPublish).unsafeBitcoinSerialize1());
         }else if(toPublish.getCoin().equalsIgnoreCase( "eth")){

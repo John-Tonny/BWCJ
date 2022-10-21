@@ -43,17 +43,14 @@ import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactio
 import org.openkuva.kuvabase.bwcj.domain.utils.CommonNetworkParametersBuilder;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.domain.utils.transactions.EthTransactionBuilder;
+import org.openkuva.kuvabase.bwcj.domain.utils.transactions.FreeStandingTransactionOutput;
 import org.openkuva.kuvabase.bwcj.domain.utils.transactions.TransactionBuilder;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.signatures.SignatureRequest;
 import org.openkuva.kuvabase.bwcj.domain.utils.transactions.IndexedTransactionSignature;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static org.openkuva.kuvabase.bwcj.domain.utils.DeriveUtils.deriveChildByPath;
 
@@ -97,6 +94,13 @@ public class SignTxpUseCase implements ISignTxpUseCase {
                 }
             }
 
+            if(txToSign.getAddressType().compareToIgnoreCase("P2SH")==0 && txToSign.getRequiredSignatures()>1) {
+                int index = 0;
+                for (IInput input : txToSign.getInputs()) {
+                    input.setScriptPubKey(buildRedeemScript(txToSign, index));
+                }
+            }
+
             Transaction transaction = transactionBuilder.buildTx(txToSign);
             for (int i = 0; i < privs.size(); i++) {
                 signaturesLists.add(
@@ -134,4 +138,36 @@ public class SignTxpUseCase implements ISignTxpUseCase {
             throw new InvalidParamsException("coin is not support");
         }
     }
+
+    public String buildRedeemScript(ITransactionProposal tp, int index) {
+        String redeemScript = "";
+        if(tp.getAddressType().compareToIgnoreCase("P2SH") == 0 && tp.getRequiredSignatures()>1 && tp.getInputs()[index].getPublicKeys().size()>1){
+            redeemScript +=  Integer.toHexString(tp.getRequiredSignatures() + 80);
+            IInput input = tp.getInputs()[index];
+
+            int nums = 0;
+            String[] arr = input.getPublicKeys().toArray(new String[0]);
+            Arrays.sort(arr);
+            for(String item : arr) {
+                redeemScript +=  Integer.toHexString(item.length()/2) + item;
+                nums += 1;
+            }
+            redeemScript +=  Integer.toHexString(nums + 80) + "ae";
+        }
+        return redeemScript;
+    }
+    /*
+    public void aaa(){
+        if(toPublish.getAddressType().compareToIgnoreCase("P2SH")==0 && toPublish.getRequiredSignatures()>1) {
+            for (IInput input : toPublish.getInputs()) {
+
+            }
+
+        }
+
+
+        if (toPublish.get scriptPubkey.length() == 46 && scriptPubkey.startsWith("a914", 0) && scriptPubkey.startsWith("87", 44)){
+            byte[]  redeemScript = new byte[0];
+
+     */
 }

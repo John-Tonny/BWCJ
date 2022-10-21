@@ -41,6 +41,7 @@ import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodePing
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeRemove;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeBlsSign;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.GsonMasternodeStatus;
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonInput;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory2;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
@@ -216,5 +217,9 @@ public interface IRetrofit2BwsAPI {
     @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
     @GET("v1/asset/")
     Call<GsonAssetInfo> getAssetInfo(@QueryMap Map<String, String> options);
+
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @GET("v1/utxos/")
+    Call<GsonInput[]> getUtxos(@QueryMap Map<String, String> options);
 
 }

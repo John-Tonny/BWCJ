@@ -211,5 +211,9 @@ public interface IBitcoreWalletServerAPI {
      */
     IAssetInfo getAssetInfo(Map<String, String> options);
 
+    /**
+     * GET v1/utxos/
+     */
+    IInput[] getUtxos(Map<String, String> options);
 
 }

@@ -37,6 +37,7 @@ import org.openkuva.kuvabase.bwcj.data.entity.gson.fee.GsonFeeLevel;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.masternode.*;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.asset.GsonAssetInfo;
 
+import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonInput;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionHistory2;
 import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTransactionProposal;
@@ -761,6 +762,26 @@ public class Retrofit2BwsApiBridge implements IBitcoreWalletServerAPI {
 
             if (response.isSuccessful()) {
                 GsonAssetInfo gsonAssetInfo = response.body();
+                return response.body();
+            } else {
+                throw new RequestFailedException(response);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public GsonInput[] getUtxos(@QueryMap Map<String, String> options) {
+        try {
+            Response<GsonInput[]> response = serverAPI
+                    .getUtxos(options)
+                    .execute();
+
+            if (response.isSuccessful()) {
+                GsonInput[] gsonInputs = response.body();
                 return response.body();
             } else {
                 throw new RequestFailedException(response);

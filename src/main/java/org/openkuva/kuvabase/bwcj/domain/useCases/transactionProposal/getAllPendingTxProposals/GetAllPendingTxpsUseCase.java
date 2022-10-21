@@ -31,51 +31,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction;
+package org.openkuva.kuvabase.bwcj.domain.useCases.transactionProposal.getAllPendingTxProposals;
 
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonToken;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonTxExtends;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonAsset;
-import org.openkuva.kuvabase.bwcj.data.entity.gson.transaction.GsonRelay;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.ITransactionProposal;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
 
-public interface ITransactionRequest {
-    String getCoin();
+public class GetAllPendingTxpsUseCase implements IGetAllPendingTxpsUseCase {
+    private final ICredentials credentials;
+    private final IBitcoreWalletServerAPI bwsApi;
 
-    String getNetwork();
+    public GetAllPendingTxpsUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+        this.credentials = credentials;
+        this.bwsApi = bwsApi;
+    }
 
-    IInput[]  getInputs();
-
-    IOutput[] getOutputs();
-
-    String getFeeLevel();
-
-    Object getMessage();
-
-    boolean isExcludeUnconfirmedUtxos();
-
-    boolean isDryRun();
-
-    String getOperation();
-
-    //ICustomData getCustomData();
-    String getCustomData();
-
-    Object getPayProUrl();
-
-    boolean isExcludeMasternode();
-
-    GsonTxExtends getTxExtends();
-
-    String getTokenAddress();
-
-    GsonAsset getAsset();
-
-    GsonRelay getRelay();
-
-    GsonToken getToken();
-
-    String getMaxPriorityFeePerGas();
-
-    String getMaxFeePerGas();
-
+    @Override
+    public ITransactionProposal[] execute() {
+        return bwsApi.getPendingTransactionProposals(credentials);
+    }
 }

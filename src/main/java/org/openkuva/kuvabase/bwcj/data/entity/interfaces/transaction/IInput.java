@@ -43,6 +43,7 @@ public interface IInput {
     String getAddress();
 
     String getScriptPubKey();
+    void setScriptPubKey(String scriptPubKey);
 
     long getSatoshis();
 
@@ -59,4 +60,7 @@ public interface IInput {
     String getScript();
 
     long getSequenceNumber();
+
+    boolean isSpent();
+    boolean isCoinbase();
 }

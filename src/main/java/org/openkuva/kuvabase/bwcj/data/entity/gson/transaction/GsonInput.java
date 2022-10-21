@@ -77,6 +77,13 @@ public class GsonInput implements IInput {
     @Expose
     public long sequenceNumber;
 
+    @SerializedName("spent")
+    @Expose
+    public boolean spent;
+    @SerializedName("coinbase")
+    @Expose
+    public boolean coinbase;
+
     public GsonInput() {
     }
 
@@ -92,7 +99,8 @@ public class GsonInput implements IInput {
         this.publicKeys = input.getPublicKeys();
         this.script = input.getScript();
         this.sequenceNumber = input.getSequenceNumber();
-
+        this.spent = input.isSpent();
+        this.coinbase = input.isCoinbase();
     }
 
     @Override
@@ -154,6 +162,21 @@ public class GsonInput implements IInput {
     @Override
     public long getSequenceNumber() {
         return sequenceNumber;
+    }
+
+    @Override
+    public void setScriptPubKey(String scriptPubKey) {
+        this.scriptPubKey = scriptPubKey;
+    }
+
+    @Override
+    public boolean isSpent() {
+        return spent;
+    }
+
+    @Override
+    public boolean isCoinbase() {
+        return coinbase;
     }
 
 }

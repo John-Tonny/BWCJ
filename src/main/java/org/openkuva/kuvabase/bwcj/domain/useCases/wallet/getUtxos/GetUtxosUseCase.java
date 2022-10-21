@@ -31,11 +31,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.domain.useCases.wallet.recoveryWalletFromMnemonic;
+package org.openkuva.kuvabase.bwcj.domain.useCases.wallet.getUtxos;
 
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.transaction.IInput;
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IWallet;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
@@ -45,34 +46,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecoveryWalletFromMnemonicUseCase implements IRecoveryWalletFromMnemonicUseCase {
+public class GetUtxosUseCase implements IGetUtxosUseCase {
 
     private final ICredentials credentials;
     private IBitcoreWalletServerAPI bwsApi;
     private final CopayersCryptUtils copayersCryptUtils;
 
-    public RecoveryWalletFromMnemonicUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
+    public GetUtxosUseCase(ICredentials credentials, CopayersCryptUtils copayersCryptUtils, IBitcoreWalletServerAPI bwsApi) {
         this.credentials = credentials;
         this.copayersCryptUtils = copayersCryptUtils;
         this.bwsApi = bwsApi;
     }
 
-    public RecoveryWalletFromMnemonicUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
+    public GetUtxosUseCase(ICredentials credentials, IBitcoreWalletServerAPI bwsApi) {
         this.credentials = credentials;
         this.copayersCryptUtils = this.credentials.getCopayersCryptUtils();
         this.bwsApi = bwsApi;
     }
 
     @Override
-    public IWallet execute(List<String> mnemonic, String passphrase) throws CopayerNotFoundException {
-        credentials.setSeed(MnemonicCode.toSeedByMode(mnemonic, passphrase, this.copayersCryptUtils.getElectrum()));
-        String personalEncryptingKey =
-                copayersCryptUtils.personalEncryptingKey(
-                        copayersCryptUtils.entropySource(
-                                copayersCryptUtils.requestDerivation(
-                                        credentials.getSeed())));
-        credentials.setPersonalEncryptingKey(personalEncryptingKey);
-        return bwsApi.getWallets(getUrlOptions(), credentials, copayersCryptUtils);
+    public IInput[] execute()  {
+        return bwsApi.getUtxos(getUrlOptions());
     }
 
     private static Map<String, String> getUrlOptions() {
@@ -83,7 +77,6 @@ public class RecoveryWalletFromMnemonicUseCase implements IRecoveryWalletFromMne
 
         Map<String, String> urlOptions = new HashMap<>();
 
-        urlOptions.put("includeExtendedInfo", "1");
         urlOptions.put("r", String.valueOf(random));
 
         return urlOptions;

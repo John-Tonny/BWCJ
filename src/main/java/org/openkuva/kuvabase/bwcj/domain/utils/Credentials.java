@@ -85,10 +85,13 @@ public final class Credentials implements ICredentials {
                                 this.seedWords)));
 
         this.networkParameters = MainNetParams.get();
+        this.copayersCryptUtils.setNetParams(this.networkParameters);
     }
 
     public Credentials(CopayersCryptUtils copayersCryptUtils) {
         this.copayersCryptUtils = copayersCryptUtils;
+        this.networkParameters = MainNetParams.get();
+        this.copayersCryptUtils.setNetParams(this.networkParameters);
         this.deterministicSeed =
                 new DeterministicSeed(
                         new SecureRandom(),
@@ -102,11 +105,13 @@ public final class Credentials implements ICredentials {
                         copayersCryptUtils.requestDerivation(
                                 this.seedWords)));
 
-        this.networkParameters = MainNetParams.get();
     }
 
     public Credentials(String passphrase, CopayersCryptUtils copayersCryptUtils) {
         this.copayersCryptUtils = copayersCryptUtils;
+        this.networkParameters = MainNetParams.get();
+        this.copayersCryptUtils.setNetParams(this.networkParameters);
+
         this.deterministicSeed =
                 new DeterministicSeed(
                         new SecureRandom(),
@@ -120,21 +125,23 @@ public final class Credentials implements ICredentials {
                         copayersCryptUtils.requestDerivation(
                                 this.seedWords)));
 
-        this.networkParameters = MainNetParams.get();
     }
 
     public Credentials(List<String> mnemonic, String passphrase, CopayersCryptUtils copayersCryptUtils) {
         this.copayersCryptUtils = copayersCryptUtils;
+        this.networkParameters = MainNetParams.get();
+        this.copayersCryptUtils.setNetParams(this.networkParameters);
+
         this.deterministicSeed =
                 new DeterministicSeed(
                         mnemonic,
                         null,
                         passphrase,
-                        Utils.currentTimeSeconds());
+                        Utils.currentTimeSeconds(),
+                        copayersCryptUtils.getElectrum());
 
         this.setSeed(this.deterministicSeed.getSeedBytes());
         this.setWalletPrivateKey(new ECKey());
-        this.networkParameters = MainNetParams.get();
     }
 
     public Credentials(List<String> mnemonic, String passphrase, String coin) {
@@ -146,6 +153,9 @@ public final class Credentials implements ICredentials {
                 this.copayersCryptUtils = new CopayersCryptUtils(new VircleCoinTypeRetriever());
             }
         }
+        this.networkParameters = MainNetParams.get();
+        this.copayersCryptUtils.setNetParams(this.networkParameters);
+
         this.deterministicSeed =
                 new DeterministicSeed(
                         mnemonic,
@@ -155,7 +165,6 @@ public final class Credentials implements ICredentials {
 
         this.setSeed(this.deterministicSeed.getSeedBytes());
         this.setWalletPrivateKey(new ECKey());
-        this.networkParameters = MainNetParams.get();
     }
 
     private byte[] getWalletPrivateKeyBytes() {

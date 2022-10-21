@@ -70,7 +70,6 @@ public class TransactionBuilder {
 
     public Transaction buildTx(ITransactionProposal tp) {
         NetworkParameters network = networkParametersBuilder.fromTP(tp);
-
         Transaction transaction = new Transaction(network);
 
         // john
@@ -113,13 +112,11 @@ public class TransactionBuilder {
         }
         if(tp.getAsset()==null || tp.getAsset().getVersion()==0) {
             for (IInput input : tp.getInputs()) {
+                String scriptPubkey = input.getScriptPubKey();
                 transaction.addInput(
                         new TransactionInput(
                                 network,
                                 transaction,
-                                /*new ScriptBuilder()
-                                        .build()
-                                        .getProgram(),*/
                                 Utils.HEX.decode(input.getScriptPubKey()),  // john
                                 new TransactionOutPoint(
                                         network,
@@ -247,13 +244,13 @@ public class TransactionBuilder {
                         .getOutpoint()
                         .getConnectedOutput();
 
+                byte[] scriptBytes = connectedOutput.getScriptBytes();
                 LegacyAddress legacyAddr = connectedOutput
                         .getAddressFromP2PKHScript(network);
-                if(legacyAddr == null){
-
+                if (legacyAddr == null) {
                     SegwitAddress segwitAddr = connectedOutput
                             .getAddressFromP2WPKHScript(network);
-                    if(segwitAddr != null && Arrays.equals(segwitAddr.getHash(), priv.getPubKeyHash())){
+                    if (segwitAddr != null && Arrays.equals(segwitAddr.getHash(), priv.getPubKeyHash())) {
                         result.add(
                                 new IndexedTransactionSignature(
                                         transaction.calculateWitnessSignature(
@@ -265,9 +262,19 @@ public class TransactionBuilder {
                                                 Transaction.SigHash.ALL,
                                                 false),
                                         i));
+                    }else{
+                        result.add(
+                                new IndexedTransactionSignature(
+                                        transaction.calculateSignature(
+                                                i,
+                                                priv,
+                                                connectedOutput.getScriptBytes(),
+                                                Transaction.SigHash.ALL,
+                                                false),
+                                        i));
                     }
-                }else {
-                    if(Arrays.equals(legacyAddr.getHash(), priv.getPubKeyHash())) {
+                } else {
+                    if (Arrays.equals(legacyAddr.getHash(), priv.getPubKeyHash())) {
                         result.add(
                                 new IndexedTransactionSignature(
                                         transaction.calculateSignature(
@@ -284,4 +291,5 @@ public class TransactionBuilder {
         }
         return result;
     }
+
 }
