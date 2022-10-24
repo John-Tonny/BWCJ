@@ -77,6 +77,11 @@ public class JoinWalletInCreationUseCase implements IJoinWalletInCreationUseCase
 
     @Override
     public IJoinWalletResponse execute(String walletId, String coin) {
+        return execute(walletId, "me", coin);
+    }
+
+    @Override
+    public IJoinWalletResponse execute(String walletId, String copayerName, String coin) {
         ECKey walletPrivKey =
                 credentials.getWalletPrivateKey();
         String xPubKey =
@@ -113,7 +118,7 @@ public class JoinWalletInCreationUseCase implements IJoinWalletInCreationUseCase
         String encCopayerName =
                 new SjclMessageEncryptor()
                         .encrypt(
-                                "me",
+                                copayerName,
                                 copayersCryptUtils.sharedEncryptingKey(
                                         walletPrivKey.getPrivateKeyAsHex()));
 

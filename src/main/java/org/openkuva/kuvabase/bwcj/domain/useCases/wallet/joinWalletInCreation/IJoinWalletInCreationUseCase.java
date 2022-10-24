@@ -41,6 +41,8 @@ public interface IJoinWalletInCreationUseCase {
 
     IJoinWalletResponse execute(String walletId, String coin);
 
+    IJoinWalletResponse execute(String walletId, String copayerName, String coin);
+
     IJoinWalletResponse execute(String secret, String copayerName, boolean bMode);
 
 }
