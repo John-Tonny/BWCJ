@@ -36,16 +36,21 @@ package org.openkuva.kuvabase.bwcj.domain.useCases.wallet.joinWalletInCreation;
 import com.google.gson.GsonBuilder;
 
 import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.Utils;
 
 import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet.IJoinWalletSecret;
 import org.openkuva.kuvabase.bwcj.domain.utils.CopayersCryptUtils;
 import org.openkuva.kuvabase.bwcj.domain.utils.messageEncrypt.SjclMessageEncryptor;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.IBitcoreWalletServerAPI;
+import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.exception.InvalidParamsException;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallets.IJoinWalletRequest;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallets.IJoinWalletResponse;
 import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.pojo.wallets.JoinWalletRequest;
+import org.openkuva.kuvabase.bwcj.domain.utils.CommUtils;
 
 import static org.openkuva.kuvabase.bwcj.domain.useCases.wallet.DefaultConstants.DEFAULT_COIN;
+
 
 public class JoinWalletInCreationUseCase implements IJoinWalletInCreationUseCase {
 
@@ -136,4 +141,78 @@ public class JoinWalletInCreationUseCase implements IJoinWalletInCreationUseCase
                         joinWalletRequest);
     }
 
+    @Override
+    public IJoinWalletResponse execute(String secret, String copayerName, boolean bMode) {
+        try{
+            if(credentials == null){
+                throw new InvalidParamsException("credentials is invalid");
+            }
+            IJoinWalletSecret joinWalletSecret = CommUtils.ParseWalletSecret(secret);
+            credentials.setWalletPrivateKey(joinWalletSecret.getWalletPrivateKey());
+
+            ECKey walletPrivKey =
+                    credentials.getWalletPrivateKey();
+            String xPubKey =
+                    copayersCryptUtils.derivedXPrivKey(
+                            credentials.getSeed(),
+                            credentials.getNetworkParameters())
+                            .serializePubB58(credentials.getNetworkParameters());
+
+            String requestPubKey =
+                    copayersCryptUtils.requestDerivation(
+                            credentials.getSeed())
+                            .getPublicKeyAsHex();
+
+            String personalEncryptingKey =
+                    copayersCryptUtils.personalEncryptingKey(
+                            copayersCryptUtils.entropySource(
+                                    copayersCryptUtils.requestDerivation(
+                                            credentials.getSeed())));
+
+            String encCustomData =
+                    new SjclMessageEncryptor()
+                            .encrypt(
+                                    new GsonBuilder()
+                                            .disableHtmlEscaping()
+                                            .create()
+                                            .toJson(
+                                                    new CustomData(
+                                                            walletPrivKey.getPrivateKeyAsHex())),
+                                    personalEncryptingKey);
+
+            credentials.setPersonalEncryptingKey(personalEncryptingKey);
+            credentials.setSharedEncryptingKey(copayersCryptUtils.sharedEncryptingKey(walletPrivKey.getPrivateKeyAsHex()));
+
+            String encCopayerName =
+                    new SjclMessageEncryptor()
+                            .encrypt(
+                                    copayerName,
+                                    copayersCryptUtils.sharedEncryptingKey(
+                                            walletPrivKey.getPrivateKeyAsHex()));
+
+            String hash =
+                    copayersCryptUtils.getCopayerHash(
+                            encCopayerName,
+                            xPubKey,
+                            requestPubKey);
+
+            String copayerSignature = copayersCryptUtils.signMessage(hash, walletPrivKey.getPrivateKeyAsHex());
+            IJoinWalletRequest joinWalletRequest =
+                    new JoinWalletRequest(
+                            copayerSignature,
+                            encCustomData,
+                            encCopayerName,
+                            requestPubKey,
+                            joinWalletSecret.getWalletId(),
+                            xPubKey,
+                            joinWalletSecret.getCoin());
+
+            return
+                    bwsApi.postWalletsWalletIdCopayers(
+                            joinWalletSecret.getWalletId(),
+                            joinWalletRequest);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 }

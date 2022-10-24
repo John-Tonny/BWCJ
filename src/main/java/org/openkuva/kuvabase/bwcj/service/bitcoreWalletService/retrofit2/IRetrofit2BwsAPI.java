@@ -78,147 +78,147 @@ import retrofit2.http.QueryMap;
 
 public interface IRetrofit2BwsAPI {
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v2/wallets/")
     Call<GsonCreateWalletResponse> postWallets(
             @Body GsonCreateWalletRequest createWalletRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v3/addresses/")
     Call<GsonAddressesResponse> postAddresses(
             @Body AddressesRequest addressesRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/addresses/")
     Call<GsonAddressesResponse[]> getAddresses(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v2/wallets/{wallet_id}/copayers")
     Call<GsonJoinWalletResponse> postWalletsWalletIdCopayers(
             @Path(value = "wallet_id", encoded = true) String walletId,
             @Body GsonJoinWalletRequest createCopayerRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v3/wallets/")
     Call<GsonWallet> getWallets(
             @QueryMap Map<String, String> options);
 
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v3/txproposals/")
     Call<GsonTransactionProposal> postTxProposals(
             @Body GsonTransactionRequest transactionRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/feelevels")
     Call<GsonFeeLevel[]> getFeeLevels(
             @QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v2/txproposals/{tx_id}/publish")
     Call<GsonTransactionProposal> postTxProposalsTxIdPublish(
             @Path(value = "tx_id", encoded = true) String txId,
             @Body GsonPublishRequest publishRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v2/txproposals/{tx_id}/signatures")
     Call<GsonTransactionProposal> postTxProposalsTxIdSignatures(
             @Path(value = "tx_id", encoded = true) String txId,
             @Body GsonSignatureRequest signatureRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v1/txproposals/{tx_id}/broadcast")
     Call<GsonTransactionProposal> postTxProposalsTxIdBroadcast(
             @Path(value = "tx_id", encoded = true) String txId,
             @Body BroadcastRequest broadcastRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @DELETE("v1/txproposals/{tx_id}/")
     Call<GsonTransactionProposal> deleteTxProposal(
             @Path(value = "tx_id", encoded = true) String txId);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/txproposals/")
     Call<GsonTransactionProposal[]> getPendingTransactionProposals();
 
     @GET("v1/notifications/")
     Call<GsonNotificationResponse[]> notifications(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v1/login/")
     Call<String> login(@Body LoginRequest request);
 
     // john
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/txhistory/")
     Call<GsonTransactionHistory[]> getTxHistory(@QueryMap Map<String, String> options);
 
     // john 20220813
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v2/txhistory/")
     Call<GsonTransactionHistory2> getTxHistory2(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/masternode/status/")
     Call<GsonMasternodeStatus> getMasternodeStatus(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/masternode/collateral/")
     Call<GsonMasternodeCollateral[]> getMasternodeCollateral(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/masternode/ping/")
     Call<GsonMasternodePing> getMasternodePing(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v1/masternode/broadcast/")
     Call<GsonMasternodeBroadcast> broadcastMasternode(@Body MasternodeBroadcastRequest masternodeBroadcastRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/masternode/")
     Call<GsonMasternode[]> getMasternodes(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/masternode/")
     Call<GsonMasternode> getMasternodesBy(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @DELETE("v1/masternode/")
     Call<GsonMasternodeRemove> removeMasternodes(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v3/atomicswaptxproposals/")
     Call<GsonTransactionProposal> postInitiateTxProposals(
             @Body GsonTransactionInitiateRequest transactionRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v3/atomicswaptxproposals/")
     Call<GsonTransactionProposal> postParticipateTxProposals(
             @Body GsonTransactionParticipateRequest transactionRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v3/redeemtxproposals/")
     Call<GsonTransactionProposal> postRedeemTxProposals(
             @Body GsonTransactionRedeemRequest transactionRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @POST("v3/redeemtxproposals/")
     Call<GsonTransactionProposal> postRefundTxProposals(
             @Body GsonTransactionRefundRequest transactionRequest);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v2/atomicswaptxproposals/")
     Call<GsonTransactionProposal[]> getPendingAtomicswapTransactionProposals();
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/masternode/blssign/")
     Call<GsonMasternodeBlsSign> getMasternodeBlsSign(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/asset/")
     Call<GsonAssetInfo> getAssetInfo(@QueryMap Map<String, String> options);
 
-    @Headers({"Content-Type:application/json", "x-client-version:bwc-5.1.2"})
+    @Headers({"Content-Type:application/json", "x-client-version:bwc-8.25.27"})
     @GET("v1/utxos/")
     Call<GsonInput[]> getUtxos(@QueryMap Map<String, String> options);
 

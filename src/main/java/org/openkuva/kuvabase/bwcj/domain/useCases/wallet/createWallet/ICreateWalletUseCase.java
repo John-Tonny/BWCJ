@@ -38,4 +38,6 @@ public interface ICreateWalletUseCase {
     String execute(String coin);
     String execute(boolean singleAddress);
     String execute(boolean singleAddress, String coin);
+
+    String execute(int m, int n, String name, boolean singleAddress, String coin);
 }

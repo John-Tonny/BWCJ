@@ -31,16 +31,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.openkuva.kuvabase.bwcj.domain.useCases.wallet.joinWalletInCreation;
+package org.openkuva.kuvabase.bwcj.data.entity.interfaces.wallet;
 
-import org.openkuva.kuvabase.bwcj.data.entity.interfaces.credentials.ICredentials;
-import org.openkuva.kuvabase.bwcj.service.bitcoreWalletService.interfaces.wallets.IJoinWalletResponse;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.copayer.IAddressManager;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.copayer.ICopayer;
+import org.openkuva.kuvabase.bwcj.data.entity.interfaces.copayer.IPublicKeyRing;
 
-public interface IJoinWalletInCreationUseCase {
-    IJoinWalletResponse execute(String walletId);
-
-    IJoinWalletResponse execute(String walletId, String coin);
-
-    IJoinWalletResponse execute(String secret, String copayerName, boolean bMode);
-
+public interface IJoinWalletSecret {
+    String getWalletId();
+    String getWalletPrivateKey();
+    String getCoin();
+    String getNetwork();
 }

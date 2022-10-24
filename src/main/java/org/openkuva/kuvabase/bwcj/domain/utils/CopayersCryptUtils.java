@@ -48,6 +48,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -125,6 +126,15 @@ public final class CopayersCryptUtils {
                                         Sha256Hash.hashTwice(
                                                 message.getBytes())))
                                 .encodeToDER());
+    }
+
+    public boolean verifyMessage(String message, String signature, String pubKey){
+        try {
+            return ECKey.verify(Sha256Hash.hashTwice(
+                            message.getBytes()), Utils.HEX.decode(signature), Utils.HEX.decode(pubKey));
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     public String entropySource(DeterministicKey requestDerivation) {

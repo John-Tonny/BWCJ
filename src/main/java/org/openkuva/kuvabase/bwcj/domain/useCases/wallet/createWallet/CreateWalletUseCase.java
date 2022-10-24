@@ -115,4 +115,33 @@ public class CreateWalletUseCase implements ICreateWalletUseCase {
                         .getWalletID();
 
     }
+
+    @Override
+    public String execute(int m, int n, String name, boolean singleAddress, String coin) {
+        if(coin == "eth"){
+            singleAddress = true;
+        }
+        return
+                bwsApi.postWallets(
+                        new CreateWalletRequest(
+                                m,
+                                n,
+                                new SjclMessageEncryptor()
+                                        .encrypt(
+                                                name,
+                                                copayersCryptUtils.sharedEncryptingKey(
+                                                        credentials.getWalletPrivateKey()
+                                                                .getPrivateKeyAsHex())),
+                                NetworkParametersUtils.fromId(
+                                        credentials
+                                                .getNetworkParameters()
+                                                .getId()),
+                                credentials
+                                        .getWalletPrivateKey()
+                                        .getPublicKeyAsHex(),
+                                singleAddress,
+                                coin))
+                        .getWalletID();
+
+    }
 }
